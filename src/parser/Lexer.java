@@ -41,7 +41,7 @@ public class Lexer {
   }
 
   public static void main(String[] args) throws IOException {
-    var path = Path.of("big.map");
+    var path = Path.of("map/default.map");
     var text = Files.readString(path);
     var lexer = new Lexer(text);
     Result result;
