@@ -1,5 +1,7 @@
 package game.entity.item;
 
-public interface Item {
+import game.entity.Entity;
 
+public interface Item extends Entity {
+  
 }

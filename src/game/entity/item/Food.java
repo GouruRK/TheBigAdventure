@@ -1,5 +1,12 @@
 package game.entity.item;
 
-public record Food() {
+import java.util.Objects;
 
+public record Food(String skin, String name) implements Item {
+
+  public Food {
+    Objects.requireNonNull(skin);
+    Objects.requireNonNull(name);
+  }
+  
 }

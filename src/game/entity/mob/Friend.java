@@ -6,17 +6,15 @@ import util.Direction;
 import util.Position;
 import util.Zone;
 
-public class Ennemy implements Mob {
-  
+public class Friend implements Mob {
+
   private final String skin;
   private final String name;
-  private final Behaviour behaviour; 
   private final Zone zone; 
   private Position pos;
   private Direction lookAt;
-  private int health;
   
-  public Ennemy(String skin, String name, Position pos, Zone zone, Direction lookAt, int health, Behaviour behaviour) {
+  public Friend(String skin, String name, Position pos, Zone zone, Direction lookAt) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(name);
     Objects.requireNonNull(pos);
@@ -26,12 +24,6 @@ public class Ennemy implements Mob {
     this.pos = pos;
     this.zone = zone;
     this.lookAt = lookAt;
-    this.health = health;
-    this.behaviour = behaviour;
-  }
-  
-  public Ennemy(String skin, String name, Position pos, Zone zone, int health, Direction lookAt) {
-    this(skin, name, pos, zone, lookAt, health, Behaviour.STROLL);
   }
   
   public String skin() {
@@ -49,4 +41,5 @@ public class Ennemy implements Mob {
   public Zone zone() {
     return zone;
   }
+  
 }
