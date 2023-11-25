@@ -1,8 +1,11 @@
 package parser;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
+import game.Game;
 import game.GameObject;
 import game.GameObjectID;
 import util.Position;
@@ -66,7 +69,7 @@ public class Parser {
     return new Zone(topLeft, new Position(topLeft.x() + size.x(), topLeft.y() + size.y()));
   }
   
-  public static Map<String, GameObjectID> parseEncoding(Lexer lexer) throws TokenException {
+  public static Map<String, GameObjectID> parseEncodings(Lexer lexer) throws TokenException {
     // wait for "OBJECT(O)"
     String identifier, code;
     GameObjectID id;
@@ -82,6 +85,66 @@ public class Parser {
     }
     Parser.isExpected(lexer, Token.RIGHT_PARENS);
     return Map.<String, GameObjectID>of(code, id);
+  }
+  
+  
+  public static Map<String, GameObjectID> parseEncoding(Lexer lexer) throws TokenException {
+    return new Map<String, GameObjectID>();
+  }
+  
+  public static void parseData(Lexer lexer, Game game, Map<String, GameObjectID> encodings) {
+    return;
+  }
+    
+  
+  public static Game parseGame(Lexer lexer) throws TokenException {
+    Parser.isExpected(lexer, Token.IDENTIFIER, "size");
+    Parser.isExpected(lexer, Token.COLON);
+    Position size = Parser.parseSize(lexer);
+    
+    Parser.isExpected(lexer, Token.IDENTIFIER, "encodings");
+    Parser.isExpected(lexer, Token.COLON);
+    Map<String, GameObjectID> encodings = Parser.parseEncodings(lexer);
+    
+    Game game = new Game(); // give size, creates an empty map
+    
+    Parser.isExpected(lexer, Token.IDENTIFIER, "data");
+    Parser.isExpected(lexer, Token.COLON);
+    
+    Parser.parseData(lexer, game, encodings);
+   
+    return game;
+  }
+  
+  public static void parseElement(Lexer lexer, Game game) {
+    return;
+  }
+  
+  public static void parseMap(String map) throws IOException, TokenException {
+    var path = Path.of(map);
+    var text = Files.readString(path);
+    var lexer = new Lexer(text);
+    
+    Game game = null;
+    String blockIdentifier;
+    
+    
+    while (lexer.hasNext()) {
+      Parser.isExpected(lexer, Token.LEFT_BRACKET);
+      blockIdentifier = Parser.isExpected(lexer, Token.IDENTIFIER);
+      Parser.isExpected(lexer, Token.RIGHT_BRACKET);
+      if ("grid".equals(blockIdentifier)) {
+        if (game == null) {
+          throw new TokenException("Grid element already exists");
+        }
+        game = Parser.parseGame(lexer);
+      } else if ("element".equals(blockIdentifier)) {
+         if (game == null) {
+           throw new TokenException("Grid element unexistend");
+         }
+         Parser.parseElement(lexer, game);
+      }
+    }
   }
   
 }

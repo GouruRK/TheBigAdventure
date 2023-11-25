@@ -18,13 +18,28 @@ public class Lexer {
 
   private final String text;
   private final Matcher matcher;
-
+ 
+  private Result next = null;
+  
   public Lexer(String text) {
     this.text = Objects.requireNonNull(text);
     this.matcher = PATTERN.matcher(text);
   }
 
+  public boolean hasNext() {
+    if (next != null) {
+      return true;
+    }
+    next = nextResult();
+    return next != null;
+  }
+  
   public Result nextResult() {
+    if (next != null) {
+      Result res = next;
+      next = null;
+      return res;
+    }
     var matches = matcher.find();
     if (!matches) {
       return null;
@@ -40,6 +55,10 @@ public class Lexer {
     throw new AssertionError();
   }
 
+  public void addNext(Result res) {
+    next = res;
+  }
+  
   public static void main(String[] args) throws IOException {
     var path = Path.of("map/default.map");
     var text = Files.readString(path);
