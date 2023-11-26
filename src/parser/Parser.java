@@ -136,7 +136,7 @@ public class Parser {
         encodings = Parser.parseEncoding(lexer);
       } else if ("data".equals(attribute)) {
         if (data == null) throw new TokenException("Data already given");
-        data = Parser.isExpected(lexer, Token.QUOTE).stripIndent(); // remove identation
+        data = Parser.isExpected(lexer, Token.QUOTE).stripIndent(); // remove indentation
       } else {
         throw new TokenException("Unknonw attribute '" + attribute + "'");
       }
