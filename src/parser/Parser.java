@@ -18,6 +18,10 @@ public class Parser {
   
   private static String isExpected(Lexer lexer, Token token) throws TokenException {
     Result res = lexer.nextResult();
+    return Parser.isExpected(res, token);
+  }
+  
+  private static String isExpected(Result res, Token token) throws TokenException {
     if (res != null && res.token() == token) {
       return res.content();
     } 
@@ -29,6 +33,11 @@ public class Parser {
   
   private static String isExpected(Lexer lexer, Token token, String content) throws TokenException {
     Result res = lexer.nextResult();
+    return Parser.isExpected(res, token, content);
+  }
+  
+  
+  private static String isExpected(Result res, Token token, String content) throws TokenException {
     if (res != null && res.token() == token && res.content().equals(content)) {
       return res.content();
     }
@@ -70,7 +79,7 @@ public class Parser {
     return new Zone(topLeft, new Position(topLeft.x() + size.x(), topLeft.y() + size.y()));
   }
   
-  public static Map<String, GameObjectID> parseEncodings(Lexer lexer) throws TokenException {
+  private static EncodingCouple parseEncodings(Lexer lexer) throws TokenException {
     // wait for "OBJECT(O)"
     String identifier, code;
     GameObjectID id;
@@ -85,16 +94,29 @@ public class Parser {
       throw new TokenException("Code for '" + identifier + "' must be one character");
     }
     Parser.isExpected(lexer, Token.RIGHT_PARENS);
-    return Map.<String, GameObjectID>of(code, id);
+    return new EncodingCouple(code, id);
   }
   
   
   public static Map<String, GameObjectID> parseEncoding(Lexer lexer) throws TokenException {
-    return new HashMap<String, GameObjectID>();
-  }
-  
-  public static void parseData(Lexer lexer, Game game, Map<String, GameObjectID> encodings) {
-    return;
+    HashMap<String, GameObjectID> encodings = new HashMap<String, GameObjectID>();
+    Result res;
+    EncodingCouple cpl;
+    while (lexer.hasNext()) {
+      res = lexer.nextResult();
+      lexer.addNext(res);
+      if ("data".equals(res.content()) || "size".equals(res.content())) {
+        // end of parsing encodings
+        return encodings;
+      } else {
+        cpl = Parser.parseEncodings(lexer);
+        if (encodings.getOrDefault(cpl.code(), GameObjectID.UNKNOWN) != GameObjectID.UNKNOWN) {
+          throw new TokenException("Block code '" + cpl.code() + "' already register");
+        }
+        encodings.put(cpl.code(), cpl.id());
+      }
+    }
+    return encodings;
   }
   
   public static Game parseGame(Lexer lexer) throws TokenException {
@@ -111,14 +133,20 @@ public class Parser {
         size = Parser.parseSize(lexer);
       } else if ("encodings".equals(attribute)) {
         if (encodings == null) throw new TokenException("Encodings already given");
-        encodings = Parser.parseEncodings(lexer);
+        encodings = Parser.parseEncoding(lexer);
       } else if ("data".equals(attribute)) {
         if (data == null) throw new TokenException("Data already given");
-        data = Parser.isExpected(lexer, Token.QUOTE).stripIndent();
+        data = Parser.isExpected(lexer, Token.QUOTE).stripIndent(); // remove identation
       } else {
         throw new TokenException("Unknonw attribute '" + attribute + "'");
       }
       attributeCount++;
+    }
+    
+    if (attributeCount != 3) {
+      if (size == null) throw new TokenException("Size not given");
+      if (encodings == null) throw new TokenException("Encodings not given");
+      throw new TokenException("data not given");
     }
     
     return new Game(size, encodings, data);
