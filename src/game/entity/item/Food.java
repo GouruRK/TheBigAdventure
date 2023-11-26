@@ -6,7 +6,10 @@ public record Food(String skin, String name) implements Item {
 
   public Food {
     Objects.requireNonNull(skin);
-    Objects.requireNonNull(name);
+  }
+  
+  public Food(String skin) {
+    this(skin, null);
   }
   
 }

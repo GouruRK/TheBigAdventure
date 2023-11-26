@@ -16,9 +16,8 @@ public class Ennemy implements Mob {
   private Position pos;
   private int health;
   
-  public Ennemy(String skin, String name, Position pos, Zone zone, int health, int damage, Behaviour behaviour) {
+  public Ennemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour, String name) {
     Objects.requireNonNull(skin);
-    Objects.requireNonNull(name);
     Objects.requireNonNull(pos);
     Objects.requireNonNull(zone);
     this.skin = skin;
@@ -30,8 +29,16 @@ public class Ennemy implements Mob {
     this.damage = damage;
   }
   
-  public Ennemy(String skin, String name, Position pos, Zone zone, int health, int damage) {
-    this(skin, name, pos, zone, health, damage, Behaviour.STROLL);
+  public Ennemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour) {
+    this(skin, pos, zone, health, damage, behaviour, null);
+  }
+  
+  public Ennemy(String skin, Position pos, Zone zone, int health, int damage) {
+    this(skin, pos, zone, health, damage, Behaviour.STROLL, null);
+  }
+  
+  public Ennemy(String skin, Position pos, Zone zone, int health, int damage, String name) {
+    this(skin, pos, zone, health, damage, Behaviour.STROLL, name);
   }
   
   public String skin() {

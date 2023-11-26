@@ -13,15 +13,18 @@ public class Friend implements Mob {
   private Position pos;
   
   
-  public Friend(String skin, String name, Position pos, Zone zone) {
+  public Friend(String skin, Position pos, Zone zone, String name) {
     Objects.requireNonNull(skin);
-    Objects.requireNonNull(name);
     Objects.requireNonNull(pos);
     Objects.requireNonNull(zone);
     this.skin = skin;
     this.name = name;
     this.pos = pos;
     this.zone = zone;
+  }
+  
+  public Friend(String skin, Position pos, Zone zone) {
+    this(skin, pos, zone, null);
   }
   
   public String skin() {

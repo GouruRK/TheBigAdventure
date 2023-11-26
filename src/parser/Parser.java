@@ -104,8 +104,8 @@ public class Parser {
     EncodingRow row;
     while (lexer.hasNext()) {
       res = lexer.nextResult();
-      lexer.addNext(res);
       if ("data".equals(res.content()) || "size".equals(res.content())) {
+        lexer.addNext(res);
         // end of parsing encodings
         return encodings;
       } else {

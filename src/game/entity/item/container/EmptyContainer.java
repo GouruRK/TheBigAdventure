@@ -6,7 +6,10 @@ public record EmptyContainer(String skin, String name) implements Container {
 
   public EmptyContainer {
     Objects.requireNonNull(skin);
-    Objects.requireNonNull(name);
+  }
+  
+  public EmptyContainer(String skin) {
+    this(skin, null);
   }
   
 }

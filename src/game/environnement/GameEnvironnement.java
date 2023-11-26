@@ -60,9 +60,9 @@ public enum GameEnvironnement implements GameObject {
   TOWER(GameObjectID.GATE),
   
   // Biome
-  ICE(GameObjectID.ELEMENT),
-  LAVA(GameObjectID.ELEMENT),
-  WATER(GameObjectID.ELEMENT);
+  ICE(GameObjectID.OBSTACLE),
+  LAVA(GameObjectID.OBSTACLE),
+  WATER(GameObjectID.OBSTACLE);
   
   private final GameObjectID id;
   

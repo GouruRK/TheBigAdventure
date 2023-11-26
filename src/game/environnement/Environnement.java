@@ -17,7 +17,6 @@ public interface Environnement {
     return switch (row.id()) {
       case GameObjectID.SCENERY -> new Block(row.skin(), pos, true);
       case GameObjectID.OBSTACLE -> new Block(row.skin(), pos, false);
-      case GameObjectID.ELEMENT -> new Element(row.skin(), pos);
       case GameObjectID.GATE -> new Gate(row.skin(), pos, null, false);
       default -> null;
     };
