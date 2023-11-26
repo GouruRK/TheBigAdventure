@@ -38,4 +38,16 @@ public class Gate implements Environnement {
     return pos;
   }
   
+  public boolean isOpen() {
+    return open;
+  }
+  
+  public void open(Item item) {
+    if (isOpen()) return;
+    
+    if (key.equals(item)) {
+      open = true;
+    }
+  }
+  
 }

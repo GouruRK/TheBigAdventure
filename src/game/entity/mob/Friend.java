@@ -2,7 +2,6 @@ package game.entity.mob;
 
 import java.util.Objects;
 
-import util.Direction;
 import util.Position;
 import util.Zone;
 
@@ -12,9 +11,9 @@ public class Friend implements Mob {
   private final String name;
   private final Zone zone; 
   private Position pos;
-  private Direction lookAt;
   
-  public Friend(String skin, String name, Position pos, Zone zone, Direction lookAt) {
+  
+  public Friend(String skin, String name, Position pos, Zone zone) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(name);
     Objects.requireNonNull(pos);
@@ -23,7 +22,6 @@ public class Friend implements Mob {
     this.name = name;
     this.pos = pos;
     this.zone = zone;
-    this.lookAt = lookAt;
   }
   
   public String skin() {

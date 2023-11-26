@@ -31,5 +31,12 @@ public interface Mob extends Entity {
     moveY((double)offset);
   }
   
+  public default int damage() {
+    return 0;
+  }
+  
+  public default int health() {
+    return -1;
+  }
   
 }

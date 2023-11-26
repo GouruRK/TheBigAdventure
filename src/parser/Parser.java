@@ -154,7 +154,7 @@ public class Parser {
   }
   
   public static void parseElement(Lexer lexer, Game game) {
-    return;
+    
   }
   
   public static void parseMap(String map) throws IOException, TokenException {

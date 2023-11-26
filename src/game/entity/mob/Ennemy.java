@@ -10,13 +10,13 @@ public class Ennemy implements Mob {
   
   private final String skin;
   private final String name;
-  private final Behaviour behaviour; 
+  private final Behaviour behaviour;
   private final Zone zone; 
+  private final int damage;
   private Position pos;
-  private Direction lookAt;
   private int health;
   
-  public Ennemy(String skin, String name, Position pos, Zone zone, Direction lookAt, int health, Behaviour behaviour) {
+  public Ennemy(String skin, String name, Position pos, Zone zone, int health, int damage, Behaviour behaviour) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(name);
     Objects.requireNonNull(pos);
@@ -25,13 +25,13 @@ public class Ennemy implements Mob {
     this.name = name;
     this.pos = pos;
     this.zone = zone;
-    this.lookAt = lookAt;
     this.health = health;
     this.behaviour = behaviour;
+    this.damage = damage;
   }
   
-  public Ennemy(String skin, String name, Position pos, Zone zone, int health, Direction lookAt) {
-    this(skin, name, pos, zone, lookAt, health, Behaviour.STROLL);
+  public Ennemy(String skin, String name, Position pos, Zone zone, int health, int damage) {
+    this(skin, name, pos, zone, health, damage, Behaviour.STROLL);
   }
   
   public String skin() {
@@ -49,4 +49,15 @@ public class Ennemy implements Mob {
   public Zone zone() {
     return zone;
   }
+  
+  @Override
+  public int damage() {
+    return damage;
+  }
+  
+  @Override
+  public int health() {
+    return health;
+  }
+  
 }
