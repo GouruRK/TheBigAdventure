@@ -79,7 +79,7 @@ public class Parser {
     return new Zone(topLeft, new Position(topLeft.x() + size.x(), topLeft.y() + size.y()));
   }
   
-  private static EncodingCouple parseEncodings(Lexer lexer) throws TokenException {
+  private static EncodingRow parseEncodings(Lexer lexer) throws TokenException {
     // wait for "OBJECT(O)"
     String identifier, code;
     GameObjectID id;
@@ -94,14 +94,14 @@ public class Parser {
       throw new TokenException("Code for '" + identifier + "' must be one character");
     }
     Parser.isExpected(lexer, Token.RIGHT_PARENS);
-    return new EncodingCouple(code, id);
+    return new EncodingRow(identifier, code, id);
   }
   
   
-  public static Map<String, GameObjectID> parseEncoding(Lexer lexer) throws TokenException {
-    HashMap<String, GameObjectID> encodings = new HashMap<String, GameObjectID>();
+  public static Map<String, EncodingRow> parseEncoding(Lexer lexer) throws TokenException {
+    HashMap<String, EncodingRow> encodings = new HashMap<String, EncodingRow>();
     Result res;
-    EncodingCouple cpl;
+    EncodingRow row;
     while (lexer.hasNext()) {
       res = lexer.nextResult();
       lexer.addNext(res);
@@ -109,11 +109,11 @@ public class Parser {
         // end of parsing encodings
         return encodings;
       } else {
-        cpl = Parser.parseEncodings(lexer);
-        if (encodings.getOrDefault(cpl.code(), GameObjectID.UNKNOWN) != GameObjectID.UNKNOWN) {
-          throw new TokenException("Block code '" + cpl.code() + "' already register");
+        row = Parser.parseEncodings(lexer);
+        if (encodings.get(row.code()) != null) {
+          throw new TokenException("Block code '" + row.code() + "' already register");
         }
-        encodings.put(cpl.code(), cpl.id());
+        encodings.put(row.code(), row);
       }
     }
     return encodings;
@@ -121,7 +121,7 @@ public class Parser {
   
   public static Game parseGame(Lexer lexer) throws TokenException {
     Position size = null;
-    Map<String, GameObjectID> encodings = null;
+    Map<String, EncodingRow> encodings = null;
     String attribute, data = null;
     int attributeCount = 0;
     

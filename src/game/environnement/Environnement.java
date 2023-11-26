@@ -1,5 +1,7 @@
 package game.environnement;
 
+import game.GameObjectID;
+import parser.EncodingRow;
 import util.Position;
 
 public interface Environnement {
@@ -11,4 +13,13 @@ public interface Environnement {
     return true;
   }
   
+  public static Environnement createEnvironnement(EncodingRow row, Position pos) {
+    return switch (row.id()) {
+      case GameObjectID.SCENERY -> new Block(row.skin(), pos, true);
+      case GameObjectID.OBSTACLE -> new Block(row.skin(), pos, false);
+      case GameObjectID.ELEMENT -> new Element(row.skin(), pos);
+      case GameObjectID.GATE -> new Gate(row.skin(), pos, null, false);
+      default -> null;
+    };
+  }
 }
