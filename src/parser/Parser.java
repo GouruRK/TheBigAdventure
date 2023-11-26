@@ -3,6 +3,7 @@ package parser;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 
 import game.Game;
@@ -89,31 +90,39 @@ public class Parser {
   
   
   public static Map<String, GameObjectID> parseEncoding(Lexer lexer) throws TokenException {
-    return new Map<String, GameObjectID>();
+    return new HashMap<String, GameObjectID>();
   }
   
   public static void parseData(Lexer lexer, Game game, Map<String, GameObjectID> encodings) {
     return;
   }
-    
   
   public static Game parseGame(Lexer lexer) throws TokenException {
-    Parser.isExpected(lexer, Token.IDENTIFIER, "size");
-    Parser.isExpected(lexer, Token.COLON);
-    Position size = Parser.parseSize(lexer);
+    Position size = null;
+    Map<String, GameObjectID> encodings = null;
+    String attribute, data = null;
+    int attributeCount = 0;
     
-    Parser.isExpected(lexer, Token.IDENTIFIER, "encodings");
-    Parser.isExpected(lexer, Token.COLON);
-    Map<String, GameObjectID> encodings = Parser.parseEncodings(lexer);
+    while (lexer.hasNext() && attributeCount != 3) {
+      attribute = Parser.isExpected(lexer, Token.IDENTIFIER);
+      Parser.isExpected(lexer, Token.COLON);
+      if ("size".equals(attribute)) {
+        if (size == null) throw new TokenException("Size already given");
+        size = Parser.parseSize(lexer);
+      } else if ("encodings".equals(attribute)) {
+        if (encodings == null) throw new TokenException("Encodings already given");
+        encodings = Parser.parseEncodings(lexer);
+      } else if ("data".equals(attribute)) {
+        if (data == null) throw new TokenException("Data already given");
+        data = Parser.isExpected(lexer, Token.QUOTE).stripIndent();
+      } else {
+        throw new TokenException("Unknonw attribute '" + attribute + "'");
+      }
+      attributeCount++;
+    }
     
-    Game game = new Game(); // give size, creates an empty map
+    return new Game(size, encodings, data);
     
-    Parser.isExpected(lexer, Token.IDENTIFIER, "data");
-    Parser.isExpected(lexer, Token.COLON);
-    
-    Parser.parseData(lexer, game, encodings);
-   
-    return game;
   }
   
   public static void parseElement(Lexer lexer, Game game) {
