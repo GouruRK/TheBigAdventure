@@ -1,5 +1,6 @@
 package game;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -14,7 +15,7 @@ public class Game {
   private final Environnement[][] field;
   
   
-  public Game(Position size, Map<String, EncodingRow> encodings, String data) throws TokenException {
+  public Game(Position size, Map<String, EncodingRow> encodings, List<char[]> data) throws TokenException {
     Objects.requireNonNull(size);
     Objects.requireNonNull(encodings);
     Objects.requireNonNull(data);
@@ -32,15 +33,14 @@ public class Game {
     return false;
   }
   
-  private void applyData(Map<String, EncodingRow> encodings, String data) throws TokenException {
-    String[] temp = data.split("\n");
+  private void applyData(Map<String, EncodingRow> encodings, List<char[]> data) throws TokenException {
     int y = 0, x = 0;
     EncodingRow row;
     Environnement env;
 
-    for (String line: temp) {
+    for (char[] line: data) {
       x = 0;
-      for (char c: line.toCharArray()) {
+      for (char c: line) {
         row = encodings.getOrDefault(c, null);
         if (row == null) throw new TokenException("Unknonw code '" + c + "' while creating the map");
         

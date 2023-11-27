@@ -120,36 +120,21 @@ public class Parser {
   }
   
   public static Game parseGame(Lexer lexer) throws TokenException {
-    Position size = null;
-    Map<String, EncodingRow> encodings = null;
-    String attribute, data = null;
-    int attributeCount = 0;
+    String attribute;
+    GameAttributes game = new GameAttributes();
     
-    while (lexer.hasNext() && attributeCount != 3) {
+    while (lexer.hasNext() && !game.isFull()) {
       attribute = Parser.isExpected(lexer, Token.IDENTIFIER);
       Parser.isExpected(lexer, Token.COLON);
-      if ("size".equals(attribute)) {
-        if (size == null) throw new TokenException("Size already given");
-        size = Parser.parseSize(lexer);
-      } else if ("encodings".equals(attribute)) {
-        if (encodings == null) throw new TokenException("Encodings already given");
-        encodings = Parser.parseEncoding(lexer);
-      } else if ("data".equals(attribute)) {
-        if (data == null) throw new TokenException("Data already given");
-        data = Parser.isExpected(lexer, Token.QUOTE).stripIndent(); // remove indentation
-      } else {
-        throw new TokenException("Unknonw attribute '" + attribute + "'");
-      }
-      attributeCount++;
+      
+      switch (attribute) {
+      case "size" -> game.addSize(Parser.parseSize(lexer));
+      case "encodings" -> game.addEncodings(Parser.parseEncoding(lexer));
+      case "data" -> game.addData(Parser.isExpected(lexer, Token.QUOTE));
+      default -> throw new TokenException("Unknown grid attribute '" + attribute + "'");
+      };      
     }
-    
-    if (attributeCount != 3) {
-      if (size == null) throw new TokenException("Size not given");
-      if (encodings == null) throw new TokenException("Encodings not given");
-      throw new TokenException("data not given");
-    }
-    
-    return new Game(size, encodings, data);
+    return game.createGame();
     
   }
   
