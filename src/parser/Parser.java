@@ -27,7 +27,7 @@ public class Parser {
       return res.content();
     } 
     if (res != null) {
-      throw new TokenException("Awaited token of type " + token + ", got " + res.token() + " with value '" + res.content() + "'");      
+      throw new TokenException("Awaited token of type " + token + ", got " + res.token());
     }
     throw new TokenException("No more tokens");
   }
@@ -197,5 +197,4 @@ public class Parser {
     game.addElements(lst);
     return game;
   }
-  
 }
