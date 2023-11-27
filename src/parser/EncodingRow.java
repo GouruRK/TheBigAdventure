@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import game.GameObjectID;
 
-public record EncodingRow(String skin, String code, GameObjectID id) {
+public record EncodingRow(String skin, Character code, GameObjectID id) {
 
   public EncodingRow {
     Objects.requireNonNull(skin);

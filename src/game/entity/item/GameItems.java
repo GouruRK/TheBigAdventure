@@ -14,6 +14,7 @@ public enum GameItems implements GameObject {
 
   // items
   BOLD(GameObjectID.THING),
+  BOLT(GameObjectID.THING),
   BOX(GameObjectID.THING),
   CASH(GameObjectID.THING),
   CLOCK(GameObjectID.THING),

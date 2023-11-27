@@ -3,6 +3,7 @@ package parser;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class Parser {
       return res.content();
     } 
     if (res != null) {
-      throw new TokenException("Awaited token of type " + token + ", got " + res.token());      
+      throw new TokenException("Awaited token of type " + token + ", got " + res.token() + " with value '" + res.content() + "'");      
     }
     throw new TokenException("No more tokens");
   }
@@ -65,7 +66,7 @@ public class Parser {
     double x, y;
     Parser.isExpected(lexer, Token.LEFT_PARENS);
     x = Integer.parseInt(Parser.isExpected(lexer, Token.NUMBER));
-    Parser.isExpected(lexer, Token.IDENTIFIER, ",");
+    Parser.isExpected(lexer, Token.COMMA);
     y = Integer.parseInt(Parser.isExpected(lexer, Token.NUMBER));
     Parser.isExpected(lexer, Token.RIGHT_PARENS);
     return new Position(x, y);
@@ -94,18 +95,18 @@ public class Parser {
       throw new TokenException("Code for '" + identifier + "' must be one character");
     }
     Parser.isExpected(lexer, Token.RIGHT_PARENS);
-    return new EncodingRow(identifier, code, id);
+    return new EncodingRow(identifier, code.charAt(0), id);
   }
   
   
-  public static Map<String, EncodingRow> parseEncoding(Lexer lexer) throws TokenException {
-    HashMap<String, EncodingRow> encodings = new HashMap<String, EncodingRow>();
+  public static Map<Character, EncodingRow> parseEncoding(Lexer lexer) throws TokenException {
+    HashMap<Character, EncodingRow> encodings = new HashMap<Character, EncodingRow>();
     Result res;
     EncodingRow row;
     while (lexer.hasNext()) {
       res = lexer.nextResult();
+      lexer.addNext(res);
       if ("data".equals(res.content()) || "size".equals(res.content())) {
-        lexer.addNext(res);
         // end of parsing encodings
         return encodings;
       } else {
@@ -116,7 +117,7 @@ public class Parser {
         encodings.put(row.code(), row);
       }
     }
-    return encodings;
+    return Map.copyOf(encodings);
   }
   
   public static Game parseGame(Lexer lexer) throws TokenException {
@@ -128,45 +129,73 @@ public class Parser {
       Parser.isExpected(lexer, Token.COLON);
       
       switch (attribute) {
-      case "size" -> game.addSize(Parser.parseSize(lexer));
-      case "encodings" -> game.addEncodings(Parser.parseEncoding(lexer));
-      case "data" -> game.addData(Parser.isExpected(lexer, Token.QUOTE));
+      case "size" -> game.setSize(Parser.parseSize(lexer));
+      case "encodings" -> game.setEncodings(Parser.parseEncoding(lexer));
+      case "data" -> game.setData(Parser.isExpected(lexer, Token.QUOTE));
       default -> throw new TokenException("Unknown grid attribute '" + attribute + "'");
       };      
     }
     return game.createGame();
-    
   }
   
-  public static void parseElement(Lexer lexer, Game game) {
+  public static ElementAttributes parseElement(Lexer lexer) throws TokenException {
+    Result res;
+    ElementAttributes elem = new ElementAttributes();
     
+    while (lexer.hasNext()) {
+      res = lexer.nextResult();
+      if (res.token() == Token.LEFT_BRACKET) {
+        lexer.addNext(res);
+        break;
+      }
+      Parser.isExpected(lexer, Token.COLON);
+      switch(res.content()) {
+        case "name" -> elem.setName(Parser.isExpected(lexer, Token.IDENTIFIER));
+        case "skin" -> elem.setSkin(Parser.isExpected(lexer, Token.IDENTIFIER));
+        case "player" -> elem.setPlayer(Parser.isExpected(lexer, Token.IDENTIFIER));
+        case "position" -> elem.setPosition(Parser.parsePosition(lexer));
+        case "health" -> elem.setHealth(Parser.isExpected(lexer, Token.NUMBER));
+        case "kind" -> elem.setKind(Parser.isExpected(lexer, Token.IDENTIFIER));
+        case "zone" -> elem.setZone(Parser.parseZone(lexer));
+        case "behavior", "behaviour" -> elem.setBehaviour(Parser.isExpected(lexer, Token.IDENTIFIER));
+        case "damage" -> elem.setDamage(Parser.isExpected(lexer, Token.NUMBER));
+        case "text" -> elem.setText(Parser.isExpected(lexer, Token.QUOTE));
+        // case "steal" -> ;
+        // case "trade" -> ;
+        // case "locked" -> ;
+        case "flow" -> elem.setFlow(Parser.isExpected(lexer, Token.IDENTIFIER));
+        case "phantomize" -> elem.setPhantomize(Parser.isExpected(lexer, Token.IDENTIFIER));
+        case "teleport" -> elem.setTeleport(Parser.isExpected(lexer, Token.IDENTIFIER));
+        default -> throw new TokenException("Unknown attribute '" + res.content() + "'");
+      };
+    }
+    return elem;
   }
   
-  public static void parseMap(String map) throws IOException, TokenException {
+  public static Game parseMap(String map) throws IOException, TokenException {
     var path = Path.of(map);
     var text = Files.readString(path);
     var lexer = new Lexer(text);
     
     Game game = null;
+    ArrayList<ElementAttributes> lst = new ArrayList<ElementAttributes>();
     String blockIdentifier;
-    
     
     while (lexer.hasNext()) {
       Parser.isExpected(lexer, Token.LEFT_BRACKET);
       blockIdentifier = Parser.isExpected(lexer, Token.IDENTIFIER);
       Parser.isExpected(lexer, Token.RIGHT_BRACKET);
       if ("grid".equals(blockIdentifier)) {
-        if (game == null) {
+        if (game != null) {
           throw new TokenException("Grid element already exists");
         }
         game = Parser.parseGame(lexer);
       } else if ("element".equals(blockIdentifier)) {
-         if (game == null) {
-           throw new TokenException("Grid element unexistend");
-         }
-         Parser.parseElement(lexer, game);
+         lst.add(Parser.parseElement(lexer));
       }
     }
+    game.addElements(lst);
+    return game;
   }
   
 }

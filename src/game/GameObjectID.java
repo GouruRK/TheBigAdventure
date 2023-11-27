@@ -12,5 +12,7 @@ public enum GameObjectID {
   OBSTACLE,
   SCENERY,
   ELEMENT,
-  GATE
+  GATE,
+  WIND,
+  EFFECT
 }

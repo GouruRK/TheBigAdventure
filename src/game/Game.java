@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import game.environnement.Environnement;
+import parser.ElementAttributes;
 import parser.EncodingRow;
 import parser.TokenException;
 import util.Position;
@@ -13,9 +14,10 @@ public class Game {
   
   private final Position size;
   private final Environnement[][] field;
+  private List<ElementAttributes> lst;
   
   
-  public Game(Position size, Map<String, EncodingRow> encodings, List<char[]> data) throws TokenException {
+  public Game(Position size, Map<Character, EncodingRow> encodings, List<char[]> data) throws TokenException {
     Objects.requireNonNull(size);
     Objects.requireNonNull(encodings);
     Objects.requireNonNull(data);
@@ -33,7 +35,7 @@ public class Game {
     return false;
   }
   
-  private void applyData(Map<String, EncodingRow> encodings, List<char[]> data) throws TokenException {
+  private void applyData(Map<Character, EncodingRow> encodings, List<char[]> data) throws TokenException {
     int y = 0, x = 0;
     EncodingRow row;
     Environnement env;
@@ -41,18 +43,27 @@ public class Game {
     for (char[] line: data) {
       x = 0;
       for (char c: line) {
-        row = encodings.getOrDefault(c, null);
-        if (row == null) throw new TokenException("Unknonw code '" + c + "' while creating the map");
-        
-        env = Environnement.createEnvironnement(row, new Position(x, y));
-        
-        if (env == null) throw new TokenException("Element '" + row.skin() + "' is not a map element");
-        if (!addEnvironnementToField(env.pos(), env)) throw new TokenException("Invalid map size");
-        
+        if (c == ' ') {
+          addEnvironnementToField(new Position(x, y), null);
+        } else {
+          row = encodings.getOrDefault(c, null);
+          if (row == null) {
+            throw new TokenException("Unknonw code '" + c + "' while creating the map");
+          }
+          
+          env = Environnement.createEnvironnement(row, new Position(x, y));
+          
+          if (env == null) throw new TokenException("Element '" + row.skin() + "' is not a map element");
+          if (!addEnvironnementToField(env.pos(), env)) throw new TokenException("Invalid map size");
+        }
         x++;
       }
       y++;
     }
+  }
+  
+  public void addElements(List<ElementAttributes> lst) {
+    this.lst = lst;
   }
   
   public boolean isInside(Position pos) {

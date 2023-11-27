@@ -13,13 +13,13 @@ public class GameAttributes {
 
   private String data = null;
   private Position size = null;
-  private Map<String, EncodingRow> encodings = null;
+  private Map<Character, EncodingRow> encodings = null;
   
   private static boolean isSizeValid(Position size) {
     return size.x() > 0 && size.y() > 0;
   }
   
-  public void addData(String data) throws TokenException {
+  public void setData(String data) throws TokenException {
     Objects.requireNonNull(data);
     if (this.data != null) {
       throw new TokenException("Data already register");
@@ -27,18 +27,19 @@ public class GameAttributes {
     this.data = data;
   }
   
-  public void addSize(Position size) throws TokenException {
+  public void setSize(Position size) throws TokenException {
     Objects.requireNonNull(size);
     if (this.size != null) {
       throw new TokenException("Size already register");
     }
     if (GameAttributes.isSizeValid(size)) {      
       this.size = size;
+      return;
     }
     throw new TokenException("Invalid given size");
   }
   
-  public void addEncodings(Map<String, EncodingRow> encodings) throws TokenException {
+  public void setEncodings(Map<Character, EncodingRow> encodings) throws TokenException {
     Objects.requireNonNull(encodings);
     if (this.encodings != null) {
       throw new TokenException("Encodings already register");
@@ -48,19 +49,20 @@ public class GameAttributes {
   
   private List<char[]> checkData() throws TokenException {
     int width = (int) size.x(), height = (int) size.y();
-    String tempData = data.stripIndent();
+    String tempData = data.replaceAll("\\\"\\\"\\\"", "").stripIndent();
     String[] lineArray = tempData.split("\n");
 
     List<char[]> field = Arrays.stream(lineArray)
-        .map(line -> line.toCharArray())
+        .map(line -> line.isEmpty() ? null: line.replaceAll("\n", "").toCharArray())
         .collect(Collectors.toList());
+    field.removeIf(line -> line == null);
     
     if (field.size() != height) {
-      throw new TokenException("Invalid map size");
+      throw new TokenException("Invalid map height : got " + field.size() + " expected " + height);
     }
     
     if (!field.stream().allMatch(line -> line.length == width)) {
-      throw new TokenException("Invalid map size");
+      throw new TokenException("Invalid map width");
     }
     return field;
   }

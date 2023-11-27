@@ -20,6 +20,7 @@ public class Lexer {
   private final Matcher matcher;
  
   private Result next = null;
+  private Result last = null;
   
   public Lexer(String text) {
     this.text = Objects.requireNonNull(text);
@@ -34,10 +35,15 @@ public class Lexer {
     return next != null;
   }
   
+  public void addNext(Result res) {
+    next = res;
+  }
+
   public Result nextResult() {
     if (next != null) {
       Result res = next;
       next = null;
+      last = res;
       return res;
     }
     var matches = matcher.find();
@@ -49,15 +55,14 @@ public class Lexer {
       if (start != -1) {
         var end = matcher.end(group);
         var content = text.substring(start, end);
-        return new Result(TOKENS.get(group - 1), content);
+        Result res = new Result(TOKENS.get(group - 1), content);
+        last = res;
+        return res;
       }
     }
     throw new AssertionError();
   }
 
-  public void addNext(Result res) {
-    next = res;
-  }
   
   public static void main(String[] args) throws IOException {
     var path = Path.of("map/default.map");

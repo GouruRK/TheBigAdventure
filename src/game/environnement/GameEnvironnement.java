@@ -29,13 +29,14 @@ public enum GameEnvironnement implements GameObject {
   BED(GameObjectID.OBSTACLE),
   BOG(GameObjectID.OBSTACLE),
   BOMB(GameObjectID.OBSTACLE),
-  BIRCK(GameObjectID.OBSTACLE),
+  BRICK(GameObjectID.OBSTACLE),
   CHAIR(GameObjectID.OBSTACLE),
   CLIFF(GameObjectID.OBSTACLE),
   FENCE(GameObjectID.OBSTACLE),
   FORT(GameObjectID.OBSTACLE),
   HEDGE(GameObjectID.OBSTACLE),
   HUSK(GameObjectID.OBSTACLE),
+  HUSKS(GameObjectID.OBSTACLE),
   LOCK(GameObjectID.OBSTACLE),
   MONITOR(GameObjectID.OBSTACLE),
   PIANO(GameObjectID.OBSTACLE),
@@ -59,10 +60,17 @@ public enum GameEnvironnement implements GameObject {
   HOUSE(GameObjectID.GATE),
   TOWER(GameObjectID.GATE),
   
+  // Effect
+  BUBBLE(GameObjectID.EFFECT),
+  DUST(GameObjectID.EFFECT),
+  
   // Biome
   ICE(GameObjectID.OBSTACLE),
   LAVA(GameObjectID.OBSTACLE),
-  WATER(GameObjectID.OBSTACLE);
+  WATER(GameObjectID.OBSTACLE),
+  
+  // Other
+  WIND(GameObjectID.WIND);
   
   private final GameObjectID id;
   
