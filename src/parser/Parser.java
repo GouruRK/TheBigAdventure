@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import game.Game;
 import game.GameObject;
 import game.GameObjectID;
+import game.entity.item.Item;
 import util.Position;
 import util.Zone;
 
@@ -49,7 +52,7 @@ public class Parser {
   }
   
   public static Position parseSize(Lexer lexer) throws TokenException {
-    // Note : here after "Result[token=IDENTIFIER, content=size]"
+    // Note : here after "Result[token=IDENTIFIER, content=size]" and "Result[token=COLON, content=:]" 
     // Next : wait for : "( 'n' x 'm')"
     double width, height;
     Parser.isExpected(lexer, Token.LEFT_PARENS);
@@ -61,7 +64,7 @@ public class Parser {
   }
   
   public static Position parsePosition(Lexer lexer) throws TokenException {
-    // Note : here after "Result[token=IDENTIFIER, content=position]"
+    // Note : here after "Result[token=IDENTIFIER, content=position]" and "Result[token=COLON, content=:]"
     // Next : wait for : "('x', 'y')"
     double x, y;
     Parser.isExpected(lexer, Token.LEFT_PARENS);
@@ -73,7 +76,7 @@ public class Parser {
   }
   
   public static Zone parseZone(Lexer lexer) throws TokenException { 
-    // Note : here after "Result[token=IDENTIFIER, content=zone]"
+    // Note : here after "Result[token=IDENTIFIER, content=zone]" and "Result[token=COLON, content=:]"
     // Next : wait for "('x', 'y') ('w' x 'h')"
     Position topLeft = Parser.parsePosition(lexer);
     Position size = Parser.parseSize(lexer);
@@ -81,6 +84,7 @@ public class Parser {
   }
   
   private static EncodingRow parseEncodings(Lexer lexer) throws TokenException {
+    // Note : here after "Result[token=IDENTIFIER, content=encodings]" and "Result[token=COLON, content=:]"
     // wait for "OBJECT(O)"
     String identifier, code;
     GameObjectID id;
@@ -98,6 +102,54 @@ public class Parser {
     return new EncodingRow(identifier, code.charAt(0), id);
   }
   
+  public static Item parseItem(Lexer lexer) throws TokenException {
+    // wait for "SKIN name" or "SKIN"
+    Result res;
+    String skin;
+    
+    res = lexer.nextResult();
+    if (res == null) {
+      throw new TokenException("No more tokens");
+    }
+    skin = new String(res.content()).toUpperCase();
+    if (!skin.equals(res.content())) { // not a skin, must be an attribute
+      lexer.addNext(res);
+      return null;
+    }
+    res = lexer.nextResult();
+    if (res.token() == Token.COMMA) {
+      lexer.addNext(res);
+      return Item.createItem(skin, null);
+    } else if (res.token() != Token.IDENTIFIER) {
+      throw new TokenException("Expected a name for an item");
+    }
+    return Item.createItem(skin, res.content());
+  }
+  
+  public static List<Item> parseSteal(Lexer lexer) throws TokenException {
+    // Note : here after "Result[token=IDENTIFIER, content=steal]" and "Result[token=COLON, content=:]"
+    // wait for "SKIN name, SKIN name, SKIN"
+    
+    ArrayList<Item> lst = new ArrayList<Item>();
+    Item item;
+    Result res;
+    
+    while (lexer.hasNext()) {
+      item = Parser.parseItem(lexer);
+      if (item == null) {
+        break;
+      }
+      lst.add(item);
+      
+      res = lexer.nextResult();
+      if (res.token() == Token.COMMA) {
+        continue;
+      } 
+      lexer.addNext(res);
+      break;
+    }
+    return List.copyOf(lst);
+  }
   
   public static Map<Character, EncodingRow> parseEncoding(Lexer lexer) throws TokenException {
     HashMap<Character, EncodingRow> encodings = new HashMap<Character, EncodingRow>();
@@ -160,7 +212,7 @@ public class Parser {
         case "behavior", "behaviour" -> elem.setBehaviour(Parser.isExpected(lexer, Token.IDENTIFIER));
         case "damage" -> elem.setDamage(Parser.isExpected(lexer, Token.NUMBER));
         case "text" -> elem.setText(Parser.isExpected(lexer, Token.QUOTE));
-        // case "steal" -> ;
+        case "steal" -> elem.setSteal(Parser.parseSteal(lexer));
         // case "trade" -> ;
         // case "locked" -> ;
         case "flow" -> elem.setFlow(Parser.isExpected(lexer, Token.IDENTIFIER));

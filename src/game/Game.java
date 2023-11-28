@@ -1,9 +1,11 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import game.entity.Entity;
 import game.environnement.Environnement;
 import parser.ElementAttributes;
 import parser.EncodingRow;
@@ -14,7 +16,7 @@ public class Game {
   
   private final Position size;
   private final Environnement[][] field;
-  private List<ElementAttributes> lst;
+  private final ArrayList<Entity> entities;
   
   
   public Game(Position size, Map<Character, EncodingRow> encodings, List<char[]> data) throws TokenException {
@@ -23,7 +25,9 @@ public class Game {
     Objects.requireNonNull(data);
     this.size = size;
     this.field = new Environnement[(int) size.y()][(int) size.x()];
+    entities = new ArrayList<Entity>(); 
     applyData(encodings, data);
+    
   }
   
   
@@ -51,10 +55,19 @@ public class Game {
             throw new TokenException("Unknonw code '" + c + "' while creating the map");
           }
           
-          env = Environnement.createEnvironnement(row, new Position(x, y));
-          
-          if (env == null) throw new TokenException("Element '" + row.skin() + "' is not a map element");
-          if (!addEnvironnementToField(env.pos(), env)) throw new TokenException("Invalid map size");
+          switch (row.id()) {
+          case GameObjectID.SCENERY, 
+               GameObjectID.OBSTACLE,
+               GameObjectID.GATE -> {
+                 env = Environnement.createEnvironnement(row, new Position(x, y));
+                 if (!addEnvironnementToField(env.pos(), env)) throw new TokenException("Invalid map size");
+               }
+          case GameObjectID.FOOD,
+               GameObjectID.THING -> {
+                 entities.add(Entity.createEntity(row, new Position(x, y)));
+               }
+          default -> throw new TokenException("Element '" + row.skin() + "' is not a map element");
+          };
         }
         x++;
       }
@@ -63,7 +76,7 @@ public class Game {
   }
   
   public void addElements(List<ElementAttributes> lst) {
-    this.lst = lst;
+    return;
   }
   
   public boolean isInside(Position pos) {

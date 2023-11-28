@@ -13,4 +13,12 @@ public record Weapon(String skin, int damage, boolean burning, String name) impl
     this(skin, damage, burning, null);
   }
   
+  public Weapon(String skin) {
+    this(skin, 0, false, null);
+  }
+  
+  public Weapon(String skin, String name) {
+    this(skin, 0, false, name);
+  }
+  
 }

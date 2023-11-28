@@ -36,5 +36,6 @@
     health: 10
     zone: (1, 1) (5 x 3)
     behavior: agressive
+    steal: KEY, BOLD red
     damage: 10
 

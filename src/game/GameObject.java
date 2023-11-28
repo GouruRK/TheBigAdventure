@@ -17,7 +17,9 @@ public interface GameObject {
     if ((id = GameEnvironnement.getId(name)) != GameObjectID.UNKNOWN) {
       return id;
     }
-    return id;
+    return GameObjectID.UNKNOWN;
   }
+  
+  
   
 }
