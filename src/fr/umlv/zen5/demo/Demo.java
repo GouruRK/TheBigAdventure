@@ -51,7 +51,7 @@ public class Demo {
         }
         Action action = event.getAction();
         if (action == Action.KEY_PRESSED || action == Action.KEY_RELEASED) {
-          System.out.println("abort abort !");
+          System.out.println(action);
           context.exit(0);
           return;
         }
