@@ -15,6 +15,10 @@ public interface Item extends Entity {
     };
   }
   
+  public static Item createItem(String skin) {
+    return Item.createItem(skin, null);
+  }
+  
   public static Item createItem(String skin, String name) {
     GameObjectID id = GameItems.getId(skin);
     return switch (id) {

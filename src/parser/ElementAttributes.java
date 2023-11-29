@@ -23,7 +23,7 @@ public class ElementAttributes {
   private int damage = -1;
   private String text = null;
   private List<Item> steal = null;
-  private Map<String, Item> trade = null;
+  private Map<String, List<Item>> trade = null;
   private Item locked = null;
   private Direction flow = Direction.UNKNOWN;
   private boolean phantomized = false;
@@ -153,7 +153,7 @@ public class ElementAttributes {
     this.steal = steal;
   }
   
-  public void setTrade(Map<String, Item> trade) throws TokenException {
+  public void setTrade(Map<String, List<Item>> trade) throws TokenException {
     Objects.requireNonNull(trade);
     ElementAttributes.checkNull(this.trade, "Trade table");
     this.trade = trade;

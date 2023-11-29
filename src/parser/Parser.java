@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +11,10 @@ import java.util.Map;
 import game.Game;
 import game.GameObject;
 import game.GameObjectID;
+import game.entity.item.GameItems;
 import game.entity.item.Item;
 import util.Position;
 import util.Zone;
-
 
 public class Parser {
   
@@ -30,7 +29,7 @@ public class Parser {
       return res.content();
     } 
     if (res != null) {
-      throw new TokenException("Awaited token of type " + token + ", got " + res.token());
+      throw new TokenException("Awaited token of type " + token + ", got " + res.token() + " : " + res.content());
     }
     throw new TokenException("No more tokens");
   }
@@ -104,26 +103,40 @@ public class Parser {
   
   public static Item parseItem(Lexer lexer) throws TokenException {
     // wait for "SKIN name" or "SKIN"
-    Result res;
-    String skin;
+    Result skinResult, nameResult, next;
+    String skin, name;
+    GameObjectID id;
     
-    res = lexer.nextResult();
-    if (res == null) {
-      throw new TokenException("No more tokens");
+    skinResult = lexer.nextResult();
+    id = GameItems.getId(skinResult.content());
+    if (id == GameObjectID.UNKNOWN) {
+      throw new TokenException("Unknown item '" + skinResult.content() + "'");
     }
-    skin = new String(res.content()).toUpperCase();
-    if (!skin.equals(res.content())) { // not a skin, must be an attribute
-      lexer.addNext(res);
-      return null;
+    skin = skinResult.content();
+    
+    nameResult = lexer.nextResult();
+    if (nameResult == null) {
+      return Item.createItem(skin);
     }
-    res = lexer.nextResult();
-    if (res.token() == Token.COMMA) {
-      lexer.addNext(res);
-      return Item.createItem(skin, null);
-    } else if (res.token() != Token.IDENTIFIER) {
-      throw new TokenException("Expected a name for an item");
+    if (nameResult.token() == Token.COMMA) { // item has no name
+      lexer.addNext(nameResult);
+      return Item.createItem(skin);
+    } else if (nameResult.token() != Token.IDENTIFIER) { // item name is not an IDENTIFIER
+      throw new TokenException("Expected a name for an item or next attribute");
     }
-    return Item.createItem(skin, res.content());
+    name = nameResult.content();
+    
+    next = lexer.nextResult();
+    if (next == null) { // no more tokens
+      return Item.createItem(skin, name);
+    }
+    if (next.token() == Token.COLON) { // item name is the next attribute
+      lexer.addNext(next);
+      lexer.addNext(nameResult);
+      return Item.createItem(skin);
+    }
+    lexer.addNext(next);
+    return Item.createItem(skin, name);
   }
   
   public static List<Item> parseSteal(Lexer lexer) throws TokenException {
@@ -136,9 +149,7 @@ public class Parser {
     
     while (lexer.hasNext()) {
       item = Parser.parseItem(lexer);
-      if (item == null) {
-        break;
-      }
+      
       lst.add(item);
       
       res = lexer.nextResult();
@@ -149,6 +160,32 @@ public class Parser {
       break;
     }
     return List.copyOf(lst);
+  }
+  
+  public static Map<String, List<Item>> parseTrade(Lexer lexer) throws TokenException {
+    // Note : here after "Result[token=IDENTIFIER, content=trade]" and "Result[token=COLON, content=:]"
+    // wait for "SKIN -> SKIN name" or "SKIN -> SKIN"
+    HashMap<String, List<Item>> map = new HashMap<String, List<Item>>();
+    Item item;
+    Result res;
+    String skin;
+    
+    while (lexer.hasNext()) {
+      skin = Parser.isExpected(lexer, Token.IDENTIFIER);
+      Parser.isExpected(lexer, Token.ARROW);
+      item = Parser.parseItem(lexer);
+      
+      map.computeIfAbsent(skin, key -> new ArrayList<Item>()).add(item);
+
+      res = lexer.nextResult();
+      if (res.token() == Token.COMMA) {
+        continue;
+      }
+      lexer.addNext(res);
+      break;
+    }
+    map.replaceAll((k, v) -> List.copyOf(v));
+    return Map.copyOf(map);
   }
   
   public static Map<Character, EncodingRow> parseEncoding(Lexer lexer) throws TokenException {
@@ -213,8 +250,8 @@ public class Parser {
         case "damage" -> elem.setDamage(Parser.isExpected(lexer, Token.NUMBER));
         case "text" -> elem.setText(Parser.isExpected(lexer, Token.QUOTE));
         case "steal" -> elem.setSteal(Parser.parseSteal(lexer));
-        // case "trade" -> ;
-        // case "locked" -> ;
+        case "trade" -> elem.setTrade(Parser.parseTrade(lexer));
+        case "locked" -> elem.setLocked(Parser.parseItem(lexer));
         case "flow" -> elem.setFlow(Parser.isExpected(lexer, Token.IDENTIFIER));
         case "phantomize" -> elem.setPhantomize(Parser.isExpected(lexer, Token.IDENTIFIER));
         case "teleport" -> elem.setTeleport(Parser.isExpected(lexer, Token.IDENTIFIER));

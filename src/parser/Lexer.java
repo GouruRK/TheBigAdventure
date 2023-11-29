@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -19,30 +20,35 @@ public class Lexer {
   private final String text;
   private final Matcher matcher;
   
-  private Result next = null;
+  public final Stack<Result> stack;
   
   public Lexer(String text) {
     this.text = Objects.requireNonNull(text);
     this.matcher = PATTERN.matcher(text);
+    this.stack = new Stack<Result>();
   }
 
   public boolean hasNext() {
-    if (next != null) {
+    if (!stack.isEmpty()) {
       return true;
     }
-    next = nextResult();
-    return next != null;
+    Result next = nextResult();
+    if (next != null) {
+      stack.add(next);
+      return true;
+    }
+    return false;
   }
   
   public void addNext(Result res) {
-    next = res;
+    Objects.requireNonNull(res);
+    stack.add(res);
   }
 
   
   public Result nextResult() {
-    if (next != null) {
-      Result res = next;
-      next = null;
+    if (!stack.isEmpty()) {
+      Result res = stack.pop();
       return res;
     }
     var matches = matcher.find();

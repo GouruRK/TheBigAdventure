@@ -37,5 +37,7 @@
     zone: (1, 1) (5 x 3)
     behavior: agressive
     steal: KEY, BOLD red
+    trade: CASH -> KEY black, CASH -> PIZZA
     damage: 10
+    locked: KEY 
 
