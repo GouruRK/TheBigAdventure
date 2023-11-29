@@ -1,5 +1,24 @@
 package game.entity.item;
 
-public record Weapon() {
+import java.util.Objects;
 
+public record Weapon(String skin, int damage, boolean burning, String name) implements Item {
+
+  public Weapon {
+    Objects.requireNonNull(skin);
+    Objects.requireNonNull(name);
+  }
+  
+  public Weapon(String skin, int damage, boolean burning) {
+    this(skin, damage, burning, null);
+  }
+  
+  public Weapon(String skin) {
+    this(skin, 0, false, null);
+  }
+  
+  public Weapon(String skin, String name) {
+    this(skin, 0, false, name);
+  }
+  
 }
