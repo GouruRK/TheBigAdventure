@@ -6,7 +6,7 @@ import util.Direction;
 import util.Position;
 import util.Zone;
 
-public class Ennemy implements Mob {
+public class Enemy implements Mob {
   
   private final String skin;
   private final String name;
@@ -16,7 +16,7 @@ public class Ennemy implements Mob {
   private Position pos;
   private int health;
   
-  public Ennemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour, String name) {
+  public Enemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour, String name) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(pos);
     Objects.requireNonNull(zone);
@@ -29,15 +29,15 @@ public class Ennemy implements Mob {
     this.damage = damage;
   }
   
-  public Ennemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour) {
+  public Enemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour) {
     this(skin, pos, zone, health, damage, behaviour, null);
   }
   
-  public Ennemy(String skin, Position pos, Zone zone, int health, int damage) {
+  public Enemy(String skin, Position pos, Zone zone, int health, int damage) {
     this(skin, pos, zone, health, damage, Behaviour.STROLL, null);
   }
   
-  public Ennemy(String skin, Position pos, Zone zone, int health, int damage, String name) {
+  public Enemy(String skin, Position pos, Zone zone, int health, int damage, String name) {
     this(skin, pos, zone, health, damage, Behaviour.STROLL, name);
   }
   

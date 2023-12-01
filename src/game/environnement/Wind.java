@@ -11,4 +11,7 @@ public record Wind(Zone zone, Direction dir) {
     Objects.requireNonNull(zone);
   }
   
+  public String skin() {
+    return "WIND";
+  }
 }

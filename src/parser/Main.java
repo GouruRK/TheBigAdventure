@@ -1,18 +1,20 @@
 package parser;
 
 import java.io.IOException;
-
-import game.Game;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Main {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+    var path = Path.of("map/default.map");
+    var text = Files.readString(path);
+    var parser = new Parser(text);
+    
     try {
       // game = Parser.parseMap("map/badGridDataEncodingDefinedTwice.map");
       // game = Parser.parseMap("map/badGridDataEncodingNotALetter.map");
       // game = Parser.parseMap("map/monster_house.map");
-      Parser.parseMap("map/default.map");
-    } catch (IOException e) {
-      e.printStackTrace();
+      parser.parseMap();
     } catch (TokenException e) {
       e.printStackTrace();
     }

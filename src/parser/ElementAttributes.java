@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import game.GameObject;
+import game.GameObjectID;
 import game.Kind;
 import game.entity.item.Item;
 import game.entity.mob.Behaviour;
@@ -12,8 +14,9 @@ import util.Position;
 import util.Zone;
 
 public class ElementAttributes {
-  private String name = null;
+  private GameObjectID id = GameObjectID.UNKNOWN;
   private String skin = null;
+  private String name = null;
   private boolean player = false;
   private Position pos = null;
   private int health = -1;
@@ -34,17 +37,156 @@ public class ElementAttributes {
       throw new TokenException(name + " is already register");
     }
   }
+
+  public boolean hasSkin() {
+    return skin != null;
+  }
+
+  public boolean hasName() {
+    return name != null;
+  }
   
-  public void setName(String name) throws TokenException {
-    Objects.requireNonNull(name);
-    ElementAttributes.checkNull(this.name, "Name");
-    this.name = name;
+  public boolean isPlayer() {
+    return player;
+  }
+  
+  public boolean hasPosition() {
+    return pos != null;
+  }
+  
+  public boolean hasHealth() {
+    return health != -1;
+  }
+  
+  public boolean hasKind() {
+    return kind != Kind.UNKNOWN;
+  }
+  
+  public boolean hasZone() {
+    return zone != null;
+  }
+  
+  public boolean hasBehaviour() {
+    return behaviour != Behaviour.UNKNOWN;
+  }
+  
+  public boolean hasDamage() {
+    return damage != -1;
+  }
+  
+  public boolean hasText() {
+    return text != null;
+  }
+  
+  public boolean hasSteal() {
+    return steal != null;
+  }
+  
+  public boolean hasTrade() {
+    return trade != null;
+  }
+  
+  public boolean hasLocked() {
+    return locked != null;
+  }
+  
+  public boolean hasFlow() {
+    return flow != Direction.UNKNOWN;
+  }
+  
+  public boolean hasPhantomized() {
+    return phantomized;
+  }
+  
+  public boolean hasTeleport() {
+    return teleport != null;
+  }
+  
+  public GameObjectID getID() {
+    return id;
+  }
+  
+  public String getSkin() {
+    return skin;
+  }
+  
+  public String getName() {
+    return name;
+  }
+  
+  public boolean getPlayer() {
+    return player;
+  }
+  
+  public Position getPosition() {
+    return pos;
+  }
+  
+  public int gethealth() {
+    if (hasHealth()) return health;
+    return 0;
+  }
+  
+  public Kind getKind() {
+    return kind;
+  }
+  
+  public Zone getZone() {
+    if (hasZone()) {
+      return zone;
+    }
+    return new Zone(getPosition(), getPosition());
+  }
+  
+  public Behaviour getBehaviour() {
+    if (hasBehaviour()) return behaviour;
+    return Behaviour.STROLL;
+  }
+  
+  public int getDamage() {
+    return damage;
+  }
+  
+  public String getText() {
+    return text;
+  }
+  
+  public List<Item> getSteal() {
+    return steal;
+  }
+  
+  public Map<String, List<Item>> getTrade() {
+    return trade;
+  }
+  
+  public Item getLocked() {
+    return locked;
+  }
+  
+  public Direction getFlow() {
+    if (hasFlow()) return flow;
+    return Direction.NONE;
+  }
+  
+  public boolean getPhantimized() {
+    return phantomized;
+  }
+  
+  public String getTeleport() {
+    return teleport;
   }
   
   public void setSkin(String skin) throws TokenException {
     Objects.requireNonNull(skin);
     ElementAttributes.checkNull(this.skin, "Skin");
     this.skin = skin;
+    id = GameObject.fromName(skin);
+  }
+  
+  public void setName(String name) throws TokenException {
+    Objects.requireNonNull(name);
+    ElementAttributes.checkNull(this.name, "Name");
+    this.name = name;
   }
   
   public void setPlayer() throws TokenException {
@@ -200,6 +342,10 @@ public class ElementAttributes {
     Objects.requireNonNull(path);
     ElementAttributes.checkNull(this.teleport, "Teleport");
     this.teleport = path;
+  }
+  
+  public boolean isValid() {
+    return skin != null && (pos != null || zone != null);
   }
   
 }
