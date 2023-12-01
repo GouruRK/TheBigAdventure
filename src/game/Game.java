@@ -23,7 +23,6 @@ public class Game {
   private final ArrayList<DroppedItem> items;
   private Player player;
   
-  
   public Game(Position size, Map<Character, EncodingRow> encodings, List<char[]> data) throws TokenException {
     Objects.requireNonNull(size);
     Objects.requireNonNull(encodings);
@@ -76,7 +75,7 @@ public class Game {
   }
   
   private void addZoneOfElements(ElementAttributes elem) {
-    
+    System.out.println("Zone Elements : " + elem.getSkin());
   }
   
   private void addElement(ElementAttributes element) throws TokenException {
@@ -99,7 +98,7 @@ public class Game {
     for (ElementAttributes element: lst) {
       if (element.isPlayer()) {
         this.player = new Player(element.getSkin(), element.getPosition());
-      } else if (element.hasZone()) {
+      } else if (element.hasZone() && element.getID() != GameObjectID.MOB) {
         addZoneOfElements(element);
       } else {
         addElement(element);

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import game.Game;
+
 public class Main {
   public static void main(String[] args) throws IOException {
     var path = Path.of("map/default.map");
@@ -15,8 +17,9 @@ public class Main {
       // game = Parser.parseMap("map/badGridDataEncodingNotALetter.map");
       // game = Parser.parseMap("map/monster_house.map");
       parser.parseMap();
+      
     } catch (TokenException e) {
       e.printStackTrace();
-    }
+    } 
   }
 }
