@@ -2,7 +2,6 @@ package game.entity.mob;
 
 import java.util.Objects;
 
-import util.Direction;
 import util.Position;
 import util.Zone;
 
@@ -65,6 +64,17 @@ public class Enemy implements Mob {
   @Override
   public int health() {
     return health;
+  }
+  
+  @Override
+  public String toString() {
+    return "Enemy(skin: " + skin 
+        + ", pos: " + pos.toString()
+        + ", zone: " + zone.toString()
+        + ", health: " + health
+        + ", damage: " + damage
+        + ", behaviour: " + behaviour
+        + ")";
   }
   
 }

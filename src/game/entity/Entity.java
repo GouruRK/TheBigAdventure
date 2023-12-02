@@ -8,4 +8,5 @@ public interface Entity {
   public default boolean hasName() {
     return name() != null;
   }
+  
 }

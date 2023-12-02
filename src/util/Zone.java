@@ -15,4 +15,10 @@ public record Zone(Position topLeft, Position bottomRight) {
         && (topLeft.y() <= pos.y() && pos.y() < bottomRight.y());
   }
   
+  @Override
+  public String toString() {
+    return "Zone(topLeft: " + topLeft.toString()
+        + ", bottomRight: " + bottomRight.toString()
+        + ")";
+  }
 }

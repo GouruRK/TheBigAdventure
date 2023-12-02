@@ -56,4 +56,9 @@ public class Position {
     this.y += (double)y;
   }
   
+  @Override
+  public String toString() {
+    return "Position(x: " + x + ", y: " + y + ")";
+  }
+  
 }

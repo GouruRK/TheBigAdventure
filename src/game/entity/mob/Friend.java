@@ -44,4 +44,8 @@ public class Friend implements Mob {
     return zone;
   }
   
+  public Map<String, List<Item>> trade() {
+    return trade;
+  }
+  
 }

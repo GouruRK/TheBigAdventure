@@ -24,4 +24,9 @@ public class Player {
     return pos;
   }
   
+  @Override
+  public String toString() {
+    return "Player(skin: " + skin + ", " + pos.toString() + ")";
+  }
+  
 }
