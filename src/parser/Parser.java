@@ -34,6 +34,7 @@ public class Parser {
     String text = Files.readString(filePath);
     Objects.requireNonNull(text);
     this.lexer = new Lexer(text);
+    this.attributes = new GameAttributes();
   }
   
   private String isExpected(Token token) throws TokenException {
@@ -108,7 +109,7 @@ public class Parser {
     identifier = isExpected(Token.IDENTIFIER);
     id = GameObject.fromName(identifier);
     if (id == GameObjectID.UNKNOWN) {
-      throw new TokenException("Unknonw element '" + identifier + "'");
+      throw new TokenException("Unknown element '" + identifier + "'");
     }
     isExpected(Token.LEFT_PARENS);
     code = isExpected(Token.IDENTIFIER);

@@ -1,7 +1,6 @@
-package graph.window;
+package graph;
 
 import java.awt.Color;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -13,105 +12,92 @@ import fr.umlv.zen5.Application;
 import fr.umlv.zen5.ApplicationContext;
 import fr.umlv.zen5.Event;
 import fr.umlv.zen5.Event.Action;
+import fr.umlv.zen5.KeyboardKey;
 import fr.umlv.zen5.ScreenInfo;
+import game.Game;
+import game.entity.mob.Player;
+import util.Position;
 
 public class Window {
-  static class Area {
-    private Ellipse2D.Float ellipse = new Ellipse2D.Float(0, 0, 0, 0);
-    private Rectangle2D.Float rect = new Rectangle2D.Float(0, 0, 0, 0);
-    
-    
-    void draw(ApplicationContext context, float x, float y, String name) {
+
+  private final int IMAGESIZE = 24;
+  private final int OFFSET = IMAGESIZE / 2;
+
+  private final Game game;
+  private int windowWidth;
+  private int windowHeight;
+
+  public Window(Game game) {
+    this.game = game;
+  }
+
+  class Area {
+
+    void clearWindow(ApplicationContext context) {
       context.renderFrame(graphics -> {
-        // hide the previous rectangle
         graphics.setColor(Color.BLACK);
-        graphics.fill(rect);
-        
-        // show a new ellipse at the position of the pointer
-        graphics.setColor(Color.BLUE);
-        //ellipse = new Ellipse2D.Float(x - 20, y - 20, 40, 40);
-        // rect = new Rectangle2D.Float(x - 10, y - 10, 20, 20);
-        // graphics.fill(rect);
-        
-        // marche
-        BufferedImage img = null;
-        String file = "images/npc/" + name + ".png";
-        try{
-            img = ImageIO.read(new File(file));
-        } catch (IOException e) {
-        }
-        graphics.drawImage(img,(int) x,(int) y, null);
-        graphics.dispose();
+        graphics.fill(new  Rectangle2D.Float(0, 0, windowWidth, windowHeight));
       });
     }
+
+    void drawImage(ApplicationContext context, Position pos, String skin) {
+      context.renderFrame(graphics -> {
+
+        clearWindow(context);
+
+        try{
+          BufferedImage img = ImageIO.read(new File("images/" + skin.toLowerCase() + ".png"));
+          graphics.drawImage(img, (int) pos.x()*IMAGESIZE, (int) pos.y()*IMAGESIZE, null);
+          graphics.dispose();
+        } catch (IOException e) {
+          
+        }
+      });
+    }
+
+    void drawPlayer(ApplicationContext context, Player player) {
+      drawImage(context, player.pos(), player.skin());
+    }
   }
-  
-  public static void main(String[] args) {
-    Application.run(Color.BLACK, context -> {
+
+  @SuppressWarnings("incomplete-switch")
+  public boolean controller(ApplicationContext context, Player player) {
+    Event event = context.pollOrWaitEvent(10);
+    if (event == null) {  // no event
+      return false;
+    }
+    Action action = event.getAction();
+    KeyboardKey key = event.getKey();
+
+    if (action == Action.KEY_PRESSED) { // || action == Action.KEY_RELEASED) {
+      switch (key) {
+      case KeyboardKey.UP, KeyboardKey.Z -> player.pos().addY(-1);
+      case KeyboardKey.RIGHT, KeyboardKey.D -> player.pos().addX(1);
+      case KeyboardKey.DOWN, KeyboardKey.S -> player.pos().addY(1);
+      case KeyboardKey.LEFT, KeyboardKey.Q -> player.pos().addX(-1);
+      }
       
+      if (key == KeyboardKey.UNDEFINED) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public void play() {
+    Application.run(Color.BLACK, context -> {
       // get the size of the screen
       ScreenInfo screenInfo = context.getScreenInfo();
-      float width = screenInfo.getWidth();
-      float height = screenInfo.getHeight();
-      System.out.println("size of the screen (" + width + " x " + height + ")");
-      
-      // créer un background pour tout "clear"
-      context.renderFrame(graphics -> {
-        graphics.setColor(Color.BLACK);
-        graphics.fill(new  Rectangle2D.Float(0, 0, width, height));
-      });
+      windowWidth = (int) screenInfo.getWidth();
+      windowHeight = (int) screenInfo.getHeight();
       
       Area area = new Area();
-      String player = "ghost";
-      float rect_x = width/2;
-      float rect_y = height/2;
-      area.draw(context, rect_x, rect_y, player);
-        
-        
-        for(;;) {
-        Event event = context.pollOrWaitEvent(10);
-        if (event == null) {  // no event
-          continue;
-        }
-        Action action = event.getAction();
-        Object key = event.getKey();
-        if (action == Action.KEY_PRESSED) { // || action == Action.KEY_RELEASED) {
-            if (key.toString().equals("UP") || key.toString().equals("Z")) {
-                rect_y -= 12; // les images font 24x24
-            System.out.println(key);
-            }
-            if (key.toString().equals("RIGHT") || key.toString().equals("D")) {
-                rect_x += 12;
-                System.out.println(key);
-            }
-            if (key.toString().equals("DOWN") || key.toString().equals("S")) {
-                rect_y += 12;
-                System.out.println(key);
-            }
-            if (key.toString().equals("LEFT") || key.toString().equals("Q")) {
-                rect_x -= 12;
-                System.out.println(key);
-            }
-            // VK_ESCAPE         = 0x1B;
-            if (key.toString().equals("P")) {
-                System.out.println(key);
-                context.exit(0);
-                return;
-            }
-            context.renderFrame(graphics -> {
-            graphics.setColor(Color.BLACK);
-            graphics.fill(new  Rectangle2D.Float(0, 0, width, height));
-          });
-            System.out.println(rect_x + " " + rect_y);
-            area.draw(context, rect_x, rect_y, player);
-            continue;
-        }
-        
-        System.out.println(event);
-        // Pint avec le clic souris
-//        Point2D.Float location = event.getLocation();
-//        area.draw(context, location.x, location.y, player);
+
+      while (!controller(context, game.player())) {
+        area.clearWindow(context);
+        area.drawPlayer(context, game.player());
       }
+      context.exit(0);
     });
   }
 }

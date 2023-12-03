@@ -38,4 +38,8 @@ public class Game {
            + "Items: " + items;
   }
   
+  public Player player() {
+    return player;
+  }
+  
 }

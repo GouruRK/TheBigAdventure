@@ -25,9 +25,9 @@ public interface Environnement {
   
   public static Environnement createEnvironnement(ElementAttributes elem, Position pos) {
     return switch (elem.getID()) {
-    case GameObjectID.SCENERY -> new Block(elem.getSkin(), elem.getPosition(), true);
-    case GameObjectID.OBSTACLE -> new Block(elem.getSkin(), elem.getPosition(), false);
-    case GameObjectID.GATE -> new Gate(elem.getSkin(), elem.getPosition(), elem.getLocked(), false);
+    case GameObjectID.SCENERY -> new Block(elem.getSkin(), pos, true);
+    case GameObjectID.OBSTACLE -> new Block(elem.getSkin(), pos, false);
+    case GameObjectID.GATE -> new Gate(elem.getSkin(), pos, elem.getLocked(), false);
     default -> null;
     };
   }

@@ -15,6 +15,7 @@ import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
 import util.Position;
+import util.Zone;
 
 public class GameAttributes {
 
@@ -54,6 +55,11 @@ public class GameAttributes {
   
   public boolean hasGameInfo() {
     return hasData() && hasSize() && hasEncodings();
+  }
+  
+  public boolean isInsideGrid(Position pos) {
+    return (0 <= pos.x() && pos.x() < size.y()) && 
+           (0 <= pos.y() && pos.y() < size.y());
   }
   
   // --------- Setters --------- 
@@ -105,6 +111,8 @@ public class GameAttributes {
   // --------- Check data field --------- 
   
   private void checkFieldSize(List<String> tempField) throws TokenException {
+    if (!hasSize()) throw new TokenException("Size of grid is unknown");
+    
     int width = (int) size.x(), height = (int) size.y();
     
     if (tempField.size() != height) {
@@ -182,12 +190,12 @@ public class GameAttributes {
     }
   }
   
-  private void createElement(ElementAttributes element) throws TokenException {
+  private void createElement(ElementAttributes element, Position pos) throws TokenException {
     Environnement env;
     DroppedItem item;
     Mob mob;
     
-    if ((env = Environnement.createEnvironnement(element)) != null) {
+    if ((env = Environnement.createEnvironnement(element, pos)) != null) {
       field[(int) env.pos().y()][(int) env.pos().x()] = env;
     } else if((item = Item.createDroppedItem(element)) != null) {
       items.add(item);
@@ -198,8 +206,22 @@ public class GameAttributes {
     }
   }
   
-  private void createElementWithZone(ElementAttributes element) {
-    System.out.println("Zone Element : " + element.getSkin());
+  private void createElement(ElementAttributes element) throws TokenException {
+    createElement(element, element.getPosition());
+  }
+  
+  private void createElementWithZone(ElementAttributes element) throws TokenException {
+    Zone zone = element.getZone();
+    Position pos;
+    for (int x = (int) zone.topLeft().x(); x < zone.bottomRight().x(); x++) {
+      for (int y = (int) zone.topLeft().y(); y < zone.bottomRight().y(); y++) {
+        pos = new Position(x, y);
+        if (!isInsideGrid(pos)) {
+          throw new TokenException("Invalid given size for element '" + element.getSkin() + "'");
+        }
+        createElement(element, pos);
+      }
+    }
   }
   
   public void addElements() throws TokenException {

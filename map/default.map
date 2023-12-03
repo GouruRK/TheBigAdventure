@@ -14,7 +14,7 @@
     name: John
     player: true
     position: (1,1)
-    skin: BABA
+    skin: SWORD
     health: 10
 
 [element]
@@ -26,7 +26,7 @@
 
 [element]
     skin: WATER
-    zone: (10, 10) (5 x 5)
+    zone: (0, 0) (5 x 5)
     flow: NORTH
 
 [element]
