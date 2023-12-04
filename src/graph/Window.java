@@ -1,6 +1,7 @@
 package graph;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -77,26 +78,52 @@ public class Window {
       this.context = context;
     }
     
+    void clearWindow(Graphics2D graphics) {
+      graphics.setColor(Color.BLACK);
+      graphics.fill(new  Rectangle2D.Float(0, 0, windowWidth, windowHeight));
+    }
+    
     void clearWindow() {
       context.renderFrame(graphics -> {
-        graphics.setColor(Color.BLACK);
-        graphics.fill(new  Rectangle2D.Float(0, 0, windowWidth, windowHeight));
+        clearWindow(graphics);
       });
     }
 
+    void drawImage(Graphics2D graphics, Position pos, String skin) {
+      graphics.drawImage(skinMap.get(skin), (int) pos.x()*IMAGESIZE, (int) pos.y()*IMAGESIZE, null);
+    }
+    
     void drawImage(Position pos, String skin) {
       context.renderFrame(graphics -> {
-        graphics.drawImage(skinMap.get(skin), (int) pos.x()*IMAGESIZE, (int) pos.y()*IMAGESIZE, null);
-        graphics.dispose();
+        drawImage(graphics, pos, skin);
       });
+    }
+    
+    
+    void drawEnvironnement(Graphics2D graphics, Environnement env) {
+      drawImage(graphics, env.pos(), env.skin());
     }
     
     void drawEnvironnement(Environnement env) {
       drawImage(env.pos(), env.skin());
     }
 
+    void drawPlayer(Graphics2D graphics) {
+      drawImage(graphics, game.player().pos(), game.player().skin());
+    }
+    
     void drawPlayer() {
       drawImage(game.player().pos(), game.player().skin());
+    }
+    
+    void drawMap(Graphics2D graphics) {
+      for (var line: game.field()) {
+        for (Environnement env: line) {
+          if (env != null) {
+            drawEnvironnement(graphics, env);            
+          }
+        }
+      }
     }
     
     void drawMap() {
@@ -109,16 +136,19 @@ public class Window {
       }
     }
     
-    void drawGame(ApplicationContext context) {
-      clearWindow();
-      drawMap();
-      drawPlayer();
+    void drawGame() {
+      context.renderFrame(graphics -> {
+        clearWindow(graphics);
+        drawMap(graphics);
+        drawPlayer(graphics);
+        graphics.dispose();
+      });
     }
     
   }
 
   public KeyOperation controller(ApplicationContext context, Player player) {
-    Event event = context.pollOrWaitEvent(10);
+    Event event = context.pollEvent();
     if (event == null) {
       return KeyOperation.NONE;
     }
@@ -160,23 +190,25 @@ public class Window {
 //    };
   }
 
+  private void initWindowSize(ApplicationContext context) {
+    ScreenInfo screenInfo = context.getScreenInfo();
+    windowWidth = (int) screenInfo.getWidth();
+    windowHeight = (int) screenInfo.getHeight();
+  }
+  
   public void play() {
     Application.run(Color.BLACK, context -> {
-      // get the size of the screen
-      ScreenInfo screenInfo = context.getScreenInfo();
-      windowWidth = (int) screenInfo.getWidth();
-      windowHeight = (int) screenInfo.getHeight();
+      initWindowSize(context);
       
       Area area = new Area(context);
       KeyOperation op;
       
-      area.drawGame(context);
-      
+      area.drawGame();
       while ((op = controller(context, game.player())) != KeyOperation.EXIT) {
-        if (op == KeyOperation.MOVE) {
-          area.drawGame(context);
-        }
         
+        if (op == KeyOperation.MOVE) {
+          area.drawGame();
+        } 
       }
       context.exit(0);
     });
