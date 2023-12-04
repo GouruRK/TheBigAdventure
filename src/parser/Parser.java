@@ -281,6 +281,7 @@ public class Parser {
   }
   
   public Game parseMap() throws TokenException {
+    
     String blockIdentifier;
     
     while (lexer.hasNext()) {
@@ -290,7 +291,7 @@ public class Parser {
       if ("grid".equals(blockIdentifier)) {
         parseGame();
       } else if ("element".equals(blockIdentifier)) {
-         parseElement();
+        parseElement();
       } else {
         throw new TokenException("Unknown block name '" + blockIdentifier + "'");
       }

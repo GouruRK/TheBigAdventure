@@ -1,8 +1,5 @@
 package parser;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
@@ -20,12 +17,12 @@ public class Lexer {
   private final String text;
   private final Matcher matcher;
   
-  public final Stack<Result> stack;
+  private final Stack<Result> stack;
   
   public Lexer(String text) {
     this.text = Objects.requireNonNull(text);
     this.matcher = PATTERN.matcher(text);
-    this.stack = new Stack<Result>();
+    this.stack = new Stack<Result>();;
   }
 
   public boolean hasNext() {
@@ -48,18 +45,21 @@ public class Lexer {
   
   public Result nextResult() {
     if (!stack.isEmpty()) {
-      Result res = stack.pop();
-      return res;
+      return stack.pop();
     }
     var matches = matcher.find();
     if (!matches) {
        return null; 
      }
-    for (var group = 1; group <= matcher.groupCount(); group++) {
+    for (var group = 1; group <= matcher.groupCount(); group++) {   
       var start = matcher.start(group);
       if (start != -1) {
         var end = matcher.end(group);
         var content = text.substring(start, end);
+        
+//        line += content.chars().mapToObj(obj -> (char)obj).filter(c -> c == '\n').count();
+//        content.replaceAll("\n", "");
+        
         return new Result(TOKENS.get(group - 1), content);
       }
     }
@@ -67,15 +67,15 @@ public class Lexer {
   }
 
   
-  public static void main(String[] args) throws IOException {
-    var path = Path.of("map/default.map");
-    var text = Files.readString(path);
-    var lexer = new Lexer(text);
-    Result result;
-    while((result = lexer.nextResult()) != null) {
-      System.out.println(result);
-    }
-  }
+//  public static void main(String[] args) throws IOException {
+//    var path = Path.of("map/default.map");
+//    var text = Files.readString(path);
+//    var lexer = new Lexer(text);
+//    Result result;
+//    while((result = lexer.nextResult()) != null) {
+//      System.out.println(result);
+//    }
+//  }
 }
 
 

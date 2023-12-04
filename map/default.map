@@ -14,7 +14,7 @@
     name: John
     player: true
     position: (1,1)
-    skin: SWORD
+    skin: GHOST
     health: 10
 
 [element]
@@ -23,11 +23,6 @@
     position: (3,1)
     kind: item
     damage: 15
-
-[element]
-    skin: WATER
-    zone: (0, 0) (5 x 5)
-    flow: NORTH
 
 [element]
     name: Waldo

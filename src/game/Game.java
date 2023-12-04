@@ -12,7 +12,7 @@ import util.Position;
 public class Game {
 
   private final Position size;
-  public final Environnement[][] field;
+  private final Environnement[][] field;
   private final List<Mob> mobs;
   private final List<DroppedItem> items;
   private final Player player;
@@ -40,6 +40,18 @@ public class Game {
   
   public Player player() {
     return player;
+  }
+  
+  public Environnement[][] field() {
+    return field;
+  }
+  
+  public List<Mob> mobs() {
+    return mobs;
+  }
+  
+  public List<DroppedItem> items() {
+    return items;
   }
   
 }

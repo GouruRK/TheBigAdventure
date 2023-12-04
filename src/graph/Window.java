@@ -5,6 +5,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
@@ -15,20 +17,56 @@ import fr.umlv.zen5.Event.Action;
 import fr.umlv.zen5.KeyboardKey;
 import fr.umlv.zen5.ScreenInfo;
 import game.Game;
+import game.entity.item.DroppedItem;
+import game.entity.mob.Mob;
 import game.entity.mob.Player;
+import game.environnement.Environnement;
 import util.Position;
 
 public class Window {
 
   private final int IMAGESIZE = 24;
-  private final int OFFSET = IMAGESIZE / 2;
 
   private final Game game;
+  private final HashMap<String, BufferedImage> skinMap;
   private int windowWidth;
   private int windowHeight;
 
-  public Window(Game game) {
+  public Window(Game game) throws IOException {
+    Objects.requireNonNull(game);
     this.game = game;
+    skinMap = new HashMap<String, BufferedImage>();
+    loadSkin();
+  }
+  
+  private void loadSkin(String skin) throws IOException {
+    if (skinMap.get(skin) != null) {
+      return;
+    }
+    File imagePath = new File("images/" + skin.toLowerCase() + ".png");
+    try {
+      skinMap.put(skin, ImageIO.read(imagePath));
+    } catch (IOException e) {
+      throw new IOException("Cannot find image for skin '" + skin + "' (path is '" + imagePath + "')");
+    }
+  }
+  
+  private void loadSkin() throws IOException {
+    for (var line: game.field()) {
+      for (Environnement env: line) {
+        if (env != null) {
+          loadSkin(env.skin());          
+        }
+      }
+    }
+    
+    for (DroppedItem item: game.items()) {
+      loadSkin(item.skin());
+    }
+    for (Mob mob: game.mobs()) {
+      loadSkin(mob.skin());
+    }
+    loadSkin(game.player().skin());
   }
 
   class Area {
@@ -42,22 +80,29 @@ public class Window {
 
     void drawImage(ApplicationContext context, Position pos, String skin) {
       context.renderFrame(graphics -> {
-
-        clearWindow(context);
-
-        try{
-          BufferedImage img = ImageIO.read(new File("images/" + skin.toLowerCase() + ".png"));
-          graphics.drawImage(img, (int) pos.x()*IMAGESIZE, (int) pos.y()*IMAGESIZE, null);
-          graphics.dispose();
-        } catch (IOException e) {
-          
-        }
+        graphics.drawImage(skinMap.get(skin), (int) pos.x()*IMAGESIZE, (int) pos.y()*IMAGESIZE, null);
+        graphics.dispose();
       });
     }
-
-    void drawPlayer(ApplicationContext context, Player player) {
-      drawImage(context, player.pos(), player.skin());
+    
+    void drawEnvironnement(ApplicationContext context, Environnement env) {
+      drawImage(context, env.pos(), env.skin());
     }
+
+    void drawPlayer(ApplicationContext context) {
+      drawImage(context, game.player().pos(), game.player().skin());
+    }
+    
+    void drawMap(ApplicationContext context) {
+      for (var line: game.field()) {
+        for (Environnement env: line) {
+          if (env != null) {
+            drawEnvironnement(context, env);            
+          }
+        }
+      }
+    }
+    
   }
 
   @SuppressWarnings("incomplete-switch")
@@ -95,8 +140,11 @@ public class Window {
 
       while (!controller(context, game.player())) {
         area.clearWindow(context);
-        area.drawPlayer(context, game.player());
+        area.drawMap(context);
+        area.drawPlayer(context);
       }
+      
+      
       context.exit(0);
     });
   }
