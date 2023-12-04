@@ -71,62 +71,93 @@ public class Window {
 
   class Area {
 
-    void clearWindow(ApplicationContext context) {
+    private ApplicationContext context;
+    
+    public Area(ApplicationContext context) {
+      this.context = context;
+    }
+    
+    void clearWindow() {
       context.renderFrame(graphics -> {
         graphics.setColor(Color.BLACK);
         graphics.fill(new  Rectangle2D.Float(0, 0, windowWidth, windowHeight));
       });
     }
 
-    void drawImage(ApplicationContext context, Position pos, String skin) {
+    void drawImage(Position pos, String skin) {
       context.renderFrame(graphics -> {
         graphics.drawImage(skinMap.get(skin), (int) pos.x()*IMAGESIZE, (int) pos.y()*IMAGESIZE, null);
         graphics.dispose();
       });
     }
     
-    void drawEnvironnement(ApplicationContext context, Environnement env) {
-      drawImage(context, env.pos(), env.skin());
+    void drawEnvironnement(Environnement env) {
+      drawImage(env.pos(), env.skin());
     }
 
-    void drawPlayer(ApplicationContext context) {
-      drawImage(context, game.player().pos(), game.player().skin());
+    void drawPlayer() {
+      drawImage(game.player().pos(), game.player().skin());
     }
     
-    void drawMap(ApplicationContext context) {
+    void drawMap() {
       for (var line: game.field()) {
         for (Environnement env: line) {
           if (env != null) {
-            drawEnvironnement(context, env);            
+            drawEnvironnement(env);            
           }
         }
       }
     }
     
+    void drawGame(ApplicationContext context) {
+      clearWindow();
+      drawMap();
+      drawPlayer();
+    }
+    
   }
 
-  @SuppressWarnings("incomplete-switch")
-  public boolean controller(ApplicationContext context, Player player) {
+  public KeyOperation controller(ApplicationContext context, Player player) {
     Event event = context.pollOrWaitEvent(10);
-    if (event == null) {  // no event
-      return false;
+    if (event == null) {
+      return KeyOperation.NONE;
     }
     Action action = event.getAction();
     KeyboardKey key = event.getKey();
 
-    if (action == Action.KEY_PRESSED) { // || action == Action.KEY_RELEASED) {
-      switch (key) {
-      case KeyboardKey.UP, KeyboardKey.Z -> player.pos().addY(-1);
-      case KeyboardKey.RIGHT, KeyboardKey.D -> player.pos().addX(1);
-      case KeyboardKey.DOWN, KeyboardKey.S -> player.pos().addY(1);
-      case KeyboardKey.LEFT, KeyboardKey.Q -> player.pos().addX(-1);
-      }
-      
-      if (key == KeyboardKey.UNDEFINED) {
-        return true;
-      }
+    if (action != Action.KEY_PRESSED) {
+      return KeyOperation.NONE;
     }
-    return false;
+    
+    if (key == KeyboardKey.UP || key == KeyboardKey.Z) {
+      player.pos().addY(-1);
+      return KeyOperation.MOVE;        
+    }
+    if (key == KeyboardKey.RIGHT || key == KeyboardKey.D) {
+      player.pos().addX(1);
+      return KeyOperation.MOVE;
+    } 
+    if (key == KeyboardKey.DOWN || key == KeyboardKey.S) {
+      player.pos().addY(1);
+      return KeyOperation.MOVE;
+    }
+    if (key == KeyboardKey.LEFT || key == KeyboardKey.Q) {
+      player.pos().addX(-1);
+      return KeyOperation.MOVE;
+    }
+    if (key == KeyboardKey.UNDEFINED) {
+      return KeyOperation.EXIT;
+    }
+    return KeyOperation.NONE;
+    
+//    return switch (key) {
+//      case KeyboardKey.UP, KeyboardKey.Z -> { player.pos().addY(-1); KeyOpration.MOVE; }
+//      case KeyboardKey.RIGHT, KeyboardKey.D -> { player.pos().addX(1); KeyOperation.MOVE; }
+//      case KeyboardKey.DOWN, KeyboardKey.S -> { player.pos().addY(1); KeyOperation.MOVE; }
+//      case KeyboardKey.LEFT, KeyboardKey.Q -> { player.pos().addX(-1); KeyOperation.MOVE; }
+//      case key == KeyboardKey.UNDEFINED -> { KeyOperation.EXIT; }
+//      default -> { KeyOperation.NONE; }
+//    };
   }
 
   public void play() {
@@ -136,15 +167,17 @@ public class Window {
       windowWidth = (int) screenInfo.getWidth();
       windowHeight = (int) screenInfo.getHeight();
       
-      Area area = new Area();
-
-      while (!controller(context, game.player())) {
-        area.clearWindow(context);
-        area.drawMap(context);
-        area.drawPlayer(context);
+      Area area = new Area(context);
+      KeyOperation op;
+      
+      area.drawGame(context);
+      
+      while ((op = controller(context, game.player())) != KeyOperation.EXIT) {
+        if (op == KeyOperation.MOVE) {
+          area.drawGame(context);
+        }
+        
       }
-      
-      
       context.exit(0);
     });
   }
