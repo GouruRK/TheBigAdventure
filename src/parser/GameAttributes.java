@@ -227,7 +227,7 @@ public class GameAttributes {
   public void addElements() throws TokenException {
     for (ElementAttributes element: elements) {
       if (element.isPlayer()) {
-        player = new Player(element.getSkin(), element.getPosition());
+        player = new Player(element.getSkin(), element.getPosition(), element.gethealth(), element.gethealth());
       } else if (element.hasZone() && element.getID() != GameObjectID.MOB) {
         createElementWithZone(element);
       } else {
