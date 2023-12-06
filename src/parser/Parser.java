@@ -19,14 +19,17 @@ import util.Zone;
 
 public class Parser {
   
+  private final String sourceFile;
   private final Lexer lexer;
   
   private GameAttributes attributes;
   
-  public Parser(String text) {
+  public Parser(String text, String sourceFile) {
     Objects.requireNonNull(text);
+    Objects.requireNonNull(sourceFile);
     this.lexer = new Lexer(text);
     this.attributes = new GameAttributes();
+    this.sourceFile = sourceFile;
   }
   
   public Parser(Path filePath) throws IOException {
@@ -35,6 +38,7 @@ public class Parser {
     Objects.requireNonNull(text);
     this.lexer = new Lexer(text);
     this.attributes = new GameAttributes();
+    this.sourceFile = filePath.toString();
   }
   
   private String isExpected(Token token) throws TokenException {
@@ -47,9 +51,9 @@ public class Parser {
       return res.content();
     } 
     if (res != null) {
-      throw new TokenException("Awaited token of type " + token + ", got " + res.token() + " : " + res.content());
+      throw new TokenException(sourceFile + ":  " + "Awaited token of type " + token + ", got " + res.token() + " : " + res.content());
     }
-    throw new TokenException("No more tokens");
+    throw new TokenException(sourceFile + ":  " + "No more tokens");
   }
   
   private String isExpected(Token token, String content) throws TokenException {
@@ -109,12 +113,12 @@ public class Parser {
     identifier = isExpected(Token.IDENTIFIER);
     id = GameObject.fromName(identifier);
     if (id == GameObjectID.UNKNOWN) {
-      throw new TokenException("Unknown element '" + identifier + "'");
+      throw new TokenException(sourceFile + ":  " + "Unknown element '" + identifier + "'");
     }
     isExpected(Token.LEFT_PARENS);
     code = isExpected(Token.IDENTIFIER);
     if (code.length() != 1) {
-      throw new TokenException("Code for '" + identifier + "' must be one character");
+      throw new TokenException(sourceFile + ":  " + "Code for '" + identifier + "' must be one character");
     }
     isExpected(Token.RIGHT_PARENS);
     return new EncodingRow(identifier, code.charAt(0), id);
@@ -129,7 +133,7 @@ public class Parser {
     skinResult = lexer.nextResult();
     id = GameItems.getId(skinResult.content());
     if (id == GameObjectID.UNKNOWN) {
-      throw new TokenException("Unknown item '" + skinResult.content() + "'");
+      throw new TokenException(sourceFile + ":  " + "Unknown item '" + skinResult.content() + "'");
     }
     skin = skinResult.content();
     
@@ -141,7 +145,7 @@ public class Parser {
       lexer.addNext(nameResult);
       return Item.createItem(skin);
     } else if (nameResult.token() != Token.IDENTIFIER) { // item name is not an IDENTIFIER
-      throw new TokenException("Expected a name for an item or next attribute");
+      throw new TokenException(sourceFile + ":  " + "Expected a name for an item or next attribute");
     }
     name = nameResult.content();
     
@@ -220,7 +224,7 @@ public class Parser {
       } else {
         row = parseEncodings();
         if (encodings.get(row.code()) != null) {
-          throw new TokenException("Block code '" + row.code() + "' already register");
+          throw new TokenException(sourceFile + ":  " + "Block code '" + row.code() + "' already register");
         }
         encodings.put(row.code(), row);
       }
@@ -239,12 +243,13 @@ public class Parser {
       case "size" -> attributes.setSize(parseSize());
       case "encodings" -> attributes.setEncodings(parseEncoding());
       case "data" -> attributes.setData(isExpected(Token.QUOTE));
-      default -> throw new TokenException("Unknown grid attribute '" + attribute + "'");
+      default -> throw new TokenException(sourceFile + ":  " + "Unknown grid attribute '" + attribute + "'");
       };      
     }
   }
   
-  public void parseElement() throws TokenException {
+  public void parseElement() throws TokenException,
+                                    IOException {
     Result res;
     ElementAttributes elem = new ElementAttributes();
     
@@ -272,15 +277,21 @@ public class Parser {
         case "locked" -> elem.setLocked(parseItem());
         case "flow" -> elem.setFlow(isExpected(Token.IDENTIFIER));
         case "phantomize" -> elem.setPhantomize(isExpected(Token.IDENTIFIER));
-        case "teleport" -> elem.setTeleport(isExpected(Token.IDENTIFIER));
-        default -> throw new TokenException("Unknown attribute '" + res.content() + "'");
+        case "teleport" -> {
+          String name = isExpected(Token.IDENTIFIER);
+          isExpected(Token.DOT);
+          isExpected(Token.IDENTIFIER, "map");
+          Parser parser = new Parser(Path.of("map/" + name + ".map"));
+          elem.setTeleport(parser.parseMap());
+        }
+        default -> throw new TokenException(sourceFile + ":  " + "Unknown attribute '" + res.content() + "'");
       };
     }
-    if (!elem.isValid()) throw new TokenException("Element must have a skin");
+    if (!elem.isValid()) throw new TokenException(sourceFile + ":  " + "Element must have a skin");
     attributes.addElement(elem);
   }
   
-  public Game parseMap() throws TokenException {
+  public Game parseMap() throws TokenException, IOException {
     
     String blockIdentifier;
     
@@ -293,7 +304,7 @@ public class Parser {
       } else if ("element".equals(blockIdentifier)) {
         parseElement();
       } else {
-        throw new TokenException("Unknown block name '" + blockIdentifier + "'");
+        throw new TokenException(sourceFile + ":  " + "Unknown block name '" + blockIdentifier + "'");
       }
     }
     return attributes.createGame();

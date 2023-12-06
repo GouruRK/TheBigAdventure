@@ -23,6 +23,12 @@
     position: (3,1)
     kind: item
     damage: 15
+    
+[element]
+	skin: DOOR
+	position: (1, 3)
+	kind: obstacle
+	teleport: fun.map
 
 [element]
     name: Waldo

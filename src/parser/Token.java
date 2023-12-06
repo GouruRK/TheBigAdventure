@@ -9,6 +9,7 @@ public enum Token {
   RIGHT_BRACKET("\\]"),
   COMMA(","),
   COLON(":"),
+  DOT("\\."),
   QUOTE("\"\"\"[^\"]+\"\"\""),
   ARROW("->"),
   ;
