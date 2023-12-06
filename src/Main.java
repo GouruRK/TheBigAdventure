@@ -9,7 +9,7 @@ import parser.TokenException;
 public class Main {
   public static void main(String[] args) throws IOException,
                                                 TokenException {
-    Path mapPath = Path.of("map/fun.map");
+    Path mapPath = Path.of("map/default.map");
     Parser parser = new Parser(mapPath);
     Game game = parser.parseMap();
     

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import game.Game;
 import game.GameObject;
 import game.GameObjectID;
 import game.Kind;
@@ -30,7 +31,7 @@ public class ElementAttributes {
   private Item locked = null;
   private Direction flow = Direction.UNKNOWN;
   private boolean phantomized = false;
-  private String teleport = null;
+  private Game teleport = null;
   
   private static <E> void checkNull(E object, String name) throws TokenException {
     if (object != null) {
@@ -172,7 +173,7 @@ public class ElementAttributes {
     return phantomized;
   }
   
-  public String getTeleport() {
+  public Game getTeleport() {
     return teleport;
   }
   
@@ -338,10 +339,10 @@ public class ElementAttributes {
     throw new TokenException("Unknown value for 'phantomize'");
   }
   
-  public void setTeleport(String path) throws TokenException {
-    Objects.requireNonNull(path);
+  public void setTeleport(Game game) throws TokenException {
+    Objects.requireNonNull(game);
     ElementAttributes.checkNull(this.teleport, "Teleport");
-    this.teleport = path;
+    this.teleport = game;
   }
   
   public boolean isValid() {
