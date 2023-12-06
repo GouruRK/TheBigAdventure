@@ -83,10 +83,12 @@ public class Window {
       graphics.fill(new  Rectangle2D.Float(0, 0, windowWidth, windowHeight));
     }
     
-    void drawAllHealthBar(Graphics2D graphics, List<Mob> mobs) {
-    	for (var mob : mobs) {
+    void drawMobs(Graphics2D graphics) {
+    	for (var mob : game.mobs()) {
+    	    drawImage(graphics, mob.pos(), mob.skin());
     		drawHealthBar(graphics, mob);
     	}
+    	drawImage(graphics, game.player().pos(), game.player().skin());
     	drawHealthBar(graphics, game.player());
     }
     
@@ -157,7 +159,7 @@ public class Window {
         clearWindow(graphics);
         drawMap(graphics);
         drawPlayer(graphics);
-        drawAllHealthBar(graphics, game.mobs());
+        drawMobs(graphics);
         graphics.dispose();
       });
     }
