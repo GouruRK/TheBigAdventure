@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
@@ -14,7 +15,6 @@ import javax.imageio.ImageIO;
 import fr.umlv.zen5.Application;
 import fr.umlv.zen5.ApplicationContext;
 import fr.umlv.zen5.Event;
-import fr.umlv.zen5.Event.Action;
 import fr.umlv.zen5.KeyboardKey;
 import fr.umlv.zen5.ScreenInfo;
 import game.Game;
@@ -69,7 +69,7 @@ public class Window {
     }
     loadSkin(game.player().skin());
   }
-
+  
   class Area {
 
     private ApplicationContext context;
@@ -81,6 +81,22 @@ public class Window {
     void clearWindow(Graphics2D graphics) {
       graphics.setColor(Color.BLACK);
       graphics.fill(new  Rectangle2D.Float(0, 0, windowWidth, windowHeight));
+    }
+    
+    void drawAllHealthBar(Graphics2D graphics, List<Mob> mobs) {
+    	for (var mob : mobs) {
+    		drawHealthBar(graphics, mob);
+    	}
+    	drawHealthBar(graphics, game.player());
+    }
+    
+    void drawHealthBar(Graphics2D graphics, Mob mob) {
+    	graphics.setColor(Color.RED);
+    	final Rectangle2D.Double rectMaxHealth = new Rectangle2D.Double(((mob.pos().x())*IMAGESIZE)+4, ((mob.pos().y())*IMAGESIZE)+1, 16, 4);
+    	graphics.fill(rectMaxHealth);
+    	graphics.setColor(Color.GREEN);    	
+    	final Rectangle2D.Double rectCurrentHealth = new Rectangle2D.Double(((mob.pos().x())*IMAGESIZE)+4, ((mob.pos().y())*IMAGESIZE)+1, 16*(mob.health()/mob.maxHealth()), 4);
+    	graphics.fill(rectCurrentHealth);
     }
     
     void clearWindow() {
@@ -141,6 +157,7 @@ public class Window {
         clearWindow(graphics);
         drawMap(graphics);
         drawPlayer(graphics);
+        drawAllHealthBar(graphics, game.mobs());
         graphics.dispose();
       });
     }

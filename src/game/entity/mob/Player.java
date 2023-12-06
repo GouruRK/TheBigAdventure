@@ -9,15 +9,15 @@ public class Player implements Mob {
 
   private final String skin;
   private Position pos;
-  private final int max_health;
+  private final int maxHealth;
   private final String name;
   private final Zone zone;
   private int health;
   
-  public Player(String skin, Position pos, int max_health, int health, String name, Zone zone) {
+  public Player(String skin, Position pos, int maxHealth, int health, String name, Zone zone) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(pos);
-    this.max_health = max_health;
+    this.maxHealth = maxHealth;
     this.health = health;
     this.skin = skin;
     this.pos = pos;
@@ -29,8 +29,8 @@ public class Player implements Mob {
   	return health;
   }
   
-  public int max_health() {
-  	return max_health;
+  public int maxHealth() {
+  	return maxHealth;
   }
   
   public String skin() {

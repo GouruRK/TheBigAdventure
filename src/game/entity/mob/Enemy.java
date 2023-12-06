@@ -66,6 +66,10 @@ public class Enemy implements Mob {
   public int damage() {
     return damage;
   }
+  
+  public int maxHealth() {
+  	return maxHealth;
+  }
 
   public void setPos(Position pos) {
   	this.pos = pos;

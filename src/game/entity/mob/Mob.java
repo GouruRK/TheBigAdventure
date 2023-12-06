@@ -13,6 +13,8 @@ public interface Mob extends Entity {
   public abstract Position pos();
   public abstract Zone zone();
   public abstract void setPos(Position pos);
+  public abstract int health();
+  public abstract int maxHealth();
   
   public default void moveX(double offset) {
     Position pos = pos();
@@ -68,7 +70,7 @@ public interface Mob extends Entity {
   
   public static Mob createMob(ElementAttributes element) {
     return switch (element.getKind()) {
-    case Kind.FRIEND -> new Friend(element.getSkin(), element.getPosition(), element.getZone(), element.getName(), element.getTrade());
+    case Kind.FRIEND -> new Friend(element.getSkin(), element.getPosition(), element.getZone(),element.getName(),element.getHealth() ,element.getHealth() ,element.getTrade());
     case Kind.ENEMY -> new Enemy(element.getSkin(), element.getPosition(), element.getZone(), element.getHealth(), element.getHealth(), element.getDamage(), element.getBehaviour(), element.getName());
     default -> null;
     };
