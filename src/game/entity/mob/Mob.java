@@ -1,5 +1,7 @@
 package game.entity.mob;
 
+
+import fr.umlv.zen5.KeyboardKey;
 import game.Kind;
 import game.entity.Entity;
 import parser.ElementAttributes;
@@ -10,6 +12,7 @@ public interface Mob extends Entity {
 
   public abstract Position pos();
   public abstract Zone zone();
+  public abstract void setPos(Position pos);
   
   public default void moveX(double offset) {
     Position pos = pos();
@@ -26,7 +29,11 @@ public interface Mob extends Entity {
   
   public default void moveY(double offset) {
     Position pos = pos();
+    Zone zone = zone();
     pos.addY(offset);
+    if (!zone.isInside(pos)){
+    	pos.addY(-offset);
+    }
   }
   
   public default void moveY(int offset) {
@@ -37,10 +44,27 @@ public interface Mob extends Entity {
     return 0;
   }
   
-  public default int health() {
-    return -1;
+  public default void keyToMove(KeyboardKey key, double block) {
+  	switch (key) {
+		case UP : this.pos().addY(block);
+		case RIGHT : this.pos().addX(block);
+		case DOWN : this.pos().addY(block);
+		case LEFT : this.pos().addX(block);
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + key);
+		}
   }
   
+  /**
+   * 
+   * @return
+   */
+  public default boolean isMoveInZonePossible(Position pos) {
+  	if (!zone().isInside(pos)) {
+  		return false;
+  	}
+  	return true;
+  }
   
   public static Mob createMob(ElementAttributes element) {
     return switch (element.getKind()) {
@@ -49,5 +73,4 @@ public interface Mob extends Entity {
     default -> null;
     };
   }
-  
 }

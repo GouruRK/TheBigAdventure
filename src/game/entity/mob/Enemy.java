@@ -56,14 +56,17 @@ public class Enemy implements Mob {
     return zone;
   }
   
+  public int health() {
+  	return health;
+  }
+  
   @Override
   public int damage() {
     return damage;
   }
-  
-  @Override
-  public int health() {
-    return health;
+
+  public void setPos(Position pos) {
+  	this.pos = pos;
   }
   
   @Override

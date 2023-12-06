@@ -152,42 +152,17 @@ public class Window {
     if (event == null) {
       return KeyOperation.NONE;
     }
-    Action action = event.getAction();
+    // Action action = event.getAction();
     KeyboardKey key = event.getKey();
-
-    if (action != Action.KEY_PRESSED) {
-      return KeyOperation.NONE;
-    }
     
-    if (key == KeyboardKey.UP || key == KeyboardKey.Z) {
-      player.pos().addY(-1);
-      return KeyOperation.MOVE;        
-    }
-    if (key == KeyboardKey.RIGHT || key == KeyboardKey.D) {
-      player.pos().addX(1);
-      return KeyOperation.MOVE;
-    } 
-    if (key == KeyboardKey.DOWN || key == KeyboardKey.S) {
-      player.pos().addY(1);
-      return KeyOperation.MOVE;
-    }
-    if (key == KeyboardKey.LEFT || key == KeyboardKey.Q) {
-      player.pos().addX(-1);
-      return KeyOperation.MOVE;
-    }
-    if (key == KeyboardKey.UNDEFINED) {
-      return KeyOperation.EXIT;
-    }
-    return KeyOperation.NONE;
-    
-//    return switch (key) {
-//      case KeyboardKey.UP, KeyboardKey.Z -> { player.pos().addY(-1); KeyOpration.MOVE; }
-//      case KeyboardKey.RIGHT, KeyboardKey.D -> { player.pos().addX(1); KeyOperation.MOVE; }
-//      case KeyboardKey.DOWN, KeyboardKey.S -> { player.pos().addY(1); KeyOperation.MOVE; }
-//      case KeyboardKey.LEFT, KeyboardKey.Q -> { player.pos().addX(-1); KeyOperation.MOVE; }
-//      case key == KeyboardKey.UNDEFINED -> { KeyOperation.EXIT; }
-//      default -> { KeyOperation.NONE; }
-//    };
+    return switch (key) {
+      case KeyboardKey.UP, KeyboardKey.Z -> KeyOperation.MOVE_UP;
+      case KeyboardKey.RIGHT, KeyboardKey.D -> KeyOperation.MOVE_RIGHT;
+      case KeyboardKey.DOWN, KeyboardKey.S -> KeyOperation.MOVE_DOWN;
+      case KeyboardKey.LEFT, KeyboardKey.Q -> KeyOperation.MOVE_LEFT;
+      case KeyboardKey.UNDEFINED -> KeyOperation.EXIT;
+      default -> KeyOperation.NONE;
+    };
   }
 
   private void initWindowSize(ApplicationContext context) {
@@ -206,8 +181,9 @@ public class Window {
       area.drawGame();
       while ((op = controller(context, game.player())) != KeyOperation.EXIT) {
         
-        if (op == KeyOperation.MOVE) {
-          area.drawGame();
+        if (op == KeyOperation.MOVE_UP || op == KeyOperation.MOVE_RIGHT || op == KeyOperation.MOVE_DOWN || op == KeyOperation.MOVE_LEFT) {
+          game.move(game.player(), game.moveToDirection(op),  0.5);
+        	area.drawGame();
         } 
       }
       context.exit(0);

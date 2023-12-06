@@ -28,12 +28,12 @@ public class Position {
     this.x = (int)x;
   }
   
-  public void addX(double x) {
-    this.x += x;
+  public Position addX(double x) {
+    return new Position(this.x + x, y);
   }
   
-  public void addX(int x) {
-    this.x += (double)x;
+  public Position addX(int x) {
+  	return new Position(this.x + x, y);
   }
   
   public double y() {
@@ -48,12 +48,12 @@ public class Position {
     this.y = (double)y;
   }
   
-  public void addY(double y) {
-    this.y += y;
+  public Position addY(double y) {
+  	return new Position(x,this.y + y);
   }
   
-  public void addY(int y) {
-    this.y += (double)y;
+  public Position addY(int y) {
+  	return new Position(x,this.y + y);
   }
   
   @Override

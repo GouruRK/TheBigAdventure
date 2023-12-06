@@ -13,7 +13,7 @@ public class Friend implements Mob {
   private final String skin;
   private final String name;
   private final Zone zone; 
-  private final Position pos;
+  private Position pos;
   private final Map<String, List<Item>> trade; 
   
   
@@ -42,6 +42,10 @@ public class Friend implements Mob {
   
   public Zone zone() {
     return zone;
+  }
+  
+  public void setPos(Position pos) {
+  	this.pos = pos;
   }
   
   public Map<String, List<Item>> trade() {
