@@ -277,7 +277,6 @@ public class Parser {
         case "locked" -> elem.setLocked(parseItem());
         case "flow" -> elem.setFlow(isExpected(Token.IDENTIFIER));
         case "phantomize" -> elem.setPhantomize(isExpected(Token.IDENTIFIER));
-//        case "teleport" -> elem.setTeleport(isExpected(Token.IDENTIFIER));
         case "teleport" -> {
           String name = isExpected(Token.IDENTIFIER);
           isExpected(Token.DOT);

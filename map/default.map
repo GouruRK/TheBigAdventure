@@ -28,7 +28,7 @@
 	skin: DOOR
 	position: (1, 3)
 	kind: obstacle
-	teleport: fun_map.map
+	teleport: fun.map
 
 [element]
     name: Waldo
