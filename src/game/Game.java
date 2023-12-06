@@ -77,10 +77,7 @@ public class Game {
   public boolean isMoveInGamePossible(Position pos) {
   	Environnement env = searchEnvironnement(pos.x(), pos.y());
   	
-  	if (env == null || env.standable()) {
-  		return true;
-  	}
-  	return false;
+  	return env == null || env.standable() || env.isOpen();
   }
   
   public Direction moveToDirection(KeyOperation op) {

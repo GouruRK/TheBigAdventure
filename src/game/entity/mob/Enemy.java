@@ -14,8 +14,9 @@ public class Enemy implements Mob {
   private final int damage;
   private Position pos;
   private int health;
+  private int maxHealth;
   
-  public Enemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour, String name) {
+  public Enemy(String skin, Position pos, Zone zone, int health, int maxHealth, int damage, Behaviour behaviour, String name) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(pos);
     Objects.requireNonNull(zone);
@@ -26,18 +27,19 @@ public class Enemy implements Mob {
     this.health = health;
     this.behaviour = behaviour;
     this.damage = damage;
+    this.maxHealth = maxHealth;
   }
   
-  public Enemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour) {
-    this(skin, pos, zone, health, damage, behaviour, null);
+  public Enemy(String skin, Position pos, Zone zone, int health, int maxHealth, int damage, Behaviour behaviour) {
+    this(skin, pos, zone, health, maxHealth, damage, behaviour, null);
   }
   
-  public Enemy(String skin, Position pos, Zone zone, int health, int damage) {
-    this(skin, pos, zone, health, damage, Behaviour.STROLL, null);
+  public Enemy(String skin, Position pos, Zone zone, int health, int maxHealth, int damage) {
+    this(skin, pos, zone, health, maxHealth, damage, Behaviour.STROLL, null);
   }
   
-  public Enemy(String skin, Position pos, Zone zone, int health, int damage, String name) {
-    this(skin, pos, zone, health, damage, Behaviour.STROLL, name);
+  public Enemy(String skin, Position pos, Zone zone, int health, int maxHealth, int damage, String name) {
+    this(skin, pos, zone, health, maxHealth, damage, Behaviour.STROLL, name);
   }
   
   public String skin() {

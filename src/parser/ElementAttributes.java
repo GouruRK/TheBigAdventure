@@ -122,7 +122,7 @@ public class ElementAttributes {
     return pos;
   }
   
-  public int gethealth() {
+  public int getHealth() {
     if (hasHealth()) return health;
     return 0;
   }

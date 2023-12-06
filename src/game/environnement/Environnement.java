@@ -11,7 +11,11 @@ public interface Environnement {
   public abstract Position pos();
   
   public default boolean standable() {
-    return true;
+    return false;
+  }
+  
+  public default boolean isOpen() {
+    return false;
   }
   
   public static Environnement createEnvironnement(EncodingRow row, Position pos) {

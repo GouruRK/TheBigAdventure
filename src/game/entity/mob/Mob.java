@@ -69,7 +69,7 @@ public interface Mob extends Entity {
   public static Mob createMob(ElementAttributes element) {
     return switch (element.getKind()) {
     case Kind.FRIEND -> new Friend(element.getSkin(), element.getPosition(), element.getZone(), element.getName(), element.getTrade());
-    case Kind.ENEMY -> new Enemy(element.getSkin(), element.getPosition(), element.getZone(), element.gethealth(), element.getDamage(), element.getBehaviour(), element.getName());
+    case Kind.ENEMY -> new Enemy(element.getSkin(), element.getPosition(), element.getZone(), element.getHealth(), element.getHealth(), element.getDamage(), element.getBehaviour(), element.getName());
     default -> null;
     };
   }
