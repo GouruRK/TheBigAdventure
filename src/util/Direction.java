@@ -32,7 +32,7 @@ public enum Direction {
     case 0 -> Direction.EAST;
     case 1 -> Direction.WEST;
     case 2 -> Direction.NORTH;
-    case 3 -> Direction.WEST;
+    case 3 -> Direction.SOUTH;
     default -> Direction.NONE;
     };
   }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import game.GameObjectID;
 import game.entity.item.Item;
 import util.Position;
 import util.Zone;
@@ -67,6 +68,10 @@ public class Friend implements Mob {
   
   public Map<String, List<Item>> trade() {
     return trade;
+  }
+  
+  public GameObjectID id() {
+    return GameObjectID.FRIEND;
   }
   
 }

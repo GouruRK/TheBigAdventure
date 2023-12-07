@@ -30,6 +30,7 @@ public class Window {
 
   private final int IMAGESIZE = 24;
   private final int FPS = 60;
+  private final int MOBUPDATE = 10;
 
   private final Game game;
   private final HashMap<String, BufferedImage> skinMap;
@@ -95,64 +96,42 @@ public class Window {
 
     void clearWindow(Graphics2D graphics) {
       graphics.setColor(Color.BLACK);
-      graphics.fill(new  Rectangle2D.Float(0, 0, windowWidth, windowHeight));
+      graphics.fill(new Rectangle2D.Float(0, 0, windowWidth, windowHeight));
     }
 
     void drawMobs(Graphics2D graphics) {
-      for (var mob : game.mobs()) {
+      game.mobs().forEach(mob -> {
         drawImage(graphics, mob.pos(), mob.skin());
         drawHealthBar(graphics, mob);
-      }
-      drawImage(graphics, game.player().pos(), game.player().skin());
-      drawHealthBar(graphics, game.player());
+      });
     }
 
     void drawHealthBar(Graphics2D graphics, Mob mob) {
       graphics.setColor(Color.RED);
-      final Rectangle2D.Double rectMaxHealth = new Rectangle2D.Double(((mob.pos().x())*IMAGESIZE)+4, ((mob.pos().y())*IMAGESIZE)+1, 16, 4);
+      Rectangle2D.Double rectMaxHealth = new Rectangle2D.Double(mob.pos().x()*IMAGESIZE + 4, mob.pos().y()*IMAGESIZE + 1, 16, 4);
       graphics.fill(rectMaxHealth);
+      
       graphics.setColor(Color.GREEN);    	
-      final Rectangle2D.Double rectCurrentHealth = new Rectangle2D.Double(((mob.pos().x())*IMAGESIZE)+4, ((mob.pos().y())*IMAGESIZE)+1, 16*(mob.health()/mob.maxHealth()), 4);
+      Rectangle2D.Double rectCurrentHealth = new Rectangle2D.Double(mob.pos().x()*IMAGESIZE + 4, mob.pos().y()*IMAGESIZE + 1, 16*(mob.health()/mob.maxHealth()), 4);
       graphics.fill(rectCurrentHealth);
-    }
-
-    void clearWindow() {
-      context.renderFrame(graphics -> {
-        clearWindow(graphics);
-      });
     }
 
     void drawImage(Graphics2D graphics, Position pos, String skin) {
       graphics.drawImage(skinMap.get(skin), (int) (pos.x()*IMAGESIZE), (int) (pos.y()*IMAGESIZE), null);
     }
 
-    void drawImage(Position pos, String skin) {
-      context.renderFrame(graphics -> {
-        drawImage(graphics, pos, skin);
-      });
-    }
-
-
     void drawEnvironnement(Graphics2D graphics, Environnement env) {
       drawImage(graphics, env.pos(), env.skin());
     }
 
-    void drawEnvironnement(Environnement env) {
-      drawImage(env.pos(), env.skin());
-    }
 
     void drawPlayer(Graphics2D graphics) {
       drawImage(graphics, game.player().pos(), game.player().skin());
-    }
-
-    void drawPlayer() {
-      drawImage(game.player().pos(), game.player().skin());
+      drawHealthBar(graphics, game.player());
     }
 
     void drawDroppedItems(Graphics2D graphics) {
-      for (DroppedItem item: game.items()) {
-        drawImage(graphics, item.pos(), item.skin());
-      }
+      game.items().forEach(item -> drawImage(graphics, item.pos(), item.skin()));
     }
 
     void drawMap(Graphics2D graphics) {
@@ -160,16 +139,6 @@ public class Window {
         for (Environnement env: line) {
           if (env != null) {
             drawEnvironnement(graphics, env);            
-          }
-        }
-      }
-    }
-
-    void drawMap() {
-      for (var line: game.field()) {
-        for (Environnement env: line) {
-          if (env != null) {
-            drawEnvironnement(env);            
           }
         }
       }
@@ -185,7 +154,6 @@ public class Window {
         graphics.dispose();
       });
     }
-
   }
 
   public KeyOperation controller(ApplicationContext context, Player player) {
@@ -196,6 +164,10 @@ public class Window {
     // Action action = event.getAction();
     KeyboardKey key = event.getKey();
 
+    if (key == null) {
+      return KeyOperation.NONE;
+    }
+    
     return switch (key) {
     case KeyboardKey.UP, KeyboardKey.Z -> KeyOperation.UP;
     case KeyboardKey.RIGHT, KeyboardKey.D -> KeyOperation.RIGHT;
@@ -212,11 +184,28 @@ public class Window {
     windowHeight = (int) screenInfo.getHeight();
   }
 
+  private void moveMobs() {
+    game.mobs().forEach(mob -> game.move(mob, Direction.randomDirection(), 1));
+  }
+  
+  private void computeTimeDelay(long startTime, long endTime) {
+    long timeDiff = endTime - startTime;
+    double delay = 1.0 / FPS - (timeDiff / 1.0e9);
+    
+    if (delay > 0) {
+      try {
+        TimeUnit.MILLISECONDS.sleep((int)(delay * 1000));
+      } catch (InterruptedException e) {
+      }
+    }
+    
+  }
+  
   public void play() {
 
     Application.run(Color.BLACK, context -> {
-      long start_time, end_time, time_diff;
-      double extra_time;
+      long startTime;
+      boolean needUpdate = false;
 
       initWindowSize(context);
 
@@ -226,22 +215,24 @@ public class Window {
       area.drawGame();
       while ((key = controller(context, game.player())) != KeyOperation.EXIT) {
 
-        start_time = System.nanoTime();
+        startTime = System.nanoTime();
 
         if (key == KeyOperation.UP || key == KeyOperation.RIGHT || key == KeyOperation.DOWN || key == KeyOperation.LEFT) {
           game.move(game.player(), Window.keyToDirection(key),  1);
-          area.drawGame();
+          needUpdate = true;
         }
 
-        end_time = System.nanoTime();
-        time_diff = end_time - start_time;
-        extra_time = 1.0 / FPS - (time_diff / 1.0e9);
-        if (extra_time > 0) {
-          try {
-            TimeUnit.MILLISECONDS.sleep((int)(extra_time * 1000));
-          } catch (InterruptedException e) {
-          }
+        if (totalFrame % MOBUPDATE == 0) {
+          moveMobs();
+          needUpdate = true;
         }
+        
+        if (needUpdate) {
+          area.drawGame();
+          needUpdate = false;
+        }
+        
+        computeTimeDelay(startTime, System.nanoTime());
         totalFrame++;
       }
       context.exit(0);

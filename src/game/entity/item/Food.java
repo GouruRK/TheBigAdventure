@@ -14,7 +14,7 @@ public record Food(String skin, String name) implements Item {
     this(skin, null);
   }
   
-  public GameObjectID getID() {
+  public GameObjectID id() {
     return GameObjectID.FOOD;
   }
   

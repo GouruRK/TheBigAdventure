@@ -14,7 +14,7 @@ public record Readable(String skin, String text, String name) implements Item {
     this(skin, text, null);
   }
   
-  public GameObjectID getID() {
+  public GameObjectID id() {
     return GameObjectID.READABLE;
   }
 }

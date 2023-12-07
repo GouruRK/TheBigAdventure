@@ -9,7 +9,7 @@ public interface Container extends Item {
     return false;
   }
   
-  public default GameObjectID getID() {
+  public default GameObjectID id() {
     return GameObjectID.CONTAINER;
   }
   

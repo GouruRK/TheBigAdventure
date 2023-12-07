@@ -1,7 +1,6 @@
 package game.entity.mob;
 
 
-import game.GameObjectID;
 import game.Kind;
 import game.entity.Entity;
 import parser.ElementAttributes;
@@ -18,14 +17,14 @@ public interface Mob extends Entity {
   public abstract int health();
   public abstract int maxHealth();
   
+  public default Behaviour behaviour() {
+    return Behaviour.UNKNOWN;
+  }
   
   public default int damage() {
     return 0;
   }
   
-  public default GameObjectID getID() {
-    return GameObjectID.MOB;
-  }
   
   // ------------ Movement related ------------
   

@@ -7,7 +7,7 @@ public interface Entity {
   public abstract String skin();
   public abstract String name();
   
-  public abstract GameObjectID getID();
+  public abstract GameObjectID id();
   
   public default boolean hasName() {
     return name() != null;

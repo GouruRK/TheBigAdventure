@@ -7,7 +7,6 @@ import game.entity.item.DroppedItem;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
-import graph.KeyOperation;
 import util.Direction;
 import util.Position;
 
@@ -63,8 +62,11 @@ public class Game {
     case WEST -> mob.pos().addX(-step);
     case SOUTH -> mob.pos().addY(step);
     case EAST -> mob.pos().addX(step);
-    default -> 	null;
+    default -> null;
     };
+    if (nextPos == null) {
+      return;
+    }
     if (mob.isMoveInZonePossible(nextPos) && isMoveInGamePossible(nextPos)) {
       mob.setPos(nextPos);
     }

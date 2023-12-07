@@ -21,8 +21,8 @@ public record DroppedItem(Position pos, Item item) implements Entity {
     return item.name();
   }
   
-  public GameObjectID getID() {
-    return item.getID();
+  public GameObjectID id() {
+    return item.id();
   }
   
   

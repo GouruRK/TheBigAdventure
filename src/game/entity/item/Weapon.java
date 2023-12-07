@@ -23,7 +23,7 @@ public record Weapon(String skin, int damage, boolean burning, String name) impl
     this(skin, 0, false, name);
   }
   
-  public GameObjectID getID() {
+  public GameObjectID id() {
     return GameObjectID.WEAPON;
   }
   

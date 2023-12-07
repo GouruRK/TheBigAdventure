@@ -66,7 +66,7 @@ public class Player implements Mob {
     if (hold == null) {
       return 0;
     }
-    if (hold.getID() == GameObjectID.WEAPON) {
+    if (hold.id() == GameObjectID.WEAPON) {
       return hold.damage();
     }
     return 0;
@@ -76,5 +76,9 @@ public class Player implements Mob {
   public String toString() {
     return "Player(name ; " + name + ", skin: " + skin + ", " + pos.toString() + ")";
 	}
+  
+  public GameObjectID id() {
+    return GameObjectID.PLAYER;
+  }
   
 }

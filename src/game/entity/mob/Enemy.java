@@ -2,6 +2,7 @@ package game.entity.mob;
 
 import java.util.Objects;
 
+import game.GameObjectID;
 import util.Position;
 import util.Zone;
 
@@ -64,6 +65,10 @@ public class Enemy implements Mob {
 
   public void setPos(Position pos) {
   	this.pos = pos;
+  }
+  
+  public GameObjectID id() {
+    return GameObjectID.ENEMY;
   }
   
   @Override
