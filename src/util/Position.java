@@ -61,4 +61,10 @@ public class Position {
     return "Position(x: " + x + ", y: " + y + ")";
   }
   
+  @Override
+  public boolean equals(Object obj) {
+      return obj instanceof Position pos
+                  && ((int)x == (int)pos.x()) && ((int)y == (int)pos.y());
+  }
+  
 }

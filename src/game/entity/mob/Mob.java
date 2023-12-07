@@ -57,10 +57,7 @@ public interface Mob extends Entity {
 		}
   }
   
-  /**
-   * 
-   * @return
-   */
+
   public default boolean isMoveInZonePossible(Position pos) {
   	if (!zone().isInside(pos)) {
   		return false;

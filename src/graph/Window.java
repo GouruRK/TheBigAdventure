@@ -7,14 +7,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
 import fr.umlv.zen5.Application;
 import fr.umlv.zen5.ApplicationContext;
 import fr.umlv.zen5.Event;
+import fr.umlv.zen5.Event.Action;
 import fr.umlv.zen5.KeyboardKey;
 import fr.umlv.zen5.ScreenInfo;
 import game.Game;
@@ -27,17 +28,20 @@ import util.Position;
 public class Window {
 
   private final int IMAGESIZE = 24;
+  private final int FPS = 60;
 
   private final Game game;
   private final HashMap<String, BufferedImage> skinMap;
   private int windowWidth;
   private int windowHeight;
+  private long totalFrame;
 
   public Window(Game game) throws IOException {
     Objects.requireNonNull(game);
     this.game = game;
     skinMap = new HashMap<String, BufferedImage>();
     loadSkin();
+    totalFrame = 0;
   }
   
   private void loadSkin(String skin) throws IOException {
@@ -108,7 +112,7 @@ public class Window {
     }
 
     void drawImage(Graphics2D graphics, Position pos, String skin) {
-      graphics.drawImage(skinMap.get(skin), (int) pos.x()*IMAGESIZE, (int) pos.y()*IMAGESIZE, null);
+      graphics.drawImage(skinMap.get(skin), (int) (pos.x()*IMAGESIZE), (int) (pos.y()*IMAGESIZE), null);
     }
     
     void drawImage(Position pos, String skin) {
@@ -132,6 +136,12 @@ public class Window {
     
     void drawPlayer() {
       drawImage(game.player().pos(), game.player().skin());
+    }
+    
+    void drawDroppedItems(Graphics2D graphics) {
+      for (DroppedItem item: game.items()) {
+        drawImage(graphics, item.pos(), item.skin());
+      }
     }
     
     void drawMap(Graphics2D graphics) {
@@ -160,6 +170,7 @@ public class Window {
         drawMap(graphics);
         drawPlayer(graphics);
         drawMobs(graphics);
+        drawDroppedItems(graphics);
         graphics.dispose();
       });
     }
@@ -168,7 +179,7 @@ public class Window {
 
   public KeyOperation controller(ApplicationContext context, Player player) {
     Event event = context.pollEvent();
-    if (event == null) {
+    if (event == null || event.getAction() == Action.KEY_RELEASED) {
       return KeyOperation.NONE;
     }
     // Action action = event.getAction();
@@ -191,19 +202,36 @@ public class Window {
   }
   
   public void play() {
+    
     Application.run(Color.BLACK, context -> {
+      long start_time, end_time, time_diff;
+      double extra_time;
+      
       initWindowSize(context);
       
       Area area = new Area(context);
       KeyOperation op;
-      
+        
       area.drawGame();
       while ((op = controller(context, game.player())) != KeyOperation.EXIT) {
         
+        start_time = System.nanoTime();
+        
         if (op == KeyOperation.MOVE_UP || op == KeyOperation.MOVE_RIGHT || op == KeyOperation.MOVE_DOWN || op == KeyOperation.MOVE_LEFT) {
           game.move(game.player(), game.moveToDirection(op),  0.5);
-        	area.drawGame();
-        } 
+          area.drawGame();
+        }
+        
+        end_time = System.nanoTime();
+        time_diff = end_time - start_time;
+        extra_time = 1.0 / FPS - (time_diff / 1.0e9);
+        if (extra_time > 0) {
+          try {
+            TimeUnit.MILLISECONDS.sleep((int)(extra_time * 1000));
+          } catch (InterruptedException e) {
+          }
+        }
+        totalFrame++;
       }
       context.exit(0);
     });
