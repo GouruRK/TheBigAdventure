@@ -1,7 +1,7 @@
 package game.entity.mob;
 
 
-import fr.umlv.zen5.KeyboardKey;
+import game.GameObjectID;
 import game.Kind;
 import game.entity.Entity;
 import parser.ElementAttributes;
@@ -10,11 +10,24 @@ import util.Zone;
 
 public interface Mob extends Entity {
 
+  // ------------ Getter ------------
+  
   public abstract Position pos();
   public abstract Zone zone();
   public abstract void setPos(Position pos);
   public abstract int health();
   public abstract int maxHealth();
+  
+  
+  public default int damage() {
+    return 0;
+  }
+  
+  public default GameObjectID getID() {
+    return GameObjectID.MOB;
+  }
+  
+  // ------------ Movement related ------------
   
   public default void moveX(double offset) {
     Position pos = pos();
@@ -41,22 +54,6 @@ public interface Mob extends Entity {
   public default void moveY(int offset) {
     moveY((double)offset);
   }
-  
-  public default int damage() {
-    return 0;
-  }
-  
-  public default void keyToMove(KeyboardKey key, double block) {
-  	switch (key) {
-		case UP : this.pos().addY(block);
-		case RIGHT : this.pos().addX(block);
-		case DOWN : this.pos().addY(block);
-		case LEFT : this.pos().addX(block);
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + key);
-		}
-  }
-  
 
   public default boolean isMoveInZonePossible(Position pos) {
   	if (!zone().isInside(pos)) {
@@ -65,10 +62,12 @@ public interface Mob extends Entity {
   	return true;
   }
   
+  // ------------ Creation related ------------
+  
   public static Mob createMob(ElementAttributes element) {
     return switch (element.getKind()) {
-    case Kind.FRIEND -> new Friend(element.getSkin(), element.getPosition(), element.getZone(),element.getName(),element.getHealth() ,element.getHealth() ,element.getTrade());
-    case Kind.ENEMY -> new Enemy(element.getSkin(), element.getPosition(), element.getZone(), element.getHealth(), element.getHealth(), element.getDamage(), element.getBehaviour(), element.getName());
+    case Kind.FRIEND -> new Friend(element.getSkin(), element.getPosition(), element.getZone(),element.getName(),element.getHealth(), element.getTrade());
+    case Kind.ENEMY -> new Enemy(element.getSkin(), element.getPosition(), element.getZone(), element.getHealth(), element.getDamage(), element.getBehaviour(), element.getName());
     default -> null;
     };
   }

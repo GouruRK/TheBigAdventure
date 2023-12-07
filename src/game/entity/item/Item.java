@@ -9,6 +9,10 @@ import util.Position;
 
 public interface Item extends Entity {
   
+  public default int damage() {
+    return 0;
+  }
+  
   public static Item createItem(EncodingRow row) {
     return switch(row.id()) {
     case GameObjectID.FOOD -> new Food(row.skin());

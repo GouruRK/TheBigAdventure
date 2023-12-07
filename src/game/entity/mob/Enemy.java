@@ -30,16 +30,8 @@ public class Enemy implements Mob {
     this.maxHealth = maxHealth;
   }
   
-  public Enemy(String skin, Position pos, Zone zone, int health, int maxHealth, int damage, Behaviour behaviour) {
-    this(skin, pos, zone, health, maxHealth, damage, behaviour, null);
-  }
-  
-  public Enemy(String skin, Position pos, Zone zone, int health, int maxHealth, int damage) {
-    this(skin, pos, zone, health, maxHealth, damage, Behaviour.STROLL, null);
-  }
-  
-  public Enemy(String skin, Position pos, Zone zone, int health, int maxHealth, int damage, String name) {
-    this(skin, pos, zone, health, maxHealth, damage, Behaviour.STROLL, name);
+  public Enemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour, String name) {
+    this(skin, pos, zone, health, health, damage, behaviour, name);
   }
   
   public String skin() {
@@ -62,7 +54,6 @@ public class Enemy implements Mob {
   	return health;
   }
   
-  @Override
   public int damage() {
     return damage;
   }

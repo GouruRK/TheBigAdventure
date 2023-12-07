@@ -53,6 +53,9 @@ public enum GameEnvironnement implements GameObject {
   TREE(GameObjectID.OBSTACLE),
   TREES(GameObjectID.OBSTACLE),
   WALL(GameObjectID.OBSTACLE),
+  ICE(GameObjectID.OBSTACLE),
+  LAVA(GameObjectID.OBSTACLE),
+  WATER(GameObjectID.OBSTACLE),
   
   // Gate
   DOOR(GameObjectID.GATE),
@@ -63,11 +66,6 @@ public enum GameEnvironnement implements GameObject {
   // Effect
   BUBBLE(GameObjectID.EFFECT),
   DUST(GameObjectID.EFFECT),
-  
-  // Biome
-  ICE(GameObjectID.OBSTACLE),
-  LAVA(GameObjectID.OBSTACLE),
-  WATER(GameObjectID.OBSTACLE),
   
   // Other
   WIND(GameObjectID.WIND);

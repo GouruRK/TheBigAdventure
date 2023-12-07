@@ -90,14 +90,4 @@ public class Game {
     return (env == null || env.standable() || env.isOpen()) && mob == null;
   }
 
-  public Direction moveToDirection(KeyOperation op) {
-    return switch (op) {
-    case KeyOperation.MOVE_UP -> Direction.NORTH;
-    case KeyOperation.MOVE_LEFT -> Direction.WEST;
-    case KeyOperation.MOVE_DOWN -> Direction.SOUTH;
-    case KeyOperation.MOVE_RIGHT -> Direction.EAST;
-    default -> null;
-    };
-  }
-
 }

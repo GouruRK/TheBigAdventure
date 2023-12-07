@@ -2,6 +2,8 @@ package game.entity.item;
 
 import java.util.Objects;
 
+import game.GameObjectID;
+
 public record Thing(String skin, String name) implements Item {
 
   public Thing {
@@ -10,6 +12,10 @@ public record Thing(String skin, String name) implements Item {
   
   public Thing(String skin) {
     this(skin, null);
+  }
+  
+  public GameObjectID getID() {
+    return GameObjectID.THING;
   }
   
 }

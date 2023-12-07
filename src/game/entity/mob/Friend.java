@@ -19,7 +19,7 @@ public class Friend implements Mob {
   private final Map<String, List<Item>> trade; 
   
   
-  public Friend(String skin, Position pos, Zone zone, String name,int health ,int maxHealth ,Map<String, List<Item>> trade) {
+  public Friend(String skin, Position pos, Zone zone, String name, int health, int maxHealth, Map<String, List<Item>> trade) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(pos);
     Objects.requireNonNull(zone);
@@ -29,8 +29,12 @@ public class Friend implements Mob {
     this.pos = pos;
     this.zone = zone;
     this.health = health;
-    this.maxHealth = maxHealth;
+    this.maxHealth = health;
     this.trade = trade;
+  }
+  
+  public Friend(String skin, Position pos, Zone zone, String name, int health, Map<String, List<Item>> trade) {
+    this(skin, pos, zone, name, health, health, trade);
   }
   
   public String skin() {

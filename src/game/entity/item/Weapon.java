@@ -2,6 +2,8 @@ package game.entity.item;
 
 import java.util.Objects;
 
+import game.GameObjectID;
+
 public record Weapon(String skin, int damage, boolean burning, String name) implements Item {
 
   public Weapon {
@@ -19,6 +21,10 @@ public record Weapon(String skin, int damage, boolean burning, String name) impl
   
   public Weapon(String skin, String name) {
     this(skin, 0, false, name);
+  }
+  
+  public GameObjectID getID() {
+    return GameObjectID.WEAPON;
   }
   
 }
