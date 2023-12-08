@@ -12,6 +12,7 @@ public enum Token {
   DOT("\\."),
   QUOTE("\"\"\"[^\"]+\"\"\""),
   ARROW("->"),
+  NEWLINE("\\n");
   ;
 
   public final String regex;

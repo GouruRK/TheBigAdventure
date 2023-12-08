@@ -19,10 +19,18 @@ public class Lexer {
   
   private final Stack<Result> stack;
   
+  private Result last;
+  private int line;
+  
   public Lexer(String text) {
     this.text = Objects.requireNonNull(text);
     this.matcher = PATTERN.matcher(text);
     this.stack = new Stack<Result>();;
+    this.line = 1;
+  }
+  
+  public Result last() {
+    return last;
   }
 
   public boolean hasNext() {
@@ -44,6 +52,19 @@ public class Lexer {
 
   
   public Result nextResult() {
+    Result next = filteredNextResult();
+    while (next != null && next.token() == Token.NEWLINE) {
+      next = filteredNextResult();
+      line++;
+    }
+    last = next;
+    if (next != null) {
+      return new Result(next.token(), next.content(), line);
+    }
+    return next;
+  }
+  
+  public Result filteredNextResult() {
     if (!stack.isEmpty()) {
       return stack.pop();
     }
@@ -57,10 +78,12 @@ public class Lexer {
         var end = matcher.end(group);
         var content = text.substring(start, end);
         
-//        line += content.chars().mapToObj(obj -> (char)obj).filter(c -> c == '\n').count();
-//        content.replaceAll("\n", "");
+        Result res = new Result(TOKENS.get(group - 1), content, line);
+        if (res.token() == Token.QUOTE) {
+          line += content.chars().mapToObj(obj -> (char)obj).filter(c -> c == '\n').count();
+        }
         
-        return new Result(TOKENS.get(group - 1), content);
+        return res;
       }
     }
     throw new AssertionError();

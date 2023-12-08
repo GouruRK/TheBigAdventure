@@ -151,7 +151,6 @@ public class Window {
         drawPlayer(graphics);
         drawMobs(graphics);
         drawDroppedItems(graphics);
-        graphics.dispose();
       });
     }
   }
