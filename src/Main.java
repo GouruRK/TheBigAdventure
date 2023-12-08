@@ -7,13 +7,24 @@ import parser.Parser;
 import parser.TokenException;
 
 public class Main {
-  public static void main(String[] args) throws IOException,
-                                                TokenException {
-    Path mapPath = Path.of("map/fun.map");
-    Parser parser = new Parser(mapPath);
-    Game game = parser.parseMap();
+  public static void main(String[] args) {
     
-    Window win = new Window(game);
+    Path mapPath = Path.of("map/fun.map");
+    Parser parser;
+    Game game;
+    Window win = null;
+    
+    try {
+      parser = new Parser(mapPath);
+      game = parser.parseMap();
+      
+      win = new Window(game);
+    } catch (TokenException e) {
+      System.err.println(e.getMessage());
+    } catch (IOException e) {
+      System.err.println(e.getMessage());
+    }
+    
     win.play();
   }
 }
