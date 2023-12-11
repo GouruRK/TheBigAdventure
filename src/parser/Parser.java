@@ -5,9 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import game.Game;
 import game.GameObject;
@@ -19,10 +21,11 @@ import util.Zone;
 
 public class Parser {
   
+  private static final Set<String> PARSEDMAP = new HashSet<String>();
   private final String sourceFile;
   private final Lexer lexer;
+  private final GameAttributes attributes;
   
-  private GameAttributes attributes;
   
   public Parser(String text, String sourceFile) {
     Objects.requireNonNull(text);
@@ -30,6 +33,7 @@ public class Parser {
     this.lexer = new Lexer(text);
     this.attributes = new GameAttributes();
     this.sourceFile = sourceFile;
+    PARSEDMAP.add(sourceFile);
   }
   
   public Parser(Path filePath) throws IOException {
@@ -39,6 +43,7 @@ public class Parser {
     this.lexer = new Lexer(text);
     this.attributes = new GameAttributes();
     this.sourceFile = filePath.toString();
+    PARSEDMAP.add(sourceFile);
   }
   
   private String isExpected(Token token) throws TokenException {
@@ -281,6 +286,9 @@ public class Parser {
           String name = isExpected(Token.IDENTIFIER);
           isExpected(Token.DOT);
           isExpected(Token.IDENTIFIER, "map");
+          if (PARSEDMAP.contains("map/" + name + ".map")) {
+            continue;
+          }
           Parser parser = new Parser(Path.of("map/" + name + ".map"));
           elem.setTeleport(parser.parseMap());
         }
