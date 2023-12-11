@@ -2,6 +2,7 @@ package graph;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -106,6 +107,20 @@ public class Window {
       });
     }
 
+    void drawHoldedItem(Graphics2D graphics) {
+      Player player = game.player();
+      if (player.hold() == null) {
+        return;
+      }
+      AffineTransform saveAT = graphics.getTransform();
+      
+      Position pos = player.pos().addY(0.3).addX(0.8);
+      graphics.scale(0.8, 0.8);
+      drawImage(graphics, pos, player.hold().skin(), 1.25); // 1.25 because 0.8*1.25 = 1
+      
+      graphics.setTransform(saveAT);
+    }
+    
     void drawHealthBar(Graphics2D graphics, Mob mob) {
       graphics.setColor(Color.RED);
       Rectangle2D.Double rectMaxHealth = new Rectangle2D.Double(mob.pos().x()*IMAGESIZE + 4, mob.pos().y()*IMAGESIZE + 1, 16, 4);
@@ -119,11 +134,14 @@ public class Window {
     void drawImage(Graphics2D graphics, Position pos, String skin) {
       graphics.drawImage(skinMap.get(skin), (int) (pos.x()*IMAGESIZE), (int) (pos.y()*IMAGESIZE), null);
     }
+    
+    void drawImage(Graphics2D graphics, Position pos, String skin, double factor) {
+      graphics.drawImage(skinMap.get(skin), (int) (pos.x()*IMAGESIZE*factor), (int) (pos.y()*IMAGESIZE*factor), null);
+    }
 
     void drawEnvironnement(Graphics2D graphics, Environnement env) {
       drawImage(graphics, env.pos(), env.skin());
     }
-
 
     void drawPlayer(Graphics2D graphics) {
       drawImage(graphics, game.player().pos(), game.player().skin());
@@ -151,6 +169,7 @@ public class Window {
         drawPlayer(graphics);
         drawMobs(graphics);
         drawDroppedItems(graphics);
+        drawHoldedItem(graphics);
       });
     }
   }
@@ -201,7 +220,6 @@ public class Window {
   }
   
   public void play() {
-
     Application.run(Color.BLACK, context -> {
       long startTime;
       boolean needUpdate = false;
