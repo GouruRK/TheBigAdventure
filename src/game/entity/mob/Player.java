@@ -72,6 +72,15 @@ public class Player implements Mob {
     return 0;
   }
   
+  public Item hold() {
+    return hold;
+  }
+  
+  public void setHold(Item item) {
+    Objects.requireNonNull(item);
+    hold = item;
+  }
+  
   @Override
   public String toString() {
     return "Player(name ; " + name + ", skin: " + skin + ", " + pos.toString() + ")";

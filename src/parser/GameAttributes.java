@@ -239,7 +239,7 @@ public class GameAttributes {
   public Game createGame() throws TokenException {
     createField();
     addElements();
-    return new Game(size, field, List.copyOf(mobs), List.copyOf(items), player);
+    return new Game(size, field, mobs, items, player);
   }
   
 }

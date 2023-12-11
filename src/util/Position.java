@@ -56,6 +56,16 @@ public class Position {
   	return new Position(x,this.y + y);
   }
   
+  public Position computeDirection(Direction dir, double step) {
+    return switch (dir) {
+      case NORTH -> addY(-step);
+      case WEST -> addX(-step);
+      case SOUTH -> addY(step);
+      case EAST -> addX(step);
+      default -> null;    
+    };
+  }
+  
   @Override
   public String toString() {
     return "Position(x: " + x + ", y: " + y + ")";

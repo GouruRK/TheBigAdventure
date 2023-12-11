@@ -21,8 +21,7 @@ public class Parser {
   
   private final String sourceFile;
   private final Lexer lexer;
-  
-  private GameAttributes attributes;
+  private final GameAttributes attributes;
   
   public Parser(String text, String sourceFile) {
     Objects.requireNonNull(text);

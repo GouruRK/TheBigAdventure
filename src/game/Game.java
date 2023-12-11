@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,11 +15,13 @@ public class Game {
 
   private final Position size;
   private final Environnement[][] field;
-  private final List<Mob> mobs;
-  private final List<DroppedItem> items;
+  private final ArrayList<Mob> mobs;
+  private final ArrayList<DroppedItem> items;
   private final Player player;
 
-  public Game(Position size, Environnement[][] field, List<Mob> mobs, List<DroppedItem> items, Player player) {
+  // -------- Constructor --------
+  
+  public Game(Position size, Environnement[][] field, ArrayList<Mob> mobs, ArrayList<DroppedItem> items, Player player) {
     Objects.requireNonNull(size);
     Objects.requireNonNull(field);
     Objects.requireNonNull(mobs);
@@ -31,14 +34,8 @@ public class Game {
     this.player = player;
   }
 
-  @Override
-  public String toString() {
-    return size.toString() + "\n"
-        + player.toString() + "\n"
-        + "Mobs: " + mobs + "\n"
-        + "Items: " + items;
-  }
-
+  // -------- getter --------
+  
   public Player player() {
     return player;
   }
@@ -54,42 +51,62 @@ public class Game {
   public List<DroppedItem> items() {
     return items;
   }
+  
+  public DroppedItem searchItem(Position pos) {
+    return items.stream().filter(item -> item.pos().equals(pos)).findFirst().orElse(null);
+  }
+  
+  public Mob searchMob(Position pos) {
+    return mobs.stream().filter(mob -> mob.pos().equals(pos)).findFirst().orElse(null);
+  }
+  
+  public Environnement searchEnvironnement(Position pos) {
+    return field[(int)pos.y()][(int)pos.x()];
+  }
+  
+  public void removeItem(DroppedItem item) {
+    items.removeIf(i -> i.pos().equals(item.pos()));
+  }
 
+  // -------- Movement related --------
+  
   public void move(Mob mob, Direction dir, double step) {
-    // ici, faire un switch ou je ne sais quoi pour savoir dans quelle dir tu vas
-    Position nextPos = switch (dir) {
-    case NORTH -> mob.pos().addY(-step);
-    case WEST -> mob.pos().addX(-step);
-    case SOUTH -> mob.pos().addY(step);
-    case EAST -> mob.pos().addX(step);
-    default -> null;
-    };
+    Position nextPos = mob.pos().computeDirection(dir, step);
     if (nextPos == null) {
       return;
     }
-    if (mob.isMoveInZonePossible(nextPos) && isMoveInGamePossible(nextPos)) {
+    
+    if (mob.isMoveInZonePossible(nextPos) && isMoveInGamePossible(mob, nextPos)) {
       mob.setPos(nextPos);
+      extraAction(mob);
     }
   }
-
-  public Mob searchMob(Position pos) {
-    for (Mob mob : mobs) {
-        if (mob.pos().equals(pos)) {
-            return mob;
-        }
-    }
-    return null;
-}
   
-  public Environnement searchEnvironnement(Position pos) {
-    return this.field[(int)pos.y()][(int)pos.x()];
+  public void extraAction(Mob mob) {
+    switch (mob) {
+    case Player p -> {
+      if (p.hold() == null) {
+        DroppedItem item = searchItem(p.pos());
+        if (item != null) {
+          p.setHold(item.item());
+          removeItem(item);
+        }
+      }
+    }
+    default -> {}
+    }
   }
-
-  public boolean isMoveInGamePossible(Position pos) {
+  
+  public boolean isMoveInGamePossible(Mob mobToMove, Position pos) {
     Environnement env = searchEnvironnement(pos);
     Mob mob = searchMob(pos);
     
-    return (env == null || env.standable() || env.isOpen()) && mob == null;
+    return switch (mobToMove) {
+      case Player p -> (env == null || env.standable() || env.isOpen()) && mob == null;
+      default -> (env == null || env.standable() || env.isOpen()) && !pos.equals(player.pos());
+    };
+    
+    
   }
 
 }
