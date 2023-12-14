@@ -20,6 +20,7 @@ import fr.umlv.zen5.Event.Action;
 import fr.umlv.zen5.KeyboardKey;
 import fr.umlv.zen5.ScreenInfo;
 import game.Game;
+import game.Inventory;
 import game.entity.item.DroppedItem;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
@@ -29,15 +30,26 @@ import util.Position;
 
 public class Window {
 
-  private final int IMAGESIZE = 24;
-  private final int FPS = 60;
-  private final int MOBUPDATE = 10;
+  // ------- Constant -------
+   
+  private static final int IMAGESIZE = 24;
+  private static final int FPS = 60;
+  private static final int MOBUPDATE = 10;
 
+  // ------- General -------
+  
   private final Game game;
   private final HashMap<String, BufferedImage> skinMap;
   private int windowWidth;
   private int windowHeight;
   private long totalFrame;
+  
+  // ------- Inventory related -------
+  
+  private static final int inventoryWidth = IMAGESIZE*Inventory.NB_COLS*2;
+  private static final int inventoryHeight = IMAGESIZE*Inventory.NB_ROWS*2;
+  private boolean isInventoryShow;
+  private Position cursor;
 
   public Window(Game game) throws IOException {
     Objects.requireNonNull(game);
@@ -45,6 +57,8 @@ public class Window {
     skinMap = new HashMap<String, BufferedImage>();
     loadSkin();
     totalFrame = 0;
+    isInventoryShow = false;
+    cursor = new Position(0, 0);
   }
 
   private void loadSkin(String skin) throws IOException {
@@ -151,6 +165,23 @@ public class Window {
     void drawDroppedItems(Graphics2D graphics) {
       game.items().forEach(item -> drawImage(graphics, item.pos(), item.skin()));
     }
+    
+    void drawInventory(Graphics2D graphics) {
+      graphics.setColor(Color.LIGHT_GRAY);
+      Rectangle2D.Double inv = new Rectangle2D.Double(windowWidth / 2 - inventoryWidth / 2, windowHeight / 2 - inventoryHeight / 2, inventoryWidth, inventoryHeight);
+      graphics.fill(inv);
+      
+      for (int i = 0; i < Inventory.SIZE; i++) {
+        AffineTransform saveAT = graphics.getTransform();
+        
+        graphics.scale(2, 2);
+
+        drawImage() // HERE
+        
+        graphics.setTransform(saveAT);
+      }
+      
+    }
 
     void drawMap(Graphics2D graphics) {
       for (var line: game.field()) {
@@ -170,6 +201,9 @@ public class Window {
         drawMobs(graphics);
         drawDroppedItems(graphics);
         drawHoldedItem(graphics);
+        if (isInventoryShow) {
+          drawInventory(graphics);
+        }
       });
     }
   }
@@ -191,6 +225,7 @@ public class Window {
     case KeyboardKey.RIGHT, KeyboardKey.D -> KeyOperation.RIGHT;
     case KeyboardKey.DOWN, KeyboardKey.S -> KeyOperation.DOWN;
     case KeyboardKey.LEFT, KeyboardKey.Q -> KeyOperation.LEFT;
+    case KeyboardKey.I -> KeyOperation.INVENTORY;
     case KeyboardKey.UNDEFINED -> KeyOperation.EXIT;
     default -> KeyOperation.NONE;
     };
@@ -204,6 +239,16 @@ public class Window {
 
   private void moveMobs() {
     game.mobs().forEach(mob -> game.move(mob, Direction.randomDirection(), 1));
+  }
+  
+  private void moveCursor(Direction dir) {
+    if (((int)cursor.x()) == Inventory.NB_COLS) {
+      return;
+    }
+    if (((int)cursor.y()) == Inventory.NB_ROWS) {
+      return;
+    }
+    cursor = cursor.computeDirection(dir, 1);
   }
   
   private void computeTimeDelay(long startTime, long endTime) {
@@ -235,11 +280,18 @@ public class Window {
         startTime = System.nanoTime();
 
         if (key == KeyOperation.UP || key == KeyOperation.RIGHT || key == KeyOperation.DOWN || key == KeyOperation.LEFT) {
-          game.move(game.player(), Window.keyToDirection(key),  1);
+          if (isInventoryShow) {
+            moveCursor(Window.keyToDirection(key));
+          } else {
+            game.move(game.player(), Window.keyToDirection(key),  1);            
+          }
+          needUpdate = true;
+        } else if (key == KeyOperation.INVENTORY) {
+          isInventoryShow = !isInventoryShow;
           needUpdate = true;
         }
-
-        if (totalFrame % MOBUPDATE == 0) {
+        
+        if (totalFrame % MOBUPDATE == 0 && !isInventoryShow) {
           moveMobs();
           needUpdate = true;
         }

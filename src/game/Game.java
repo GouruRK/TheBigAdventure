@@ -18,7 +18,8 @@ public class Game {
   private final ArrayList<Mob> mobs;
   private final ArrayList<DroppedItem> items;
   private final Player player;
-
+  private final Inventory inventory;
+  
   // -------- Constructor --------
   
   public Game(Position size, Environnement[][] field, ArrayList<Mob> mobs, ArrayList<DroppedItem> items, Player player) {
@@ -32,6 +33,7 @@ public class Game {
     this.mobs = mobs;
     this.items = items;
     this.player = player;
+    this.inventory = new Inventory();
   }
 
   // -------- getter --------
@@ -50,6 +52,10 @@ public class Game {
 
   public List<DroppedItem> items() {
     return items;
+  }
+  
+  public Inventory inventory() {
+    return inventory;
   }
   
   public DroppedItem searchItem(Position pos) {
