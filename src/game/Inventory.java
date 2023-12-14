@@ -3,6 +3,7 @@ package game;
 import java.util.Objects;
 
 import game.entity.item.Item;
+import game.entity.item.Weapon;
 import util.Position;
 
 public class Inventory {
@@ -16,7 +17,7 @@ public class Inventory {
   
   public Inventory() {
     this.inventory = new Item[Inventory.NB_COLS * Inventory.NB_ROWS];
-    nbItems = 0;
+    nbItems = 1;
   }
   
   public Item[] get() {
@@ -89,7 +90,7 @@ public class Inventory {
  }
  
  private static int transformIndex(int x, int y) {
-   return x + y*Inventory.NB_ROWS;
+   return x + y*Inventory.NB_COLS;
  }
  
  private static boolean isIndexValid(int index) {
@@ -97,7 +98,7 @@ public class Inventory {
  }
  
  private static boolean isIndexValid(int x, int y) {
-   return x >= 0 && x < NB_ROWS && y >= 0 && y < NB_COLS;
+   return x >= 0 && x < NB_COLS && y >= 0 && y < NB_ROWS;
  }
  
 }
