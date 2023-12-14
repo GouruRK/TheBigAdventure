@@ -46,6 +46,12 @@ public class Window {
     totalFrame = 0;
   }
 
+  /**
+   * load skin on the screen
+   * 
+   * @param skin
+   * @throws IOException
+   */
   private void loadSkin(String skin) throws IOException {
     if (skinMap.get(skin) != null) {
       return;
@@ -57,7 +63,12 @@ public class Window {
       throw new IOException("Cannot find image for skin '" + skin + "' (path is '" + imagePath + "')");
     }
   }
-
+  
+  /**
+   * load all skin of Environnement, DroppedItem, Mob to setup de map
+   * 
+   * @throws IOException
+   */
   private void loadSkin() throws IOException {
     for (var line: game.field()) {
       for (Environnement env: line) {
@@ -76,6 +87,12 @@ public class Window {
     loadSkin(game.player().skin());
   }
 
+  /**
+   * Convert a KeyOperation into a Direction
+   * 
+   * @param key
+   * @return Direction
+   */
   public static Direction keyToDirection(KeyOperation key) {
     return switch (key) {
     case KeyOperation.UP -> Direction.NORTH;
@@ -90,15 +107,28 @@ public class Window {
 
     private ApplicationContext context;
 
+    /*
+     * Create Area context
+     */
     public Area(ApplicationContext context) {
       this.context = context;
     }
 
+    /**
+     * Clear the window
+     * 
+     * @param graphics
+     */
     void clearWindow(Graphics2D graphics) {
       graphics.setColor(Color.BLACK);
       graphics.fill(new Rectangle2D.Float(0, 0, windowWidth, windowHeight));
     }
 
+    /**
+     * draw all mobs
+     * 
+     * @param graphics
+     */
     void drawMobs(Graphics2D graphics) {
       game.mobs().forEach(mob -> {
         drawImage(graphics, mob.pos(), mob.skin());
@@ -106,6 +136,12 @@ public class Window {
       });
     }
 
+    /**
+     * draw health bar's Mobs
+     * 
+     * @param graphics
+     * @param mob
+     */
     void drawHealthBar(Graphics2D graphics, Mob mob) {
       graphics.setColor(Color.RED);
       Rectangle2D.Double rectMaxHealth = new Rectangle2D.Double(mob.pos().x()*IMAGESIZE + 4, mob.pos().y()*IMAGESIZE + 1, 16, 4);
@@ -143,7 +179,8 @@ public class Window {
         }
       }
     }
-
+    
+    
     void drawGame() {
       context.renderFrame(graphics -> {
         clearWindow(graphics);
@@ -156,6 +193,13 @@ public class Window {
     }
   }
 
+  /**
+   * Convert an Event into a KeyOperation if a like (ZQSD) and (UP/RIGHT/DOWN/LEFT Arrows) are pressed
+   * 
+   * @param context
+   * @param player
+   * @return KeyOperation
+   */
   public KeyOperation controller(ApplicationContext context, Player player) {
     Event event = context.pollEvent();
     if (event == null || event.getAction() == Action.KEY_RELEASED) {
@@ -178,6 +222,11 @@ public class Window {
     };
   }
 
+  /**
+   * Init a window screen depending of the screenInfo's user
+   * 
+   * @param context
+   */
   private void initWindowSize(ApplicationContext context) {
     ScreenInfo screenInfo = context.getScreenInfo();
     windowWidth = (int) screenInfo.getWidth();
@@ -188,6 +237,12 @@ public class Window {
     game.mobs().forEach(mob -> game.move(mob, Direction.randomDirection(), 1));
   }
   
+  /**
+   * Clock for the entire game / and regulate the Frame rate
+   * 
+   * @param startTime
+   * @param endTime
+   */
   private void computeTimeDelay(long startTime, long endTime) {
     long timeDiff = endTime - startTime;
     double delay = 1.0 / FPS - (timeDiff / 1.0e9);
@@ -200,6 +255,7 @@ public class Window {
     }
     
   }
+  
   
   public void play() {
 

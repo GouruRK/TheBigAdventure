@@ -18,6 +18,13 @@ public interface Environnement {
     return false;
   }
   
+  /**
+   * create an Environemment depending of his type from his encoding row
+   * 
+   * @param row
+   * @param pos
+   * @return Environnement
+   */
   public static Environnement createEnvironnement(EncodingRow row, Position pos) {
     return switch (row.id()) {
       case GameObjectID.SCENERY -> new Block(row.skin(), pos, true);
@@ -27,6 +34,13 @@ public interface Environnement {
     };
   }
   
+  /**
+   * create an Environnement depending of his type from his Attributes element
+   * 
+   * @param elem
+   * @param pos
+   * @return Environnement
+   */
   public static Environnement createEnvironnement(ElementAttributes elem, Position pos) {
     return switch (elem.getID()) {
     case GameObjectID.SCENERY -> new Block(elem.getSkin(), pos, true);

@@ -9,6 +9,13 @@ public record Zone(Position topLeft, Position bottomRight) {
     Objects.requireNonNull(bottomRight);
   }
   
+  
+  /**
+   * Check if the position is insane the Game Window (just to make sure that nothing can go through)
+   * 
+   * @param pos
+   * @return
+   */
   public boolean isInside(Position pos) {
     Objects.requireNonNull(topLeft);
     return (topLeft.x() <= pos.x() && pos.x() < bottomRight.x())
