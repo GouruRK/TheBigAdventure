@@ -18,6 +18,16 @@ public class Game {
   private final List<DroppedItem> items;
   private final Player player;
 
+  
+  /***
+   * define a Game
+   * 
+   * @param size
+   * @param field
+   * @param mobs
+   * @param items
+   * @param player
+   */
   public Game(Position size, Environnement[][] field, List<Mob> mobs, List<DroppedItem> items, Player player) {
     Objects.requireNonNull(size);
     Objects.requireNonNull(field);
@@ -39,22 +49,45 @@ public class Game {
         + "Items: " + items;
   }
 
+  /**
+   * define a Player
+   * @return player
+   */
   public Player player() {
     return player;
   }
 
+  /***
+   * Define an Environnement
+   * @return Environnement[][]
+   */
   public Environnement[][] field() {
     return field;
   }
 
+  /***
+   * Define a List of Mob
+   * @return List<Mob>
+   */
   public List<Mob> mobs() {
     return mobs;
   }
 
+  /***
+   * Define a List of DroppedItem
+   * @return List<DroppedItem>
+   */
   public List<DroppedItem> items() {
     return items;
   }
 
+  /***
+   * Allows to move a Mob in one direction (if it's possible)
+   * 
+   * @param mob
+   * @param dir
+   * @param step
+   */
   public void move(Mob mob, Direction dir, double step) {
     // ici, faire un switch ou je ne sais quoi pour savoir dans quelle dir tu vas
     Position nextPos = switch (dir) {
@@ -72,6 +105,12 @@ public class Game {
     }
   }
 
+  /***
+   * Search a Mob with a certain Pos in the List of Mob
+   * 
+   * @param pos
+   * @return Mob
+   */
   public Mob searchMob(Position pos) {
     for (Mob mob : mobs) {
         if (mob.pos().equals(pos)) {
@@ -81,10 +120,22 @@ public class Game {
     return null;
 }
   
+  /***
+   * Search an Environnement with a certain Pos in the List of Environnement
+   * 
+   * @param pos
+   * @return Environnement
+   */
   public Environnement searchEnvironnement(Position pos) {
     return this.field[(int)pos.y()][(int)pos.x()];
   }
 
+  /**
+   * Check if the move is possible to execute
+   * 
+   * @param pos
+   * @return boolean
+   */
   public boolean isMoveInGamePossible(Position pos) {
     Environnement env = searchEnvironnement(pos);
     Mob mob = searchMob(pos);

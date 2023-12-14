@@ -1,5 +1,8 @@
 package game;
 
+/**
+ * Enum for different types
+ */
 public enum GameObjectID {
   UNKNOWN,
   FOOD,

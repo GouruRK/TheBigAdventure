@@ -30,7 +30,7 @@ public class Window {
 
   private final int IMAGESIZE = 24;
   private final int FPS = 60;
-  private final int MOBUPDATE = 10;
+  private final int MOBUPDATE = 60;
 
   private final Game game;
   private final HashMap<String, BufferedImage> skinMap;
