@@ -7,5 +7,6 @@ public enum KeyOperation {
   RIGHT,
   DOWN,
   LEFT,
-  INVENTORY
+  INVENTORY,
+  ACTION
 }

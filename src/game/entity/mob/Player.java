@@ -81,6 +81,12 @@ public class Player implements Mob {
     hold = item;
   }
   
+  public Item removeHeldItem() {
+    Item item = hold;
+    this.hold = null;
+    return item;
+  }
+  
   @Override
   public String toString() {
     return "Player(name ; " + name + ", skin: " + skin + ", " + pos.toString() + ")";
