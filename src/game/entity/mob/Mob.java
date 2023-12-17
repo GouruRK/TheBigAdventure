@@ -4,6 +4,7 @@ package game.entity.mob;
 import game.Kind;
 import game.entity.Entity;
 import parser.ElementAttributes;
+import util.Direction;
 import util.Position;
 import util.Zone;
 
@@ -16,6 +17,8 @@ public interface Mob extends Entity {
   public abstract void setPos(Position pos);
   public abstract int health();
   public abstract int maxHealth();
+  public abstract Direction facing();
+  public abstract void setFacing(Direction dir);
   
   public default Behaviour behaviour() {
     return Behaviour.UNKNOWN;

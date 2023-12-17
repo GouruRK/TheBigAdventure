@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import game.GameObjectID;
 import game.entity.item.Item;
+import util.Direction;
 import util.Position;
 import util.Zone;
 
@@ -16,6 +17,7 @@ public class Player implements Mob {
   private Position pos;
   private int health;
   private Item hold;
+  private Direction facing;
   
   public Player(String skin, Position pos, Zone zone, int health, int maxHealth, String name, Item hold) {
     Objects.requireNonNull(skin);
@@ -28,6 +30,7 @@ public class Player implements Mob {
     this.maxHealth = maxHealth;
     this.name = name;
     this.hold = hold;
+    this.facing = Direction.EAST;
   }
 
   public Player(String skin, Position pos, Zone zone, int health, String name, Item hold) {
@@ -54,12 +57,12 @@ public class Player implements Mob {
   	return name;
   }
 
-  public void setPos(Position pos) {
-  	this.pos = pos;
+  public Direction facing() {
+    return facing;
   }
   
   public Zone zone() {
-  	return zone;
+    return zone;
   }
   
   public int damage() {
@@ -74,6 +77,14 @@ public class Player implements Mob {
   
   public Item hold() {
     return hold;
+  }
+  
+  public void setPos(Position pos) {
+  	this.pos = pos;
+  }
+  
+  public void setFacing(Direction dir) {
+    this.facing = dir;
   }
   
   public void setHold(Item item) {

@@ -85,6 +85,9 @@ public class Game {
     if (mob.isMoveInZonePossible(nextPos) && isMoveInGamePossible(mob, nextPos)) {
       mob.setPos(nextPos);
       extraAction(mob);
+      if (dir == Direction.EAST || dir == Direction.WEST) {
+        mob.setFacing(dir);
+      }
     }
   }
   

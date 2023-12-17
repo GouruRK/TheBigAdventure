@@ -117,7 +117,12 @@ public class Window {
 
     void drawMobs(Graphics2D graphics) {
       game.mobs().forEach(mob -> {
+        // AffineTransform saveAT = graphics.getTransform();
+        
+        // graphics.transform(new AffineTransform(1, 0, 0, 1, 0, 0));
         drawImage(graphics, mob.skin(), mob.pos());
+        // graphics.setTransform(saveAT);
+        
         drawHealthBar(graphics, mob);
       });
     }
