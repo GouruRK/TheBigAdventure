@@ -13,6 +13,12 @@ public interface Item extends Entity {
     return 0;
   }
   
+  /**
+   * Create an Item from the EncodingRow
+   * 
+   * @param row
+   * @return Item
+   */
   public static Item createItem(EncodingRow row) {
     return switch(row.id()) {
     case GameObjectID.FOOD -> new Food(row.skin());
@@ -21,10 +27,24 @@ public interface Item extends Entity {
     };
   }
   
+  /***
+   * Create an Item
+   * 
+   * @param skin
+   * @return Item
+   */
   public static Item createItem(String skin) {
     return Item.createItem(skin, null);
   }
   
+  
+  /***
+   * Create an Item from skin and name
+   * 
+   * @param skin
+   * @param name
+   * @return Item
+   */
   public static Item createItem(String skin, String name) {
     GameObjectID id = GameItems.getId(skin);
     return switch (id) {
@@ -36,6 +56,13 @@ public interface Item extends Entity {
     };
   }
   
+  /**
+   * return a DroppedItem if in the EencodingRow
+   * 
+   * @param row
+   * @param pos
+   * @return DroppedItem
+   */
   public static DroppedItem createDroppedItem(EncodingRow row, Position pos) {
     return switch (row.id()) {
       case GameObjectID.THING,
@@ -44,6 +71,12 @@ public interface Item extends Entity {
     };
   }
   
+  /***
+   * Create a DroppedItem according to different GameObjectID 
+   * 
+   * @param elem
+   * @return DroppedItem
+   */
   public static DroppedItem createDroppedItem(ElementAttributes elem) {
     return switch (elem.getID()) {
     case GameObjectID.THING,

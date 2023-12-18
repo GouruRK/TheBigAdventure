@@ -6,6 +6,12 @@ import game.environnement.GameEnvironnement;
 
 public interface GameObject {
  
+	/**
+	 * Precise the type of the Name (item, mob, environnement)
+	 * 
+	 * @param name
+	 * @return gameObjectID
+	 */
   public static GameObjectID fromName(String name) {
     GameObjectID id;
     if ((id = GameMobs.getId(name)) != GameObjectID.UNKNOWN) {

@@ -27,6 +27,11 @@ public enum Direction {
     return mapName.getOrDefault(name.toUpperCase(), UNKNOWN);
   }
   
+  /**
+   * Select a random direction for mobs
+   * 
+   * @return
+   */
   public static Direction randomDirection() {
     return switch (DirGenerator.ints(0, 4).findFirst().getAsInt()) {
     case 0 -> Direction.EAST;

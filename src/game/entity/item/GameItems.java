@@ -73,6 +73,9 @@ public enum GameItems implements GameObject {
 
   private final GameObjectID id;
   
+  /**
+   * Define a List of Items
+   */
   private static final List<GameItems> ITEMS = List.of(GameItems.values());
   private static final Map<String, GameObjectID> ITEMSNAMES = ITEMS.stream()
       .collect(Collectors.toUnmodifiableMap(GameItems::name, GameItems::id));
@@ -81,6 +84,12 @@ public enum GameItems implements GameObject {
     return id;
   }
   
+  /**
+   * Find an Item Name in the List of Items
+   * 
+   * @param name
+   * @return gameObjectID
+   */
   public static GameObjectID getId(String name) {
     return ITEMSNAMES.getOrDefault(name, GameObjectID.UNKNOWN);
   }

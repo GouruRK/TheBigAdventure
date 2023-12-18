@@ -9,6 +9,11 @@ public interface Entity {
   
   public abstract GameObjectID id();
   
+  /**
+   * Put default name null
+   * 
+   * @return
+   */
   public default boolean hasName() {
     return name() != null;
   }
