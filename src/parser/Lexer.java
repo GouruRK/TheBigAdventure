@@ -11,7 +11,7 @@ public class Lexer {
   private static final List<Token> TOKENS = List.of(Token.values());
   private static final Pattern PATTERN = Pattern.compile(
       TOKENS.stream()
-          .map(token -> "(" + token.regex + ")")
+          .map(token -> "(" + token.regex() + ")")
           .collect(Collectors.joining("|")));
 
   private final String text;

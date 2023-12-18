@@ -19,14 +19,75 @@ import game.entity.item.Item;
 import util.Position;
 import util.Zone;
 
+/**
+ * <p>Parse '.map' files and create the game based on the map information. The parser gets tokens ({@link parser.Token}) from the Lexer ({@link parser.Token})
+ * The map format is separated in 'block' delimited by brackets. The two kinds on blocks are 'grid' and 'element'
+ * Each block have their own attributes. Each attributes has a name and its separated from its value by a colon</p>
+ * 
+ *  <ul> 
+ *    <li>The 'grid' refers refers to the field structure, with its size and how parse it.
+ *  The grid attributes are :
+ *    <ul>
+ *      <li>size: ('width' x 'height'), with 'with' and 'height' as numbers</li>
+ *      <li>encoding: ITEMA(W), ITEMB(B), ITEMC(F)<br>List of items that compose the data attributes and their code</li>
+ *      <li>data : """<pre>
+ * WWWWWW
+ * W    W
+ * W FF W
+ * B    B
+ * BBBBBB
+ * """<pre></li>
+ *    </ul>
+ *   </li>
+ *   <li>The 'element' block elements refers to elements to add on the map, like mobs, player, more obstacles
+ *    <ul>
+ *     <li>name: name</li>
+ *     <li>skin: skin</li>
+ *     <li>player: true | false</li>
+ *     <li>position: ('x', 'y')<br> 'x' and 'y' are numbers</li>
+ *     <li>health: 'n'<br>'n' must be a number</li>
+ *     <li>kind: friend | enemy | item | obstacle</li>
+ *     <li>zone: ('x', 'y') ('width' x 'height')<br> 'x', 'y', 'width' and 'height' are numbers</li>
+ *     <li>behavior: shy | stroll | agressive</li>
+ *     <li>damage: 'n'<br>'n' must be a number</li>
+ *     <li>text: """Text element"""<br>same structure as data for the 'grid' block</li>
+ *     <li>steal: ITEM name, ITEM, ITEM name, ...</li>
+ *     <li>trade: CASH -> KEY red, CASH -> PIZZA</li>
+ *     <li>locked: KEY red<br>Indicate which item can open the element</li>
+ *     <li>flow: NORTH | SOUTH | EAST | WEST</li>
+ *     <li>phantomized: true | false<br>If true, the player became a ghost when collinding with the element</li>
+ *     <li>teleport: 'map'<br>Name of a map file in the map folder. Teleport the player to the map if set</li>
+ *    </ul>
+ *   </li>
+ * </ul>
+ * 
+ * 
+ * @see {@link parser.Token}
+ * @see {@link parser.Lexer}
+ * 
+ * @author De Oliveira Nelson
+ * @author Kies Rémy
+ * 
+ */
 public class Parser {
   
   private static final Set<String> PARSEDMAP = new HashSet<String>();
+  /**
+   * Current file the parser is parsing
+   */
   private final String sourceFile;
+  
+  /**
+   * Lexer to give tokens
+   */
   private final Lexer lexer;
   private final GameAttributes attributes;
   
-  
+  /**
+   * Create a Parser object for the given text from the sourcFile
+   * @param text
+   * @param sourceFile
+   */
   public Parser(String text, String sourceFile) {
     Objects.requireNonNull(text);
     Objects.requireNonNull(sourceFile);
@@ -36,6 +97,11 @@ public class Parser {
     PARSEDMAP.add(sourceFile);
   }
   
+  /**
+   * Create a parser object for the given file
+   * @param filePath
+   * @throws IOException
+   */
   public Parser(Path filePath) throws IOException {
     Objects.requireNonNull(filePath);
     String text = Files.readString(filePath);
@@ -46,11 +112,24 @@ public class Parser {
     PARSEDMAP.add(sourceFile);
   }
   
+  /**
+   * Check if the next token is the expected one
+   * @param token
+   * @return value of the next token
+   * @throws TokenException
+   */
   private String isExpected(Token token) throws TokenException {
     Result res = lexer.nextResult();
     return isExpected(res, token);
   }
   
+  /**
+   * Check if the given Result ({@link parer.Result} contains the required token
+   * @param res
+   * @param token
+   * @return value of the given result
+   * @throws TokenException
+   */
   private String isExpected(Result res, Token token) throws TokenException {
     if (res != null && res.token() == token) {
       return res.content();
@@ -61,12 +140,26 @@ public class Parser {
     throw new TokenException("No more tokens");
   }
   
+  /**
+   * Check if the next token contains the expected one with the given content
+   * @param token
+   * @param content
+   * @return content of the next token
+   * @throws TokenException
+   */
   private String isExpected(Token token, String content) throws TokenException {
     Result res = lexer.nextResult();
     return isExpected(res, token, content);
   }
   
-  
+  /***
+   * Check if the given result contains the required token and the given content
+   * @param res
+   * @param token
+   * @param content
+   * @return content of the result
+   * @throws TokenException
+   */
   private static String isExpected(Result res, Token token, String content) throws TokenException {
     if (res != null && res.token() == token && res.content().equals(content)) {
       return res.content();
