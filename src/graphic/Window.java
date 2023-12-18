@@ -18,6 +18,7 @@ import game.entity.item.Item;
 import game.entity.mob.Mob;
 import game.environnement.Environnement;
 import util.Direction;
+import util.PathCreator;
 import util.Position;
 
 public class Window {
@@ -62,7 +63,7 @@ public class Window {
     if (skinMap.get(skin) != null) {
       return;
     }
-    File imagePath = new File("images/" + skin.toLowerCase() + ".png");
+    File imagePath = new File(PathCreator.imagePath(skin.toLowerCase()));
     try {
       skinMap.put(skin, ImageIO.read(imagePath));
     } catch (IOException e) {

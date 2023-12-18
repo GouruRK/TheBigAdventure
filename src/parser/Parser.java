@@ -16,6 +16,7 @@ import game.GameObject;
 import game.GameObjectID;
 import game.entity.item.GameItems;
 import game.entity.item.Item;
+import util.PathCreator;
 import util.Position;
 import util.Zone;
 
@@ -379,10 +380,11 @@ public class Parser {
           String name = isExpected(Token.IDENTIFIER);
           isExpected(Token.DOT);
           isExpected(Token.IDENTIFIER, "map");
-          if (PARSEDMAP.contains("map/" + name + ".map")) {
+          String path = PathCreator.mapPath(name);
+          if (PARSEDMAP.contains(path)) {
             continue;
           }
-          Parser parser = new Parser(Path.of("map/" + name + ".map"));
+          Parser parser = new Parser(Path.of(path));
           elem.setTeleport(parser.parseMap());
         }
         default -> throw new TokenException("Unknown attribute '" + res.content() + "'");
