@@ -8,12 +8,13 @@ import game.entity.item.DroppedItem;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
-import game.Inventory;
 import util.Direction;
 import util.Position;
 
 public class Game {
 
+  //------- Fields -------
+  
   private final Position size;
   private final Environnement[][] field;
   private final ArrayList<Mob> mobs;
@@ -23,7 +24,6 @@ public class Game {
 
   
   // -------- Constructor --------
-  
   
   /***
    * define a Game
@@ -56,6 +56,8 @@ public class Game {
         + "Items: " + items;
   }
 
+  //------- Getter -------
+  
   /**
    * define a Player
    * @return player
@@ -77,7 +79,7 @@ public class Game {
    * @return List<Mob>
    */
   public List<Mob> mobs() {
-    return mobs;
+    return List.copyOf(mobs);
   }
 
   /***
@@ -85,7 +87,7 @@ public class Game {
    * @return List<DroppedItem>
    */
   public List<DroppedItem> items() {
-    return items;
+    return List.copyOf(items);
   }
   
   public Inventory inventory() {
@@ -115,6 +117,8 @@ public class Game {
   }
 
 
+  //------- Movement related -------
+  
   public void move(Mob mob, Direction dir, double step) {
     Position nextPos = mob.pos().computeDirection(dir, step);
     if (nextPos == null) {

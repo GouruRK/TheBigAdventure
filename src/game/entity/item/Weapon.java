@@ -6,6 +6,8 @@ import game.GameObjectID;
 
 public record Weapon(String skin, int damage, boolean burning, String name) implements Item {
 
+  // ------- Constructors -------
+  
   public Weapon {
     Objects.requireNonNull(skin);
   }
@@ -21,6 +23,8 @@ public record Weapon(String skin, int damage, boolean burning, String name) impl
   public Weapon(String skin, String name) {
     this(skin, 0, false, name);
   }
+  
+  // ------- Getter -------
   
   public GameObjectID id() {
     return GameObjectID.WEAPON;

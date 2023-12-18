@@ -1,4 +1,4 @@
-package graph;
+package graphic;
 
 public enum KeyOperation {
   NONE,

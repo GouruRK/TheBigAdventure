@@ -9,6 +9,8 @@ import util.Zone;
 
 public class Enemy implements Mob {
   
+  //------- Fields -------
+  
   private final String skin;
   private final String name;
   private final Behaviour behaviour;
@@ -18,6 +20,8 @@ public class Enemy implements Mob {
   private int health;
   private int maxHealth;
   private Direction facing;
+  
+  //------- Constructors -------
   
   public Enemy(String skin, Position pos, Zone zone, int health, int maxHealth, int damage, Behaviour behaviour, String name) {
     Objects.requireNonNull(skin);
@@ -37,6 +41,8 @@ public class Enemy implements Mob {
   public Enemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour, String name) {
     this(skin, pos, zone, health, health, damage, behaviour, name);
   }
+  
+  //------- Getter -------
   
   public String skin() {
     return skin;

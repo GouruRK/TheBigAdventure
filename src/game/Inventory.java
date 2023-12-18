@@ -3,11 +3,12 @@ package game;
 import java.util.Objects;
 
 import game.entity.item.Item;
-import game.entity.item.Weapon;
 import util.Position;
 
 public class Inventory {
 
+  //------- Fields -------
+  
   public static final int NB_ROWS = 2;
   public static final int NB_COLS = 9;
   public static final int SIZE = Inventory.NB_COLS * Inventory.NB_ROWS;
@@ -15,10 +16,14 @@ public class Inventory {
   private final Item[] inventory;
   private int nbItems;
   
+  //------- Constructor -------
+  
   public Inventory() {
     this.inventory = new Item[Inventory.NB_COLS * Inventory.NB_ROWS];
     nbItems = 1;
   }
+
+  //------- Getter -------
   
   public Item[] get() {
     return inventory;
@@ -45,6 +50,8 @@ public class Inventory {
  public boolean isFull() {
    return nbItems == Inventory.SIZE;
  }
+ 
+ //------- Setter -------
  
  public boolean add(Item item) {
    Objects.requireNonNull(item);
@@ -79,6 +86,8 @@ public class Inventory {
  public Item remove(Position pos) {
    return remove((int)pos.x(), (int)pos.y());
  }
+ 
+ //------- Other -------
  
  private int getFirstFreeSlot() {
    for (int i = 0; i < Inventory.SIZE; i++) {

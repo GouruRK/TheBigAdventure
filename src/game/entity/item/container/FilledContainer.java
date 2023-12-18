@@ -6,10 +6,7 @@ import game.environnement.Environnement;
 
 public record FilledContainer(String skin, Environnement contents, String name) implements Container {
 
-  @Override
-  public boolean isEmpty() {
-    return true;
-  }
+  //------- Constructors -------
   
   public FilledContainer {
     Objects.requireNonNull(skin);
@@ -19,5 +16,13 @@ public record FilledContainer(String skin, Environnement contents, String name) 
   public FilledContainer(String skin, Environnement contents) {
     this(skin, contents, null);
   }
+  
+  //------- Getter -------
+  
+  @Override
+  public boolean isEmpty() {
+    return true;
+  }
+  
   
 }

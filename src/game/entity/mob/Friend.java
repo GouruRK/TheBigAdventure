@@ -12,6 +12,8 @@ import util.Zone;
 
 public class Friend implements Mob {
 
+  //------- Fields -------
+  
   private final String skin;
   private final String name;
   private final Zone zone; 
@@ -21,6 +23,7 @@ public class Friend implements Mob {
   private int health;
   private Direction facing; 
   
+  //------- Constructors -------
   
   public Friend(String skin, Position pos, Zone zone, String name, int health, int maxHealth, Map<String, List<Item>> trade) {
     Objects.requireNonNull(skin);
@@ -40,6 +43,8 @@ public class Friend implements Mob {
   public Friend(String skin, Position pos, Zone zone, String name, int health, Map<String, List<Item>> trade) {
     this(skin, pos, zone, name, health, health, trade);
   }
+  
+  //------- Getter -------
   
   public String skin() {
     return skin;

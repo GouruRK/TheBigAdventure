@@ -5,6 +5,8 @@ import game.entity.item.Item;
 
 public interface Container extends Item {
 
+  // ------- Getter -------
+  
   public default boolean isEmpty() {
     return false;
   }

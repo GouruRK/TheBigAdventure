@@ -6,10 +6,15 @@ import game.entity.item.Item;
 import util.Position;
 
 public class Gate implements Environnement {
+  
+  //------- Fields -------
+  
   private final String skin;
   private final Position pos;
   private final Item key;
   private boolean open;
+  
+  //------- Constructors -------
   
   public Gate(String skin, Position pos, Item key, boolean open) {
     Objects.requireNonNull(skin);
@@ -28,6 +33,8 @@ public class Gate implements Environnement {
     this(skin, pos, null, open);
   }
 
+  //------- Getter -------
+  
   @Override
   public String skin() {
     return skin;

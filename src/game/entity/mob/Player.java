@@ -10,6 +10,8 @@ import util.Zone;
 
 public class Player implements Mob {
 
+  //------- Fields -------
+  
   private final String skin;
   private final Zone zone;
   private final int maxHealth;
@@ -18,6 +20,8 @@ public class Player implements Mob {
   private int health;
   private Item hold;
   private Direction facing;
+  
+  //------- Constructors -------
   
   public Player(String skin, Position pos, Zone zone, int health, int maxHealth, String name, Item hold) {
     Objects.requireNonNull(skin);
@@ -36,6 +40,8 @@ public class Player implements Mob {
   public Player(String skin, Position pos, Zone zone, int health, String name, Item hold) {
     this(skin, pos, zone, health, health, name, hold);
   }
+  
+  //------- Getter -------
   
   public int health() {
   	return health;
@@ -78,6 +84,12 @@ public class Player implements Mob {
   public Item hold() {
     return hold;
   }
+
+  public GameObjectID id() {
+    return GameObjectID.PLAYER;
+  }
+  
+  //------- Setter -------
   
   public void setPos(Position pos) {
   	this.pos = pos;
@@ -102,9 +114,5 @@ public class Player implements Mob {
   public String toString() {
     return "Player(name ; " + name + ", skin: " + skin + ", " + pos.toString() + ")";
 	}
-  
-  public GameObjectID id() {
-    return GameObjectID.PLAYER;
-  }
   
 }

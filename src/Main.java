@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import game.Game;
-import graph.Window;
+import graphic.Window;
 import parser.Parser;
 import parser.TokenException;
 

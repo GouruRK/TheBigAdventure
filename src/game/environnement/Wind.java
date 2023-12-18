@@ -7,9 +7,13 @@ import util.Zone;
 
 public record Wind(Zone zone, Direction dir) {
 
+  //------- Constructor -------
+  
   public Wind {
     Objects.requireNonNull(zone);
   }
+  
+  //------- Getter -------
   
   public String skin() {
     return "WIND";

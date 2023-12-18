@@ -7,6 +7,8 @@ import util.Position;
 
 public interface Environnement {
 
+  //------- Getters -------
+  
   public abstract String skin();
   public abstract Position pos();
   
@@ -17,6 +19,8 @@ public interface Environnement {
   public default boolean isOpen() {
     return false;
   }
+  
+  //------- Creation related -------
   
   /**
    * create an Environemment depending of his type from his encoding row

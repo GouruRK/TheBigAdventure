@@ -8,11 +8,15 @@ import util.Position;
 
 public record DroppedItem(Position pos, Item item) implements Entity {
 
+  // ------- Constructor -------
+  
   public DroppedItem {
     Objects.requireNonNull(pos);
     Objects.requireNonNull(item);
   }
 
+  // ------- Getter -------
+  
   public String skin() {
     return item.skin();
   }

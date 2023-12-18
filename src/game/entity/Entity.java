@@ -4,9 +4,10 @@ import game.GameObjectID;
 
 public interface Entity {
   
+  //------- Getter -------
+  
   public abstract String skin();
   public abstract String name();
-  
   public abstract GameObjectID id();
   
   /**

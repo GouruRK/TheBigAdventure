@@ -9,9 +9,13 @@ import util.Position;
 
 public interface Item extends Entity {
   
+  //------- Constructors -------
+  
   public default int damage() {
     return 0;
   }
+
+  // ------- Item creation -------
   
   /**
    * Create an Item from the EncodingRow
