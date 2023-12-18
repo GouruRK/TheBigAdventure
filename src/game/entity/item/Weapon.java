@@ -8,7 +8,6 @@ public record Weapon(String skin, int damage, boolean burning, String name) impl
 
   public Weapon {
     Objects.requireNonNull(skin);
-    Objects.requireNonNull(name);
   }
   
   public Weapon(String skin, int damage, boolean burning) {

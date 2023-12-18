@@ -2,6 +2,7 @@ package graph;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -19,7 +20,9 @@ import fr.umlv.zen5.Event.Action;
 import fr.umlv.zen5.KeyboardKey;
 import fr.umlv.zen5.ScreenInfo;
 import game.Game;
+import game.Inventory;
 import game.entity.item.DroppedItem;
+import game.entity.item.Item;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
@@ -28,15 +31,26 @@ import util.Position;
 
 public class Window {
 
-  private final int IMAGESIZE = 24;
-  private final int FPS = 60;
-  private final int MOBUPDATE = 60;
+  // ------- Constant -------
+   
+  private static final int IMAGESIZE = 24;
+  private static final int FPS = 60;
+  private static final int MOBUPDATE = 10;
 
+  // ------- General -------
+  
   private final Game game;
   private final HashMap<String, BufferedImage> skinMap;
   private int windowWidth;
   private int windowHeight;
   private long totalFrame;
+  
+  // ------- Inventory related -------
+  
+  private static final int inventoryWidth = IMAGESIZE*Inventory.NB_COLS*3;
+  private static final int inventoryHeight = IMAGESIZE*Inventory.NB_ROWS*2;
+  private boolean isInventoryShow;
+  private Position cursor;
 
   public Window(Game game) throws IOException {
     Objects.requireNonNull(game);
@@ -44,6 +58,8 @@ public class Window {
     skinMap = new HashMap<String, BufferedImage>();
     loadSkin();
     totalFrame = 0;
+    isInventoryShow = false;
+    cursor = new Position(0, 0);
   }
 
   /**
@@ -131,11 +147,30 @@ public class Window {
      */
     void drawMobs(Graphics2D graphics) {
       game.mobs().forEach(mob -> {
-        drawImage(graphics, mob.pos(), mob.skin());
+        // AffineTransform saveAT = graphics.getTransform();
+        
+        // graphics.transform(new AffineTransform(1, 0, 0, 1, 0, 0));
+        drawImage(graphics, mob.skin(), mob.pos());
+        // graphics.setTransform(saveAT);
+        
         drawHealthBar(graphics, mob);
       });
     }
 
+    void drawHoldedItem(Graphics2D graphics) {
+      Player player = game.player();
+      if (player.hold() == null) {
+        return;
+      }
+      AffineTransform saveAT = graphics.getTransform();
+      
+      Position pos = player.pos().addY(0.3).addX(0.8);
+      graphics.scale(0.8, 0.8);
+      drawImage(graphics, player.hold().skin(), pos, 1.25); // 1.25 because 0.8*1.25 = 1
+      
+      graphics.setTransform(saveAT);
+    }
+    
     /**
      * draw health bar's Mobs
      * 
@@ -151,23 +186,74 @@ public class Window {
       Rectangle2D.Double rectCurrentHealth = new Rectangle2D.Double(mob.pos().x()*IMAGESIZE + 4, mob.pos().y()*IMAGESIZE + 1, 16*(mob.health()/mob.maxHealth()), 4);
       graphics.fill(rectCurrentHealth);
     }
+    
+    void drawImage(Graphics2D graphics, String skin, int x, int y) {
+      graphics.drawImage(skinMap.get(skin), x, y, null);
+    }
+    
+    void drawImage(Graphics2D graphics, String skin, double x, double y) {
+      drawImage(graphics, skin, (int)x, (int)y);
+    }
 
-    void drawImage(Graphics2D graphics, Position pos, String skin) {
-      graphics.drawImage(skinMap.get(skin), (int) (pos.x()*IMAGESIZE), (int) (pos.y()*IMAGESIZE), null);
+    void drawImage(Graphics2D graphics, String skin, Position pos) {
+      drawImage(graphics, skin, pos.x()*IMAGESIZE, pos.y()*IMAGESIZE);
+    }
+    
+    void drawImage(Graphics2D graphics, String skin, Position pos, double factor) {
+      drawImage(graphics, skin, pos.x()*IMAGESIZE*factor, pos.y()*IMAGESIZE*factor);
     }
 
     void drawEnvironnement(Graphics2D graphics, Environnement env) {
-      drawImage(graphics, env.pos(), env.skin());
+      drawImage(graphics, env.skin(), env.pos());
     }
 
-
     void drawPlayer(Graphics2D graphics) {
-      drawImage(graphics, game.player().pos(), game.player().skin());
+      drawImage(graphics, game.player().skin(), game.player().pos());
       drawHealthBar(graphics, game.player());
     }
 
     void drawDroppedItems(Graphics2D graphics) {
-      game.items().forEach(item -> drawImage(graphics, item.pos(), item.skin()));
+      game.items().forEach(item -> drawImage(graphics, item.skin(), item.pos()));
+    }
+    
+    void drawInventory(Graphics2D graphics) {
+      graphics.setColor(Color.LIGHT_GRAY);
+      
+      int topX = windowWidth / 2 - inventoryWidth / 2;
+      int topY = windowHeight / 2 - inventoryHeight / 2;
+      Item item;
+      
+      Rectangle2D.Double inv = new Rectangle2D.Double(topX, topY, inventoryWidth, inventoryHeight);
+      graphics.fill(inv);
+
+      AffineTransform saveAT = graphics.getTransform();
+      graphics.scale(2, 2);
+      
+      for (int y = 0; y < Inventory.NB_ROWS; y++) {
+        for (int x = 0; x < Inventory.NB_COLS; x++) {
+          if ((item = game.inventory().get(x, y)) != null) {
+            drawImage(graphics, item.skin(), topX / 2 + x*IMAGESIZE*1.5 + IMAGESIZE/3, topY / 2 + y*IMAGESIZE);
+          }
+        }
+      }
+      graphics.setTransform(saveAT);
+      
+      graphics.setColor(Color.WHITE);
+      for (int y = 0; y < Inventory.NB_ROWS + 1; y++) {
+        graphics.drawLine(topX, topY + y*IMAGESIZE*2, topX + inventoryWidth, topY + y*IMAGESIZE*2);
+      }
+      
+      for (int x = 0; x < Inventory.NB_COLS + 1; x++) {
+        graphics.drawLine(topX + x*IMAGESIZE*3, topY, topX + x*IMAGESIZE*3, topY + inventoryHeight);
+      }
+      
+      int x = (int)cursor.x();
+      int y = (int)cursor.y();
+      graphics.setColor(Color.BLACK);
+      graphics.drawLine(topX + x*IMAGESIZE*3, topY + y*IMAGESIZE*2, topX + (x + 1)*IMAGESIZE*3, topY + y*IMAGESIZE*2);
+      graphics.drawLine(topX + x*IMAGESIZE*3, topY + (y + 1)*IMAGESIZE*2, topX + (x + 1)*IMAGESIZE*3, topY + (y + 1)*IMAGESIZE*2);
+      graphics.drawLine(topX + x*IMAGESIZE*3, topY + y*IMAGESIZE*2, topX + x*IMAGESIZE*3, topY + (y + 1)*IMAGESIZE*2);
+      graphics.drawLine(topX + (x + 1)*IMAGESIZE*3, topY + y*IMAGESIZE*2, topX + (x + 1)*IMAGESIZE*3, topY + (y + 1)*IMAGESIZE*2);
     }
 
     void drawMap(Graphics2D graphics) {
@@ -188,6 +274,10 @@ public class Window {
         drawPlayer(graphics);
         drawMobs(graphics);
         drawDroppedItems(graphics);
+        drawHoldedItem(graphics);
+        if (isInventoryShow) {
+          drawInventory(graphics);
+        }
       });
     }
   }
@@ -216,6 +306,8 @@ public class Window {
     case KeyboardKey.RIGHT, KeyboardKey.D -> KeyOperation.RIGHT;
     case KeyboardKey.DOWN, KeyboardKey.S -> KeyOperation.DOWN;
     case KeyboardKey.LEFT, KeyboardKey.Q -> KeyOperation.LEFT;
+    case KeyboardKey.I -> KeyOperation.INVENTORY;
+    case KeyboardKey.SPACE -> KeyOperation.ACTION;
     case KeyboardKey.UNDEFINED -> KeyOperation.EXIT;
     default -> KeyOperation.NONE;
     };
@@ -234,6 +326,16 @@ public class Window {
 
   private void moveMobs() {
     game.mobs().forEach(mob -> game.move(mob, Direction.randomDirection(), 1));
+  }
+    
+  private void moveCursor(Direction dir) {
+    int x = (int)cursor.x();
+    int y = (int)cursor.y();
+    if (x == Inventory.NB_COLS - 1 && dir == Direction.EAST) return;
+    if (x == 0 && dir == Direction.WEST) return;
+    if (y == Inventory.NB_ROWS - 1 && dir == Direction.SOUTH) return;
+    if (y == 0 && dir == Direction.NORTH) return;
+    cursor = cursor.computeDirection(dir, 1);
   }
   
   /**
@@ -257,7 +359,6 @@ public class Window {
   
   
   public void play() {
-
     Application.run(Color.BLACK, context -> {
       long startTime;
       boolean needUpdate = false;
@@ -273,11 +374,31 @@ public class Window {
         startTime = System.nanoTime();
 
         if (key == KeyOperation.UP || key == KeyOperation.RIGHT || key == KeyOperation.DOWN || key == KeyOperation.LEFT) {
-          game.move(game.player(), Window.keyToDirection(key),  1);
+          if (isInventoryShow) {
+            moveCursor(Window.keyToDirection(key));
+          } else {
+            game.move(game.player(), Window.keyToDirection(key),  1);            
+          }
+          needUpdate = true;
+        } else if (key == KeyOperation.INVENTORY) {
+          isInventoryShow = !isInventoryShow;
+          needUpdate = true;
+        } else if (key == KeyOperation.ACTION) {
+          if (isInventoryShow) {
+            Item held = game.player().removeHeldItem();
+            Item fromInventory = game.inventory().remove(cursor);
+            if (fromInventory != null) {
+              game.player().setHold(fromInventory);              
+            }
+            if (held != null) {              
+              game.inventory().add(held);
+            }
+            isInventoryShow = false;
+          }
           needUpdate = true;
         }
-
-        if (totalFrame % MOBUPDATE == 0) {
+        
+        if (totalFrame % MOBUPDATE == 0 && !isInventoryShow) {
           moveMobs();
           needUpdate = true;
         }

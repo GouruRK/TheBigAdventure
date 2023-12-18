@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import game.GameObjectID;
 import game.entity.item.Item;
+import util.Direction;
 import util.Position;
 import util.Zone;
 
@@ -14,10 +15,11 @@ public class Friend implements Mob {
   private final String skin;
   private final String name;
   private final Zone zone; 
-  private int health;
   private final int maxHealth;
+  private final Map<String, List<Item>> trade;
   private Position pos;
-  private final Map<String, List<Item>> trade; 
+  private int health;
+  private Direction facing; 
   
   
   public Friend(String skin, Position pos, Zone zone, String name, int health, int maxHealth, Map<String, List<Item>> trade) {
@@ -32,6 +34,7 @@ public class Friend implements Mob {
     this.health = health;
     this.maxHealth = health;
     this.trade = trade;
+    this.facing = Direction.EAST;
   }
   
   public Friend(String skin, Position pos, Zone zone, String name, int health, Map<String, List<Item>> trade) {
@@ -62,12 +65,20 @@ public class Friend implements Mob {
   	return maxHealth;
   }
   
-  public void setPos(Position pos) {
-  	this.pos = pos;
+  public Direction facing() {
+    return facing;
   }
   
   public Map<String, List<Item>> trade() {
     return trade;
+  }
+
+  public void setPos(Position pos) {
+  	this.pos = pos;
+  }
+  
+  public void setFacing(Direction dir) {
+    this.facing = dir;
   }
   
   public GameObjectID id() {

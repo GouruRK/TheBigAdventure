@@ -3,6 +3,7 @@ package game.entity.mob;
 import java.util.Objects;
 
 import game.GameObjectID;
+import util.Direction;
 import util.Position;
 import util.Zone;
 
@@ -16,6 +17,7 @@ public class Enemy implements Mob {
   private Position pos;
   private int health;
   private int maxHealth;
+  private Direction facing;
   
   public Enemy(String skin, Position pos, Zone zone, int health, int maxHealth, int damage, Behaviour behaviour, String name) {
     Objects.requireNonNull(skin);
@@ -29,6 +31,7 @@ public class Enemy implements Mob {
     this.behaviour = behaviour;
     this.damage = damage;
     this.maxHealth = maxHealth;
+    this.facing = Direction.EAST;
   }
   
   public Enemy(String skin, Position pos, Zone zone, int health, int damage, Behaviour behaviour, String name) {
@@ -63,6 +66,14 @@ public class Enemy implements Mob {
   	return maxHealth;
   }
 
+  public Direction facing() {
+    return facing;
+  }
+  
+  public void setFacing(Direction dir) { 
+    this.facing = dir;
+  }
+  
   public void setPos(Position pos) {
   	this.pos = pos;
   }
