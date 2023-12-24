@@ -27,7 +27,9 @@ public class Controller {
     if (event == null || event.getAction() == Action.KEY_RELEASED) {
       return KeyOperation.NONE;
     }
-    return getOperation(event.getKey());
+    KeyboardKey key = event.getKey();
+    
+    return key == null ? KeyOperation.NONE: getOperation(key);
   }
   
   private KeyOperation getOperation(KeyboardKey key) {
