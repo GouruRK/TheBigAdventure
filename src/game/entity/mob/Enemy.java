@@ -88,6 +88,14 @@ public class Enemy implements Mob {
     return GameObjectID.ENEMY;
   }
   
+  //------- Mutate -------
+  
+  public void takeDamage(int damage) {
+    this.health -= damage;
+  }
+  
+  //------- Other -------
+  
   @Override
   public String toString() {
     return "Enemy(skin: " + skin 

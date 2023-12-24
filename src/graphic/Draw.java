@@ -121,8 +121,9 @@ public class Draw {
     Rectangle2D.Double rectMaxHealth = new Rectangle2D.Double(mob.pos().x()*IMAGESIZE + 4, mob.pos().y()*IMAGESIZE + 1, 16, 4);
     graphics.fill(rectMaxHealth);
     
-    graphics.setColor(Color.GREEN);       
-    Rectangle2D.Double rectCurrentHealth = new Rectangle2D.Double(mob.pos().x()*IMAGESIZE + 4, mob.pos().y()*IMAGESIZE + 1, 16*(mob.health()/mob.maxHealth()), 4);
+    double healthRatio = mob.health() / ((double)mob.maxHealth());
+    graphics.setColor(Color.GREEN);
+    Rectangle2D.Double rectCurrentHealth = new Rectangle2D.Double(mob.pos().x()*IMAGESIZE + 4, mob.pos().y()*IMAGESIZE + 1, 16 * healthRatio, 4);
     graphics.fill(rectCurrentHealth);
   }
 

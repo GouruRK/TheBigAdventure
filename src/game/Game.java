@@ -127,13 +127,13 @@ public class Game {
     
     if (mob.isMoveInZonePossible(nextPos) && isMoveInGamePossible(mob, nextPos)) {
       mob.setPos(nextPos);
-      extraAction(mob);
-      mob.setFacing(dir);
+      pickUpItem(mob);
     }
+    mob.setFacing(dir);
   }
 
   
-  public void extraAction(Mob mob) {
+  public void pickUpItem(Mob mob) {
     switch (mob) {
     case Player p -> {
       if (p.hold() == null) {
@@ -148,6 +148,19 @@ public class Game {
     }
   }
   
+  
+  public void action() {
+    Position facing = player.pos().facingDirection(player.facing());
+    if (player.hold() != null) { // unnecessary to check if the player is holding a weapon because by default, item's damage is 0
+      // search if there is a mob in front of the player
+      Mob toAttack = searchMob(facing);
+      if (toAttack != null) {
+        toAttack.takeDamage(player.hold().damage());
+      }
+      removeDeadMob();
+    }
+    
+  }
    
   /**
    * Check if the move is possible to execute
@@ -163,6 +176,10 @@ public class Game {
       case Player p -> (env == null || env.standable() || env.isOpen()) && mob == null;
       default -> (env == null || env.standable() || env.isOpen()) && !pos.equals(player.pos());
     }; 
+  }
+  
+  private void removeDeadMob() {
+    mobs.removeIf(Mob::isDead);
   }
 
 }

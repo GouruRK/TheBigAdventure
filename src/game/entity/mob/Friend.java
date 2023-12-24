@@ -86,6 +86,10 @@ public class Friend implements Mob {
     this.facing = dir;
   }
   
+  public void takeDamage(int damage) {
+    this.health -= damage;
+  }
+  
   public GameObjectID id() {
     return GameObjectID.FRIEND;
   }

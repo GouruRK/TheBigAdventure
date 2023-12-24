@@ -19,6 +19,8 @@ public interface Mob extends Entity {
   public abstract int maxHealth();
   public abstract Direction facing();
   public abstract void setFacing(Direction dir);
+
+  public abstract void takeDamage(int damage);
   
   public default Behaviour behaviour() {
     return Behaviour.UNKNOWN;
@@ -26,6 +28,10 @@ public interface Mob extends Entity {
   
   public default int damage() {
     return 0;
+  }
+  
+  public default boolean isDead() {
+    return health() < 0;
   }
   
   
@@ -100,7 +106,7 @@ public interface Mob extends Entity {
    */
   public static Mob createMob(ElementAttributes element) {
     return switch (element.getKind()) {
-    case Kind.FRIEND -> new Friend(element.getSkin(), element.getPosition(), element.getZone(),element.getName(),element.getHealth(), element.getTrade());
+    case Kind.FRIEND -> new Friend(element.getSkin(), element.getPosition(), element.getZone(),element.getName(), element.getHealth(), element.getTrade());
     case Kind.ENEMY -> new Enemy(element.getSkin(), element.getPosition(), element.getZone(), element.getHealth(), element.getDamage(), element.getBehaviour(), element.getName());
     default -> null;
     };

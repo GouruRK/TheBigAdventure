@@ -346,7 +346,11 @@ public class ElementAttributes {
   }
   
   public boolean isValid() {
-    return skin != null && (pos != null || zone != null);
+    boolean validateHealth = true;
+    if (id == GameObjectID.MOB && health == -1) {
+      return false;
+    }
+    return skin != null && (pos != null || zone != null) && validateHealth;
   }
   
 }

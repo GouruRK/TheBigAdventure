@@ -66,6 +66,16 @@ public class Position {
     };
   }
   
+  public Position facingDirection(Direction dir) {
+    return switch (dir) {
+      case NORTH -> addY(-1);
+      case WEST -> addX(-1);
+      case SOUTH -> addY(1);
+      case EAST -> addX(1);
+      default -> null;    
+    };
+  }
+  
   @Override
   public String toString() {
     return "Position(x: " + x + ", y: " + y + ")";

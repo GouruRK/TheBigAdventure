@@ -26,7 +26,7 @@ public class Window {
   // ------- Constant -------
    
   private static final int FPS = 60;
-  private static final int MOBUPDATE = 10;
+  private static final int MOBUPDATE = 20;
   private static final double BLOCK_PER_MOVEMENT = 1;
 
   // ------- General -------
@@ -184,6 +184,7 @@ public class Window {
             isInventoryShow = false;
           } else {
             useItem = true;
+            game.action();
           }
           needUpdate = true;
         }

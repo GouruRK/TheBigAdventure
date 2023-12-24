@@ -110,6 +110,10 @@ public class Player implements Mob {
     return item;
   }
   
+  public void takeDamage(int damage) {
+    this.health -= damage;
+  }
+  
   @Override
   public String toString() {
     return "Player(name ; " + name + ", skin: " + skin + ", " + pos.toString() + ")";
