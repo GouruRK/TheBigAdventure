@@ -29,5 +29,22 @@ public record Weapon(String skin, int damage, boolean burning, String name) impl
   public GameObjectID id() {
     return GameObjectID.WEAPON;
   }
+
+  // ------- Other -------
+  
+  @Override
+  public boolean equals(Object obj) {
+    return obj instanceof Weapon weapon
+        && weapon.skin().equals(skin)
+        && weapon.damage() == damage
+        && weapon.burning() == burning
+        && (weapon.name() == null ? weapon.name() == name: weapon.name().equals(name))
+        && weapon.hashCode() == hashCode();
+  }
+  
+  @Override
+  public int hashCode() {
+    return Objects.hash(skin, damage, burning, name);
+  }
   
 }

@@ -22,4 +22,19 @@ public record Thing(String skin, String name) implements Item {
     return GameObjectID.THING;
   }
   
+  // ------- Other -------
+  
+  @Override
+  public boolean equals(Object obj) {
+    return obj instanceof Thing thing
+        && thing.skin().equals(skin)
+        && (thing.name() == null ? thing.name() == name: thing.name().equals(name))
+        && thing.hashCode() == hashCode();
+  }
+  
+  @Override
+  public int hashCode() {
+    return Objects.hash(skin, name);
+  }
+  
 }
