@@ -19,6 +19,7 @@ public class Gate implements Environnement {
   public Gate(String skin, Position pos, Item key, boolean open) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(pos);
+    Objects.requireNonNull(key);
     this.skin = skin;
     this.pos = pos;
     this.key = key;
@@ -27,10 +28,6 @@ public class Gate implements Environnement {
   
   public Gate(String skin, Position pos, Item key) {
     this(skin, pos, key, false);
-  }
-  
-  public Gate(String skin, Position pos, boolean open) {
-    this(skin, pos, null, open);
   }
 
   //------- Getter -------
@@ -45,8 +42,12 @@ public class Gate implements Environnement {
     return pos;
   }
   
-  public boolean isOpen() {
+  public boolean open() {
     return open;
+  }
+  
+  public Item key() {
+    return key;
   }
   
   public void open(Item item) {
@@ -57,4 +58,21 @@ public class Gate implements Environnement {
     }
   }
   
+  //------- Other -------
+  
+  @Override
+  public boolean equals(Object obj) {
+    return obj instanceof Gate gate
+        && gate.skin().equals(skin)
+        && gate.pos().equals(pos)
+        && gate.key().equals(obj)
+        && gate.open() == open
+        && gate.hashCode() == hashCode();
+  }
+  
+  
+  @Override
+  public int hashCode() {
+    return Objects.hash(skin, pos, key, open);
+  }
 }
