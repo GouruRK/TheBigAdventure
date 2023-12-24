@@ -16,6 +16,7 @@ import game.entity.item.Item;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
+import util.Direction;
 import util.Position;
 
 public class Draw {
@@ -54,14 +55,13 @@ public class Draw {
   
   //------- Main function -------
   
-  public void drawGame(boolean isInventoryShow, Position cursor) {
+  public void drawGame(boolean isInventoryShow, Position cursor, boolean useItem) {
     context.renderFrame(graphics -> {
       clearWindow(graphics);
       drawMap(graphics);
-      drawPlayer(graphics);
+      drawPlayer(graphics, useItem);
       drawMobs(graphics);
       drawDroppedItems(graphics);
-      drawHoldedItem(graphics);
       if (isInventoryShow) {
         drawInventory(graphics, cursor);
       }
@@ -126,7 +126,7 @@ public class Draw {
     graphics.fill(rectCurrentHealth);
   }
 
-  private void drawHoldedItem(Graphics2D graphics) {
+  private void drawHeldItem(Graphics2D graphics) {
     Player player = game.player();
     if (player.hold() == null) {
       return;
@@ -140,9 +140,22 @@ public class Draw {
     graphics.setTransform(saveAT);
   }
   
-  private void drawPlayer(Graphics2D graphics) {
+  private void drawPlayer(Graphics2D graphics, boolean useItem) {
     drawImage(graphics, game.player().skin(), game.player().pos());
     drawHealthBar(graphics, game.player());
+    if (!useItem) {
+      drawHeldItem(graphics);
+    } else {
+      Position pos = game.player().pos();
+      Direction facing = game.player().facing();
+      double angle = facingToAngle(facing);
+      
+      AffineTransform saveAT = graphics.getTransform();
+
+      graphics.rotate(degToRad(angle), (pos.x() + 0.5)*IMAGESIZE, (pos.y() + 0.5)*IMAGESIZE);
+      drawHeldItem(graphics);
+      graphics.setTransform(saveAT);
+    }
   }
   
   //------- Environment related -------
@@ -225,6 +238,20 @@ public class Draw {
                       inventoryTopY + y*IMAGESIZE*2,
                       inventoryTopX + (x + 1)*IMAGESIZE*3,
                       inventoryTopY + (y + 1)*IMAGESIZE*2);
+  }
+  
+  private double degToRad(double angle) {
+    return angle * Math.PI / 180;
+  }
+  
+  private double facingToAngle(Direction facing) {
+    return switch (facing) {
+    case Direction.WEST -> 180;
+    case Direction.EAST -> 0;
+    case Direction.NORTH -> -90;
+    case Direction.SOUTH -> 90;
+    default -> 0;
+    };
   }
   
 }

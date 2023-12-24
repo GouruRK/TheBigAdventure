@@ -27,6 +27,7 @@ public class Window {
    
   private static final int FPS = 60;
   private static final int MOBUPDATE = 10;
+  private static final double BLOCK_PER_MOVEMENT = 1;
 
   // ------- General -------
   
@@ -149,13 +150,13 @@ public class Window {
   public void play() {
     Application.run(Color.BLACK, context -> {
       long startTime;
-      boolean needUpdate = false;
+      boolean needUpdate = false, useItem = false;
 
       Draw window = new Draw(context, game, skinMap);
       Controller controller = new Controller(context);
       KeyOperation key;
 
-      window.drawGame(isInventoryShow, cursor);
+      window.drawGame(isInventoryShow, cursor, false);
       while ((key = controller.getOperation()) != KeyOperation.EXIT) {
 
         startTime = System.nanoTime();
@@ -164,7 +165,7 @@ public class Window {
           if (isInventoryShow) {
             moveCursor(Window.keyToDirection(key));
           } else {
-            game.move(game.player(), Window.keyToDirection(key),  1);            
+            game.move(game.player(), Window.keyToDirection(key), BLOCK_PER_MOVEMENT);
           }
           needUpdate = true;
         } else if (key == KeyOperation.INVENTORY) {
@@ -175,12 +176,14 @@ public class Window {
             Item held = game.player().removeHeldItem();
             Item fromInventory = game.inventory().remove(cursor);
             if (fromInventory != null) {
-              game.player().setHold(fromInventory);              
+              game.player().setHold(fromInventory);
             }
             if (held != null) {              
               game.inventory().add(held);
             }
             isInventoryShow = false;
+          } else {
+            useItem = true;
           }
           needUpdate = true;
         }
@@ -191,7 +194,8 @@ public class Window {
         }
         
         if (needUpdate) {
-          window.drawGame(isInventoryShow, cursor);
+          window.drawGame(isInventoryShow, cursor, useItem);
+          useItem = false;
           needUpdate = false;
         }
         
