@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 
 import fr.umlv.zen5.Application;
+import fr.umlv.zen5.ApplicationContext;
 import game.Game;
 import game.Inventory;
 import game.entity.item.DroppedItem;
@@ -187,6 +188,8 @@ public class Window {
             game.action();
           }
           needUpdate = true;
+        } else if (key == KeyOperation.DROP) {
+          game.dropItem();
         }
         
         if (totalFrame % MOBUPDATE == 0 && !isInventoryShow) {

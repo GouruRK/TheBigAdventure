@@ -117,7 +117,7 @@ public class Game {
   }
   
   public void removeItem(DroppedItem item) {
-    items.removeIf(i -> i.pos().equals(item.pos()));
+    items.removeIf(i -> i.equals(item));
   }
 
 
@@ -152,14 +152,31 @@ public class Game {
     }
   }
   
+  public void dropItem() {
+    if (player.hold() != null) {
+      Position facing = player.pos().facingDirection(player.facing());
+      Environnement env = searchEnvironnement(facing);
+      if (env != null && !env.standable()) {
+        facing = player.pos();
+      }
+      items.add(new DroppedItem(facing, player.hold()));
+      player.removeHeldItem();
+    }
+  }
   
   public void action() {
     Position facing = player.pos().facingDirection(player.facing());
     Environnement env = searchEnvironnement(facing);
+    if (player.hold() == null) {
+      return;
+    }
     switch (player.hold()) {
       case Weapon weapon -> attackMob(player, searchMob(facing));
       case Food food -> eat();
       case Thing thing -> {
+        if (env == null) {
+          return;
+        }
         switch (env) {
           case Gate gate -> gate.open(player.hold());
           default -> {}

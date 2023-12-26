@@ -39,6 +39,7 @@ public class Controller {
     case KeyboardKey.DOWN, KeyboardKey.S -> KeyOperation.DOWN;
     case KeyboardKey.LEFT, KeyboardKey.Q -> KeyOperation.LEFT;
     case KeyboardKey.I -> KeyOperation.INVENTORY;
+    case KeyboardKey.A -> KeyOperation.DROP;
     case KeyboardKey.SPACE -> KeyOperation.ACTION;
     case KeyboardKey.UNDEFINED -> KeyOperation.EXIT;
     default -> KeyOperation.NONE;
