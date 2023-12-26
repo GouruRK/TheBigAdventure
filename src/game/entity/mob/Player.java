@@ -114,6 +114,13 @@ public class Player implements Mob {
     this.health -= damage;
   }
   
+  public void addHealth(int toAdd) {
+    health += toAdd;
+    if (health > maxHealth) {
+      health = maxHealth;
+    }
+  }
+  
   @Override
   public String toString() {
     return "Player(name ; " + name + ", skin: " + skin + ", " + pos.toString() + ")";

@@ -210,5 +210,7 @@
   skin: BED
   position: (44,45)
   kind: obstacle
-
-
+  
+[element]
+  skin: BURGER
+  position: (6, 6)

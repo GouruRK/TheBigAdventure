@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 
 import game.entity.item.DroppedItem;
+import game.entity.item.Food;
+import game.entity.item.Weapon;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
@@ -151,17 +153,30 @@ public class Game {
   
   public void action() {
     Position facing = player.pos().facingDirection(player.facing());
-    if (player.hold() != null) { // unnecessary to check if the player is holding a weapon because by default, item's damage is 0
-      // search if there is a mob in front of the player
-      Mob toAttack = searchMob(facing);
-      if (toAttack != null) {
-        toAttack.takeDamage(player.hold().damage());
+    if (player.hold() != null) {
+      switch (player.hold()) {
+        case Weapon weapon -> attackMob(player, searchMob(facing));
+        case Food food -> eat();
+        default -> {}
       }
-      removeDeadMob();
     }
     
   }
+  
+  private void attackMob(Mob attacker, Mob victim) {
+    if (attacker != null && victim != null) {
+      victim.takeDamage(attacker.damage());
+      removeDeadMob();      
+    }
+  }
    
+  private void eat() {
+    if (player.health() != player.maxHealth()) {
+      player.addHealth(Food.HEALTH_MODIFIER);
+    }
+    player.removeHeldItem();
+  }
+  
   /**
    * Check if the move is possible to execute
    * 

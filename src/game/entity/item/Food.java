@@ -6,6 +6,8 @@ import game.GameObjectID;
 
 public record Food(String skin, String name) implements Item {
 
+  public static final int HEALTH_MODIFIER = 1;
+  
   //------- Constructors -------
   
   public Food {

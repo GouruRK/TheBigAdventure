@@ -17,6 +17,8 @@ public class Main {
     try {
       parser = new Parser(mapPath);
       game = parser.parseMap();
+     
+      game.player().takeDamage(3);
       
       win = new Window(game);
     } catch (TokenException e) {
