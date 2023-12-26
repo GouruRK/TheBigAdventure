@@ -96,6 +96,13 @@ public class Draw {
     drawImage(graphics, skin, pos.x()*IMAGESIZE*factor, pos.y()*IMAGESIZE*factor);
   }
   
+  private void drawMobName(Graphics2D graphics, Mob mob) {
+    if (mob.hasName()) {
+      graphics.setColor(Color.WHITE);
+      graphics.drawString(mob.name(), (int)(mob.pos().x()*IMAGESIZE) - 3, (int)(mob.pos().y()*IMAGESIZE) + IMAGESIZE + 5);
+    }
+  }
+  
   //------- Mob related -------
   
   /**
@@ -107,6 +114,7 @@ public class Draw {
     game.mobs().forEach(mob -> {
       drawImage(graphics, mob.skin(), mob.pos());
       drawHealthBar(graphics, mob);
+      drawMobName(graphics, mob);
     });
   }
   
@@ -144,6 +152,8 @@ public class Draw {
   private void drawPlayer(Graphics2D graphics, boolean useItem) {
     drawImage(graphics, game.player().skin(), game.player().pos());
     drawHealthBar(graphics, game.player());
+    drawMobName(graphics, game.player());
+    
     if (!useItem) {
       drawHeldItem(graphics);
     } else {
@@ -194,11 +204,31 @@ public class Draw {
     for (int y = 0; y < Inventory.NB_ROWS; y++) {
       for (int x = 0; x < Inventory.NB_COLS; x++) {
         if ((item = game.inventory().get(x, y)) != null) {
-          drawImage(graphics, item.skin(), inventoryTopX / 2 + x*IMAGESIZE*1.5 + IMAGESIZE/3, inventoryTopY / 2 + y*IMAGESIZE);
+          drawImage(graphics, item.skin(),
+              inventoryTopX/2 + getItemTopXInInventory(x),
+              inventoryTopY/2 + getItemTopYInInventory(y));
         }
       }
     }
     graphics.setTransform(saveAT);
+    
+    for (int y = 0; y < Inventory.NB_ROWS; y++) {
+      for (int x = 0; x < Inventory.NB_COLS; x++) {
+        if (((item = game.inventory().get(x, y)) != null) && (item.hasName())) {
+          graphics.drawString(item.name(),
+              (inventoryTopX/2 + getItemTopXInInventory(x))*2 - item.name().length() / 2,
+              (inventoryTopY/2 + getItemTopYInInventory(y) + IMAGESIZE)*2);
+        }
+      }
+    }
+  }
+  
+  private int getItemTopXInInventory(int x) {
+    return (int)(x*IMAGESIZE*1.5 + IMAGESIZE/3);
+  }
+  
+  private int getItemTopYInInventory(int y) {
+    return (int)(y*IMAGESIZE);
   }
   
   private void drawInventoryLayout(Graphics2D graphics) {

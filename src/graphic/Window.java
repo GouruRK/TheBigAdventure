@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 
 import fr.umlv.zen5.Application;
-import fr.umlv.zen5.ApplicationContext;
 import game.Game;
 import game.Inventory;
 import game.entity.item.DroppedItem;
