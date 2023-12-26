@@ -50,11 +50,14 @@ public class Gate implements Environnement {
   }
   
   public void open(Item item) {
-    if (isOpen()) return;
-    
     if (key.equals(item)) {
-      open = true;
+      open = !open;
     }
+  }
+  
+  @Override
+  public boolean standable() {
+    return open;
   }
   
   //------- Other -------

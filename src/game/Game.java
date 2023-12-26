@@ -6,10 +6,12 @@ import java.util.Objects;
 
 import game.entity.item.DroppedItem;
 import game.entity.item.Food;
+import game.entity.item.Thing;
 import game.entity.item.Weapon;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
+import game.environnement.Gate;
 import util.Direction;
 import util.Position;
 
@@ -153,14 +155,18 @@ public class Game {
   
   public void action() {
     Position facing = player.pos().facingDirection(player.facing());
-    if (player.hold() != null) {
-      switch (player.hold()) {
-        case Weapon weapon -> attackMob(player, searchMob(facing));
-        case Food food -> eat();
-        default -> {}
+    Environnement env = searchEnvironnement(facing);
+    switch (player.hold()) {
+      case Weapon weapon -> attackMob(player, searchMob(facing));
+      case Food food -> eat();
+      case Thing thing -> {
+        switch (env) {
+          case Gate gate -> gate.open(player.hold());
+          default -> {}
+        }
       }
+      default -> {}
     }
-    
   }
   
   private void attackMob(Mob attacker, Mob victim) {

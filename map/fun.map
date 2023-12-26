@@ -3,7 +3,7 @@
   encodings: LAVA(L) PLANK(p) GRASS(g) TREE(T) TREES(E) FLOWER(f) WALL(W)
     ROCK(R) LILY(l) FENCE(F) WATER(Z) HUSK(H) HUSKS(I) ROAD(r) HOUSE(h)
     REED(D) SIGN(S) ALGAE(A) TILE(t) TOWER (G)
-    BRICK(K) DOOR(O) RUBBLE(Q) CLIFF(c) BOG(o)
+    BRICK(K) RUBBLE(Q) CLIFF(c) BOG(o)
   data: """
   EEEEEEEEEEEEEEEEEEEEEEEEEEEEEELLLLLLLLEEEEEEZZZZZZZZZZZZZZZZZZZZZ
   EETET          TTEET            LLLL           DDZZZZZZZZZZZZZZZZ
@@ -44,7 +44,7 @@
   E                                    g         WttttttttttttttttW
   E                                     g        WttttttttttttttttW
   E        FFFFF                                 WttttttttttttttttW
-  E        F                       WWWWWWWWWWOWWWWttttttttttttttttW
+  E        F                       WWWWWWWWWW WWWWttttttttttttttttW
   E        F    F                  WttttttttttttttttttttttttttttttW
   E        F    F                  WttttttttttttttttttttttttttttttW
   E        FFFFFQ                  WttttttttttttttttttttttttttttttW
@@ -53,6 +53,11 @@
   QQ                               WttttttttttttttttttttttttttttttW
   QQQooooooooooooooooooooooooooooooWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
   """
+
+[element]
+  skin: DOOR
+  position: (43, 39)
+  locked: KEY green
 
 [element]
   name: fluffy
@@ -69,9 +74,15 @@
   damage: 15
 
 [element]
-  name: key
+  name: red
   skin: KEY
   position: (63,8)
+  kind: item
+
+[element]
+  name: green
+  skin: KEY
+  position: (10,3)
   kind: item
 
 [element]
