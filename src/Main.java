@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import game.Game;
-import graphic.Window;
+import graphic.View;
 import parser.Parser;
 import parser.TokenException;
 
@@ -12,7 +12,7 @@ public class Main {
     Path mapPath = Path.of("map/fun.map");
     Parser parser;
     Game game;
-    Window win = null;
+    View win = null;
     
     try {
       parser = new Parser(mapPath);
@@ -20,7 +20,7 @@ public class Main {
      
       game.player().takeDamage(3);
       
-      win = new Window(game);
+      win = new View(game);
     } catch (TokenException e) {
       System.err.println(e.getMessage());
     } catch (IOException e) {

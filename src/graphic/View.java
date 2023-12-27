@@ -21,7 +21,7 @@ import util.Direction;
 import util.PathCreator;
 import util.Position;
 
-public class Window {
+public class View {
 
   // ------- Constant -------
    
@@ -42,7 +42,7 @@ public class Window {
 
   //------- Constructor -------
   
-  public Window(Game game) throws IOException {
+  public View(Game game) throws IOException {
     Objects.requireNonNull(game);
     this.game = game;
     skinMap = new HashMap<String, BufferedImage>();
@@ -163,9 +163,9 @@ public class Window {
         
         if (key == KeyOperation.UP || key == KeyOperation.RIGHT || key == KeyOperation.DOWN || key == KeyOperation.LEFT) {
           if (isInventoryShow) {
-            moveCursor(Window.keyToDirection(key));
+            moveCursor(View.keyToDirection(key));
           } else {
-            game.move(game.player(), Window.keyToDirection(key), BLOCK_PER_MOVEMENT);
+            game.move(game.player(), View.keyToDirection(key), BLOCK_PER_MOVEMENT);
           }
           needUpdate = true;
         } else if (key == KeyOperation.INVENTORY) {
