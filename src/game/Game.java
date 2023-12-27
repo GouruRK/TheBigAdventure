@@ -123,6 +123,10 @@ public class Game {
 
   //------- Movement related -------
   
+  public void moveMobs() {
+    mobs.forEach(mob -> move(mob, Direction.randomDirection(), 1));
+  }
+  
   public void move(Mob mob, Direction dir, double step) {
     Position nextPos = mob.pos().computeDirection(dir, step);
     if (nextPos == null) {
