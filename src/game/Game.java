@@ -5,13 +5,10 @@ import java.util.List;
 import java.util.Objects;
 
 import game.entity.item.DroppedItem;
-import game.entity.item.Food;
-import game.entity.item.Thing;
-import game.entity.item.Weapon;
+import game.entity.item.Item;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
-import game.environnement.Gate;
 import util.Direction;
 import util.Position;
 
@@ -121,7 +118,7 @@ public class Game {
   }
 
 
-  //------- Movement related -------
+  // ------- Movement related -------
   
   public void moveMobs() {
     mobs.forEach(mob -> move(mob, Direction.randomDirection(), 1));
@@ -138,70 +135,6 @@ public class Game {
       pickUpItem(mob);
     }
     mob.setFacing(dir);
-  }
-
-  
-  public void pickUpItem(Mob mob) {
-    switch (mob) {
-    case Player p -> {
-      if (p.hold() == null) {
-        DroppedItem item = searchItem(p.pos());
-        if (item != null) {
-          p.setHold(item.item());
-          removeItem(item);
-        }
-      }
-    }
-    default -> {}
-    }
-  }
-  
-  public void dropItem() {
-    if (player.hold() != null) {
-      Position facing = player.pos().facingDirection(player.facing());
-      Environnement env = searchEnvironnement(facing);
-      if (env != null && !env.standable()) {
-        facing = player.pos();
-      }
-      items.add(new DroppedItem(facing, player.hold()));
-      player.removeHeldItem();
-    }
-  }
-  
-  public void action() {
-    Position facing = player.pos().facingDirection(player.facing());
-    Environnement env = searchEnvironnement(facing);
-    if (player.hold() == null) {
-      return;
-    }
-    switch (player.hold()) {
-      case Weapon weapon -> attackMob(player, searchMob(facing));
-      case Food food -> eat();
-      case Thing thing -> {
-        if (env == null) {
-          return;
-        }
-        switch (env) {
-          case Gate gate -> gate.open(player.hold());
-          default -> {}
-        }
-      }
-      default -> {}
-    }
-  }
-  
-  private void attackMob(Mob attacker, Mob victim) {
-    if (attacker != null && victim != null) {
-      victim.takeDamage(attacker.damage());
-      removeDeadMob();      
-    }
-  }
-   
-  private void eat() {
-    if (player.health() != player.maxHealth()) {
-      player.addHealth(Food.HEALTH_MODIFIER);
-    }
-    player.removeHeldItem();
   }
   
   /**
@@ -220,8 +153,43 @@ public class Game {
     }; 
   }
   
+  //------- Modifiers -------
+  
   private void removeDeadMob() {
     mobs.removeIf(Mob::isDead);
+  }
+  
+  public void pickUpItem(Mob mob) {
+    switch (mob) {
+    case Player p -> {
+      if (p.hold() == null) {
+        DroppedItem item = searchItem(p.pos());
+        if (item != null) {
+          p.setHold(item.item());
+          removeItem(item);
+        }
+      }
+    }
+    default -> {}
+    }
+  }
+  
+  public void addDroppedItem(DroppedItem item) {
+    Objects.requireNonNull(item);
+    items.add(item);
+  }
+  
+  public void addDroppedItem(Item item, Position pos) {
+    Objects.requireNonNull(item);
+    Objects.requireNonNull(pos);
+    items.add(new DroppedItem(pos, item));
+  }
+  
+  public void attackMob(Mob attacker, Mob victim) {
+    if (attacker != null && victim != null) {
+      victim.takeDamage(attacker.damage());
+      removeDeadMob();      
+    }
   }
 
 }

@@ -121,6 +121,16 @@ public class Player implements Mob {
     }
   }
   
+  public void eat() {
+    if (hold != null && hold.id() == GameObjectID.FOOD) {
+      if (health != maxHealth) {
+        addHealth(1);
+      }
+      removeHeldItem();      
+    }
+  }
+  
+  
   @Override
   public String toString() {
     return "Player(name ; " + name + ", skin: " + skin + ", " + pos.toString() + ")";

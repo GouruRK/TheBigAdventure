@@ -98,7 +98,7 @@ public class View {
       while ((key = getOperation(context)) != KeyOperation.EXIT) {
         startTime = System.nanoTime();
         
-        if (controller.doAction(key) || controller.entityUpdate(totalFrame)) {
+        if (controller.interpretCommand(key) || controller.entityUpdate(totalFrame)) {
           draw.drawGame();
         }
         
