@@ -240,7 +240,7 @@ public class Parser {
     if (nameResult == null) {
       return Item.createItem(skin);
     }
-    if (nameResult.token() == Token.COMMA) { // item has no name
+    if (nameResult.token() == Token.COMMA || nameResult.token() == Token.LEFT_BRACKET) { // item has no name
       lexer.addNext(nameResult);
       return Item.createItem(skin);
     } else if (nameResult.token() != Token.IDENTIFIER) { // item name is not an IDENTIFIER

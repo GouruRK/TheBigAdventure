@@ -90,6 +90,8 @@ public class GeneralController {
     Position facing = player.pos().facingDirection(player.facing());
     Environnement env = game.searchEnvironnement(facing);
     Mob mob = game.searchMob(facing);
+    boolean exit = false;
+    
     
     if (mob != null) {
       switch (mob) {
@@ -97,13 +99,16 @@ public class GeneralController {
         if (friend.trade() != null) {
           trade.setTrade(friend.trade());
           trade.toggleIsTradeInterfaceShow();
+          exit = true;
         }
       }
       default -> {}
       }
-      return;
     }
     
+    if (exit) {
+      return;
+    }
     
     if (player.hold() == null) {
       return;

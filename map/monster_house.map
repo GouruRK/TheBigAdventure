@@ -62,6 +62,14 @@
   health: 10
 
 [element]
+  name: fr
+  skin: BABA
+  position: (1,1)
+  health: 10
+  kind: friend
+  trade: CASH -> KEY red, CASH -> PIZZA
+
+[element]
   name: durendale
   skin: SWORD
   position: (1,29)

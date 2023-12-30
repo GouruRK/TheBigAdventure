@@ -195,12 +195,12 @@ public class GameAttributes {
     DroppedItem item;
     Mob mob;
     
-    if ((env = Environnement.createEnvironnement(element, pos)) != null) {
-      field[(int) env.pos().y()][(int) env.pos().x()] = env;
+    if ((mob = Mob.createMob(element)) != null) {
+      mobs.add(mob);
     } else if((item = Item.createDroppedItem(element)) != null) {
       items.add(item);
-    } else if ((mob = Mob.createMob(element)) != null) {
-      mobs.add(mob);
+    } else if ((env = Environnement.createEnvironnement(element, pos)) != null) {
+      field[(int) env.pos().y()][(int) env.pos().x()] = env;
     } else {      
       throw new TokenException("Element '" + element.getSkin() + "' is not a map element");
     }
