@@ -14,9 +14,10 @@ public class DrawInventory {
   
   private final Inventory inventory;
   private final InventoryController controller;
-  
+   
   private static final int inventoryWidth = View.IMAGESIZE*Inventory.NB_COLS*3;
   private static final int inventoryHeight = View.IMAGESIZE*Inventory.NB_ROWS*2;
+  
   
   public DrawInventory(Inventory inventory, InventoryController controller) {
     Objects.requireNonNull(inventory);

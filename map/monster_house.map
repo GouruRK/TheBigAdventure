@@ -170,7 +170,7 @@
   name: five
   skin: SPIKE
   position: (32, 3)
-  kind: enemy
+  kind: friend
   health: 3000
   damage: 1
 

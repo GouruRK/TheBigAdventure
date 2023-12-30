@@ -5,6 +5,8 @@ import game.entity.item.Food;
 import game.entity.item.Item;
 import game.entity.item.Thing;
 import game.entity.item.Weapon;
+import game.entity.mob.Friend;
+import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
 import game.environnement.Gate;
@@ -14,17 +16,23 @@ import util.Position;
 public class GeneralController {
   
   private final InventoryController inventory;
+  private final TradeController trade;
   private final Game game;
   private boolean hasItemBeenUsed;
   
   public GeneralController(Game game) {
     inventory = new InventoryController();
+    trade = new TradeController(inventory);
     this.game = game;
     hasItemBeenUsed = false;
   }
   
   public InventoryController inventory() {
     return inventory;
+  }
+  
+  public TradeController trade() {
+    return trade;
   }
   
   public boolean hasItemBeenUsed() {
@@ -81,9 +89,26 @@ public class GeneralController {
     Player player = game.player();
     Position facing = player.pos().facingDirection(player.facing());
     Environnement env = game.searchEnvironnement(facing);
+    Mob mob = game.searchMob(facing);
+    
+    if (mob != null) {
+      switch (mob) {
+      case Friend friend -> {
+        if (friend.trade() != null) {
+          trade.setTrade(friend.trade());
+          trade.toggleIsTradeInterfaceShow();
+        }
+      }
+      default -> {}
+      }
+      return;
+    }
+    
+    
     if (player.hold() == null) {
       return;
     }
+    
     switch (player.hold()) {
       case Weapon weapon -> game.attackMob(player, game.searchMob(facing));
       case Food food -> player.eat();
@@ -114,7 +139,7 @@ public class GeneralController {
   
   public boolean entityUpdate(long frames) {
     if (frames % 10 == 0) {
-      game.moveMobs();
+      game.moveEnemies();
       return true;
     }
     return false;

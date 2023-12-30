@@ -113,7 +113,7 @@ public class Game {
     return field[(int)pos.y()][(int)pos.x()];
   }
   
-  public void removeItem(DroppedItem item) {
+  public void removeDroppedItem(DroppedItem item) {
     items.removeIf(i -> i.equals(item));
   }
 
@@ -122,6 +122,12 @@ public class Game {
   
   public void moveMobs() {
     mobs.forEach(mob -> move(mob, Direction.randomDirection(), 1));
+  }
+  
+  public void moveEnemies() {
+    mobs.stream()
+      .filter(mob -> mob.id() == GameObjectID.ENEMY)
+      .forEach(mob -> move(mob, Direction.randomDirection(), 1));
   }
   
   public void move(Mob mob, Direction dir, double step) {
@@ -166,7 +172,7 @@ public class Game {
         DroppedItem item = searchItem(p.pos());
         if (item != null) {
           p.setHold(item.item());
-          removeItem(item);
+          removeDroppedItem(item);
         }
       }
     }

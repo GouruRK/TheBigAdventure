@@ -23,24 +23,29 @@ public class Draw {
   private final GeneralController controller;
   private final DrawInventory inventory;
   private final DrawPlayer player;
+  private final DrawTrade trade;
   private final int windowWidth;
   private final int windowHeight;
   
   //------- Constructor -------
   
   public Draw(ApplicationContext context, Game game, GeneralController controller, Map<String, BufferedImage> skinMap) {
+    // Basic checks
     Objects.requireNonNull(context);
     Objects.requireNonNull(game);
     Objects.requireNonNull(controller);
     Objects.requireNonNull(skinMap);
+    // Fields assignation
     this.context = context;
     this.game = game;
     this.controller = controller;
     ScreenInfo screenInfo = context.getScreenInfo();
     this.windowWidth = (int) screenInfo.getWidth();
     this.windowHeight = (int) screenInfo.getHeight();
+    // Creation of submodules to draw
     this.inventory = new DrawInventory(game.inventory(), controller.inventory());
     this.player = new DrawPlayer(game.player());
+    this.trade = new DrawTrade(controller.trade(), inventory, windowWidth, windowHeight);
   }
   
   //------- Main function -------
@@ -52,7 +57,9 @@ public class Draw {
       player.drawPlayer(graphics, controller.hasItemBeenUsed());
       DrawMobs.drawMobs(graphics, game.mobs());
       drawDroppedItems(graphics);
-      if (controller.inventory().isInventoryDisplay()) {
+      if (controller.trade().isTradeInterfaceShow()) {
+        trade.drawTrade(graphics);
+      } else if (controller.inventory().isInventoryDisplay()) {
         inventory.drawInventory(graphics, windowWidth/2, windowHeight/2);
       }
     });
