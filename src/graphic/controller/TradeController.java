@@ -5,13 +5,15 @@ import java.util.Map;
 import java.util.Objects;
 
 import game.entity.item.Item;
+import util.Direction;
 
 public class TradeController {
 
   private final InventoryController inventory;
   private Map<String, List<Item>> trade = null;
   private boolean isTradeInterfaceShow = false;
-  private int index = 0;
+  private int cursor = 0;
+  private int totalLength = 0;
   
   public TradeController(InventoryController inventory) {
     Objects.requireNonNull(inventory);
@@ -22,8 +24,12 @@ public class TradeController {
     return trade;
   }
   
-  public int index() {
-    return index;
+  public int cursor() {
+    return cursor;
+  }
+  
+  public int totalLength() {
+    return totalLength;
   }
   
   public boolean hasTrade() {
@@ -37,6 +43,18 @@ public class TradeController {
   public void setTrade(Map<String, List<Item>> trade) {
     Objects.requireNonNull(trade);
     this.trade = trade;
+    this.totalLength = updateTotalLength();
+  }
+  
+  private int updateTotalLength() {
+    if (trade == null) {
+      return 0;
+    }
+    int res = 0;
+    for (var entry: trade.entrySet()) {
+      res += entry.getValue().size();
+    }
+    return res;
   }
   
   public void toggleIsTradeInterfaceShow() {
@@ -45,9 +63,19 @@ public class TradeController {
     if (!isTradeInterfaceShow) {
       trade = null;
     } else {
-      index = 0;
+      cursor = 0;
     }
   }
   
-  
+  public void moveCursor(Direction dir) {
+    if (!(dir == Direction.NORTH || dir == Direction.SOUTH)) return;
+    if (cursor == 0 && dir == Direction.NORTH) return;
+    if (cursor == trade.size() && dir == Direction.SOUTH) return;
+
+    if (dir == Direction.SOUTH) {
+      cursor++;
+    } else {
+      cursor--;
+    }
+  } 
 }

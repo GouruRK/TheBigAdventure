@@ -10,6 +10,7 @@ import java.util.Objects;
 import fr.umlv.zen5.ApplicationContext;
 import fr.umlv.zen5.ScreenInfo;
 import game.Game;
+import game.entity.item.Item;
 import game.environnement.Environnement;
 import graphic.controller.GeneralController;
 import util.Position;
@@ -75,7 +76,7 @@ public class Draw {
     graphics.fill(new Rectangle2D.Float(0, 0, windowWidth, windowHeight));
   }
   
-  //------- Draw images -------
+  // ------- Draw images -------
   
   public static void drawImage(Graphics2D graphics, String skin, int x, int y) {
     graphics.drawImage(Skins.getSkin(skin), x, y, null);
@@ -92,8 +93,71 @@ public class Draw {
   public static void drawImage(Graphics2D graphics, String skin, Position pos, double factor) {
     drawImage(graphics, skin, pos.x()*View.IMAGESIZE*factor, pos.y()*View.IMAGESIZE*factor);
   }
+  
+  // ------- Draw images -------
+  
+  
+  public static void drawItem(Graphics2D graphics, Item item, int x, int y) {
+    drawImage(graphics, item.skin(), x, y);
+    if (item.hasName()) {
+      drawText(graphics, item.name(), x - item.name().length() / 2, y + View.IMAGESIZE);
+    }
+  }
+  
+  public static void drawItem(Graphics2D graphics, Item item, int x, int y, Color color) {
+    drawImage(graphics, item.skin(), x, y);
+    if (item.hasName()) {
+      drawText(graphics, item.name(), x - item.name().length() / 2, y + View.IMAGESIZE, color);
+    }
+  }
+  
+  public static void drawItem(Graphics2D graphics, Item item, double x, double y) {
+    drawItem(graphics, item, (int)x, (int)y);
+  }
+  
+  public static void drawItem(Graphics2D graphics, Item item, double x, double y, Color color) {
+    drawItem(graphics, item, (int)x, (int)y, color);
+  }
+  
+  // ------- Draw Text -------
+  
+  public static void drawText(Graphics2D graphics, String text, int x, int y) {
+    graphics.drawString(text, x, y);
+  }
+  
+  public static void drawText(Graphics2D graphics, String text, double x, double y) {
+    graphics.drawString(text, (int)x, (int)y);
+  }
+  
+  public static void drawCenteredText(Graphics2D graphics, String text, int x, int y) {
+    graphics.drawString(text, x - text.length()/2, y);
+  }
+  
+  public static void drawCenteredText(Graphics2D graphics, String text, double x, double y) {
+    drawCenteredText(graphics, text, (int)x, (int)y);
+  }
+  
+  public static void drawText(Graphics2D graphics, String text, int x, int y, Color color) {
+    graphics.setColor(color);
+    graphics.drawString(text, x, y);
+  }
+  
+  public static void drawCenteredText(Graphics2D graphics, String text, int x, int y, Color color) {
+    graphics.setColor(color);
+    drawCenteredText(graphics, text, x, y);
+  }
+  
+  public static void drawText(Graphics2D graphics, String text, double x, double y, Color color) {
+    graphics.setColor(color);
+    graphics.drawString(text, (int)x, (int)y);
+  }
+  
+  public static void drawCenteredText(Graphics2D graphics, String text, double x, double y, Color color) {
+    graphics.setColor(color);
+    drawCenteredText(graphics, text, (int)x, (int)y);
+  }
    
-  //------- Environment related -------
+  // ------- Environment related -------
  
   private void drawMap(Graphics2D graphics) {
     for (var line: game.field()) {

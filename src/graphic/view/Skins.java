@@ -10,6 +10,8 @@ import javax.imageio.ImageIO;
 
 import game.Game;
 import game.entity.item.DroppedItem;
+import game.entity.item.Item;
+import game.entity.mob.Friend;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
@@ -47,6 +49,22 @@ public class Skins {
   private static void loadMobsSkin(List<Mob> mobs) throws IOException {
     for (Mob mob: mobs) {
       loadSkin(mob.skin());
+      switch (mob) {
+      case Friend friend -> loadTrade(friend);
+      default -> {}
+      }
+    }
+  }
+  
+  private static void loadTrade(Friend friend) throws IOException {
+    if (friend.trade() != null) {
+      loadSkin("arrow");
+      for (var entry: friend.trade().entrySet()) {
+        loadSkin(entry.getKey());
+        for (Item item: entry.getValue()) {
+          loadSkin(item.skin());
+        }
+      }
     }
   }
   

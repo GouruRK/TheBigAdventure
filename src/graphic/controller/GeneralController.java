@@ -50,10 +50,18 @@ public class GeneralController {
       return false;
     }
     switch (key) {
-    case KeyOperation.INVENTORY -> inventory.toggleInventoryDisplay();
+    case KeyOperation.INVENTORY -> {
+        if (trade.isTradeInterfaceShow()) {
+          trade.toggleIsTradeInterfaceShow();
+        } else {
+          inventory.toggleInventoryDisplay(); 
+        }      
+      }
     case KeyOperation.DROP -> dropItem();
     case KeyOperation.UP, KeyOperation.DOWN, KeyOperation.LEFT, KeyOperation.RIGHT -> {
-      if (inventory.isInventoryDisplay()) {
+      if (trade.isTradeInterfaceShow()) {
+        trade.moveCursor(View.keyToDirection(key));
+      } else if (inventory.isInventoryDisplay()) {
         inventory.moveCursor(View.keyToDirection(key));
       } else {
         game.move(game.player(), View.keyToDirection(key), 1);
@@ -143,6 +151,9 @@ public class GeneralController {
   }
   
   public boolean entityUpdate(long frames) {
+    if (trade.isTradeInterfaceShow() || inventory.isInventoryDisplay()) {
+      return false;
+    }
     if (frames % 10 == 0) {
       game.moveEnemies();
       return true;

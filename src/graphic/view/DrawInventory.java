@@ -18,7 +18,6 @@ public class DrawInventory {
   private static final int inventoryWidth = View.IMAGESIZE*Inventory.NB_COLS*3;
   private static final int inventoryHeight = View.IMAGESIZE*Inventory.NB_ROWS*2;
   
-  
   public DrawInventory(Inventory inventory, InventoryController controller) {
     Objects.requireNonNull(inventory);
     Objects.requireNonNull(controller);
@@ -32,6 +31,15 @@ public class DrawInventory {
     
     drawInventoryLayout(graphics, xMargin, yMargin);
     drawInventoryCursor(graphics, xMargin, yMargin);
+    drawInventoryItems(graphics, xMargin, yMargin);
+    drawInventoryItemNames(graphics, xMargin, yMargin);
+  }
+  
+  public void drawInventoryWithoutCursor(Graphics2D graphics, int xMargin, int yMargin) {
+    xMargin -= inventoryWidth/2;
+    yMargin -= inventoryHeight/2;
+    
+    drawInventoryLayout(graphics, xMargin, yMargin);
     drawInventoryItems(graphics, xMargin, yMargin);
     drawInventoryItemNames(graphics, xMargin, yMargin);
   }
@@ -68,6 +76,11 @@ public class DrawInventory {
                       xMargin + x*size*3,       yMargin + (y + 1)*size*2);
     graphics.drawLine(xMargin + (x + 1)*size*3, yMargin + y*size*2,
                       xMargin + (x + 1)*size*3, yMargin + (y + 1)*size*2);
+    
+    graphics.setColor(new Color(255, 0, 0, 100));
+    Rectangle2D.Double cur = new Rectangle2D.Double(xMargin + x*size*3, yMargin + y*size*2, size*3, size*2);
+    graphics.fill(cur);
+    
   }
   
   private int xItemTransform(int x) {
@@ -101,12 +114,11 @@ public class DrawInventory {
     for (int y = 0; y < Inventory.NB_ROWS; y++) {
       for (int x = 0; x < Inventory.NB_COLS; x++) {
         if (((item = inventory.get(x, y)) != null) && (item.hasName())) {
-          graphics.drawString(item.name(),
-              (xMargin/2 + xItemTransform(x))*2 - item.name().length() / 2,
-              (yMargin/2 + yItemTransform(y) + View.IMAGESIZE)*2);
+          Draw.drawCenteredText(graphics, item.name(),
+              (xMargin/2 + xItemTransform(x))*2, 
+              (yMargin/2 + yItemTransform(y) + View.IMAGESIZE)*2, Color.BLACK);
         }
       }
     }
   }
-  
 }
