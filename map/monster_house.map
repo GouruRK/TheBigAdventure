@@ -55,6 +55,10 @@
   """
 
 [element]
+  skin: CASH
+  position: (3,3)
+
+[element]
   name: fluffy
   player: true
   skin: BABA
@@ -74,7 +78,7 @@
   skin: SWORD
   position: (1,29)
   kind: item
-  damage: 15
+  damage: 100000
 
 [element]
   name: key

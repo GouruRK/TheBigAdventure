@@ -240,7 +240,9 @@ public class Parser {
     if (nameResult == null) {
       return Item.createItem(skin);
     }
-    if (nameResult.token() == Token.COMMA || nameResult.token() == Token.LEFT_BRACKET) { // item has no name
+    if (nameResult.token() == Token.COMMA 
+        || nameResult.token() == Token.LEFT_BRACKET 
+        || nameResult.token() == Token.ARROW) { // item has no name
       lexer.addNext(nameResult);
       return Item.createItem(skin);
     } else if (nameResult.token() != Token.IDENTIFIER) { // item name is not an IDENTIFIER
@@ -284,20 +286,19 @@ public class Parser {
     return List.copyOf(lst);
   }
   
-  public Map<String, List<Item>> parseTrade() throws TokenException {
+  public Map<Item, List<Item>> parseTrade() throws TokenException {
     // Note : here after "Result[token=IDENTIFIER, content=trade]" and "Result[token=COLON, content=:]"
     // wait for "SKIN -> SKIN name" or "SKIN -> SKIN"
-    HashMap<String, List<Item>> map = new HashMap<String, List<Item>>();
-    Item item;
+    HashMap<Item, List<Item>> map = new HashMap<Item, List<Item>>();
+    Item wanted, toSell;
     Result res;
-    String skin;
     
     while (lexer.hasNext()) {
-      skin = isExpected(Token.IDENTIFIER);
+      wanted = parseItem();
       isExpected(Token.ARROW);
-      item = parseItem();
+      toSell = parseItem();
       
-      map.computeIfAbsent(skin, key -> new ArrayList<Item>()).add(item);
+      map.computeIfAbsent(wanted, key -> new ArrayList<Item>()).add(toSell);
 
       res = lexer.nextResult();
       if (res.token() == Token.COMMA) {

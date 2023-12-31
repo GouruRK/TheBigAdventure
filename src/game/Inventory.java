@@ -44,11 +44,22 @@ public class Inventory {
   }
   
   public Item get(Position pos) {
+    Objects.requireNonNull(pos);
     return get((int)pos.x(), (int)pos.y());
   }
  
  public boolean isFull() {
-   return nbItems == Inventory.SIZE;
+   return nbItems == SIZE;
+ }
+ 
+ public boolean contains(Item item) {
+   Objects.requireNonNull(item);
+   for (int i = 0; i < SIZE; i++) {
+     if (item.equals(get(i))) {
+       return true;
+     }
+   }
+   return false;
  }
  
  //------- Setter -------
@@ -87,10 +98,20 @@ public class Inventory {
    return remove((int)pos.x(), (int)pos.y());
  }
  
+ public Item remove(Item item) {
+   Objects.requireNonNull(item);
+   for (int i = 0; i < SIZE; i++) {
+     if (item.equals(get(i))) {
+       return remove(i);
+     }
+   }
+   return null;
+ }
+ 
  //------- Other -------
  
  private int getFirstFreeSlot() {
-   for (int i = 0; i < Inventory.SIZE; i++) {
+   for (int i = 0; i < SIZE; i++) {
      if (inventory[i] == null) {
        return i;
      }
@@ -99,11 +120,11 @@ public class Inventory {
  }
  
  private static int transformIndex(int x, int y) {
-   return x + y*Inventory.NB_COLS;
+   return x + y*NB_COLS;
  }
  
  private static boolean isIndexValid(int index) {
-   return index >= 0 && index < Inventory.SIZE;
+   return index >= 0 && index < SIZE;
  }
  
  private static boolean isIndexValid(int x, int y) {

@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import game.Inventory;
 import game.entity.item.Item;
 import util.Direction;
 
 public class TradeController {
 
   private final InventoryController inventory;
-  private Map<String, List<Item>> trade = null;
+  private Map<Item, List<Item>> trade = null;
   private boolean isTradeInterfaceShow = false;
   private int cursor = 0;
   private int totalLength = 0;
@@ -20,7 +21,7 @@ public class TradeController {
     this.inventory = inventory;
   }
   
-  public Map<String, List<Item>> trade() {
+  public Map<Item, List<Item>> trade() {
     return trade;
   }
   
@@ -40,7 +41,7 @@ public class TradeController {
     return isTradeInterfaceShow;
   }
   
-  public void setTrade(Map<String, List<Item>> trade) {
+  public void setTrade(Map<Item, List<Item>> trade) {
     Objects.requireNonNull(trade);
     this.trade = trade;
     this.totalLength = updateTotalLength();
@@ -77,5 +78,23 @@ public class TradeController {
     } else {
       cursor--;
     }
-  } 
+  }
+  
+  public void tradeItem() {
+   int index = 0;
+   Inventory inv = inventory.inventory();
+   for (var entry: trade.entrySet()) {
+     for (Item item: entry.getValue()) {
+       if (index == cursor) {
+         if (inv.contains(entry.getKey())) {
+           inv.remove(entry.getKey());
+           inv.add(item);
+           toggleIsTradeInterfaceShow();
+           return;
+         }
+       }
+       index++;
+     }
+   }
+  }
 }

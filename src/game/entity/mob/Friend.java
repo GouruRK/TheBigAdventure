@@ -18,14 +18,14 @@ public class Friend implements Mob {
   private final String name;
   private final Zone zone; 
   private final int maxHealth;
-  private final Map<String, List<Item>> trade;
+  private final Map<Item, List<Item>> trade;
   private Position pos;
   private int health;
   private Direction facing; 
   
   //------- Constructors -------
   
-  public Friend(String skin, Position pos, Zone zone, String name, int health, int maxHealth, Map<String, List<Item>> trade) {
+  public Friend(String skin, Position pos, Zone zone, String name, int health, int maxHealth, Map<Item, List<Item>> trade) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(pos);
     Objects.requireNonNull(zone);
@@ -40,7 +40,7 @@ public class Friend implements Mob {
     this.facing = Direction.EAST;
   }
   
-  public Friend(String skin, Position pos, Zone zone, String name, int health, Map<String, List<Item>> trade) {
+  public Friend(String skin, Position pos, Zone zone, String name, int health, Map<Item, List<Item>> trade) {
     this(skin, pos, zone, name, health, health, trade);
   }
   
@@ -74,7 +74,7 @@ public class Friend implements Mob {
     return facing;
   }
   
-  public Map<String, List<Item>> trade() {
+  public Map<Item, List<Item>> trade() {
     return trade;
   }
 

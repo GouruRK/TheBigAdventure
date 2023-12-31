@@ -81,7 +81,7 @@ public class DrawTrade {
     
     for (var entry: controller.trade().entrySet()) {
       for (Item item: entry.getValue()) {
-        drawTradeItem(graphics, entry.getKey(), item.skin(), y);
+        drawTradeItem(graphics, entry.getKey().skin(), item.skin(), y);
         y += 1;
       }
     }
@@ -109,5 +109,7 @@ public class DrawTrade {
     Draw.drawImage(graphics, "arrow", tradeTopX/2 + View.IMAGESIZE, y);
     Draw.drawImage(graphics, toSell, tradeTopX/2 + View.IMAGESIZE*2, y);
   }
+  
+  
   
 }

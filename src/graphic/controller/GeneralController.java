@@ -2,7 +2,6 @@ package graphic.controller;
 
 import game.Game;
 import game.entity.item.Food;
-import game.entity.item.Item;
 import game.entity.item.Thing;
 import game.entity.item.Weapon;
 import game.entity.mob.Friend;
@@ -11,6 +10,7 @@ import game.entity.mob.Player;
 import game.environnement.Environnement;
 import game.environnement.Gate;
 import graphic.view.View;
+import util.Direction;
 import util.Position;
 
 public class GeneralController {
@@ -21,7 +21,7 @@ public class GeneralController {
   private boolean hasItemBeenUsed;
   
   public GeneralController(Game game) {
-    inventory = new InventoryController();
+    inventory = new InventoryController(game.inventory(), game.player());
     trade = new TradeController(inventory);
     this.game = game;
     hasItemBeenUsed = false;
@@ -50,34 +50,42 @@ public class GeneralController {
       return false;
     }
     switch (key) {
-    case KeyOperation.INVENTORY -> {
-        if (trade.isTradeInterfaceShow()) {
-          trade.toggleIsTradeInterfaceShow();
-        } else {
-          inventory.toggleInventoryDisplay(); 
-        }      
-      }
+    case KeyOperation.INVENTORY -> toggleInterfaces();
     case KeyOperation.DROP -> dropItem();
-    case KeyOperation.UP, KeyOperation.DOWN, KeyOperation.LEFT, KeyOperation.RIGHT -> {
-      if (trade.isTradeInterfaceShow()) {
-        trade.moveCursor(View.keyToDirection(key));
-      } else if (inventory.isInventoryDisplay()) {
-        inventory.moveCursor(View.keyToDirection(key));
-      } else {
-        game.move(game.player(), View.keyToDirection(key), 1);
-      }
-    }
-    case KeyOperation.ACTION -> {
-      if (inventory.isInventoryDisplay()) {
-        exchangeItem();
-      } else {
-        action();
-        setHasItemBeenUsed(true);
-      }
-    }
+    case KeyOperation.UP, KeyOperation.DOWN, KeyOperation.LEFT, KeyOperation.RIGHT -> move(View.keyToDirection(key));
+    case KeyOperation.ACTION -> action();
     default -> {}
     }
     return true;
+  }
+  
+  private void toggleInterfaces() {
+    if (trade.isTradeInterfaceShow()) {
+      trade.toggleIsTradeInterfaceShow();
+    } else {
+      inventory.toggleInventoryDisplay(); 
+    }
+  }
+  
+  private void action() {
+    if (trade.isTradeInterfaceShow()) {
+      trade.tradeItem();
+    } else if (inventory.isInventoryDisplay()) {
+      inventory.exchangeItem();
+    } else {
+      playerAction();
+      setHasItemBeenUsed(true);
+    }
+  }
+  
+  private void move(Direction dir) {
+    if (trade.isTradeInterfaceShow()) {
+      trade.moveCursor(dir);
+    } else if (inventory.isInventoryDisplay()) {
+      inventory.moveCursor(dir);
+    } else {
+      game.move(game.player(), dir, 1);
+    }
   }
   
   private void dropItem() {
@@ -93,7 +101,7 @@ public class GeneralController {
     }
   }
  
-  public void action() {
+  public void playerAction() {
     Player player = game.player();
     Position facing = player.pos().facingDirection(player.facing());
     Environnement env = game.searchEnvironnement(facing);
@@ -136,18 +144,6 @@ public class GeneralController {
       }
       default -> {}
     }
-  }
-  
-  private final void exchangeItem() {
-    Item held = game.player().removeHeldItem();
-    Item fromInventory = game.inventory().remove(inventory.cursor());
-    if (fromInventory != null) {
-      game.player().setHold(fromInventory);
-    }
-    if (held != null) {              
-      game.inventory().add(held);
-    }
-    inventory.toggleInventoryDisplay();
   }
   
   public boolean entityUpdate(long frames) {

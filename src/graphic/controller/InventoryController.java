@@ -1,6 +1,10 @@
 package graphic.controller;
 
+import java.util.Objects;
+
 import game.Inventory;
+import game.entity.item.Item;
+import game.entity.mob.Player;
 import util.Direction;
 import util.Position;
 
@@ -8,12 +12,18 @@ public class InventoryController {
   
   // ------- Fields -------
   
+  private final Inventory inventory;
+  private final Player player;
   private boolean isInventoryDisplay;
   private Position cursor;
   
   // ------- Constructor -------
   
-  public InventoryController() {
+  public InventoryController(Inventory inventory, Player player) {
+    Objects.requireNonNull(inventory);
+    Objects.requireNonNull(player);
+    this.inventory = inventory;
+    this.player = player;
     cursor = new Position(0, 0);
     isInventoryDisplay = false;
   }
@@ -24,6 +34,10 @@ public class InventoryController {
     return cursor;
   }
   
+  public Inventory inventory() {
+    return inventory;
+  }
+  
   public boolean isInventoryDisplay() {
     return isInventoryDisplay;
   }
@@ -32,6 +46,18 @@ public class InventoryController {
   
   public void toggleInventoryDisplay() {
     isInventoryDisplay = !isInventoryDisplay;
+  }
+  
+  public void exchangeItem() {
+    Item held = player.removeHeldItem();
+    Item fromInventory = inventory.remove(cursor());
+    if (fromInventory != null) {
+      player.setHold(fromInventory);
+    }
+    if (held != null) {              
+      inventory.add(held);
+    }
+    toggleInventoryDisplay();
   }
   
   public void moveCursor(Direction dir) {

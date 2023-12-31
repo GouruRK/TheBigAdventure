@@ -60,7 +60,7 @@ public class Skins {
     if (friend.trade() != null) {
       loadSkin("arrow");
       for (var entry: friend.trade().entrySet()) {
-        loadSkin(entry.getKey());
+        loadSkin(entry.getKey().skin());
         for (Item item: entry.getValue()) {
           loadSkin(item.skin());
         }
