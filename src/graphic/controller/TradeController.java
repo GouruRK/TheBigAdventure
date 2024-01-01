@@ -86,7 +86,11 @@ public class TradeController {
    for (var entry: trade.entrySet()) {
      for (Item item: entry.getValue()) {
        if (index == cursor) {
-         if (inv.contains(entry.getKey())) {
+         if (inventory.player().hold() != null && inventory.player().hold().equals(entry.getKey())) {
+           inventory.player().removeHeldItem();
+           inventory.player().setHold(item);
+           toggleIsTradeInterfaceShow();
+         } else if (inv.contains(entry.getKey())) {
            inv.remove(entry.getKey());
            inv.add(item);
            toggleIsTradeInterfaceShow();

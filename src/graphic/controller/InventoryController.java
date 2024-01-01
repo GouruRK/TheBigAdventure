@@ -38,6 +38,10 @@ public class InventoryController {
     return inventory;
   }
   
+  public Player player() {
+    return player;
+  }
+  
   public boolean isInventoryDisplay() {
     return isInventoryDisplay;
   }
