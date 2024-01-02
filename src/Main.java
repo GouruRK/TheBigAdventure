@@ -21,12 +21,12 @@ public class Main {
       game.player().takeDamage(3);
       
       win = new View(game);
+      win.play();
     } catch (TokenException e) {
       System.err.println(e.getMessage());
     } catch (IOException e) {
       System.err.println(e.getMessage());
     }
     
-    win.play();
   }
 }

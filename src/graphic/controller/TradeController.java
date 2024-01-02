@@ -14,7 +14,11 @@ public class TradeController {
   private Map<Item, List<Item>> trade = null;
   private boolean isTradeInterfaceShow = false;
   private int cursor = 0;
+  private int visualCursor = 0;
   private int totalLength = 0;
+  private int minIndex = 0;
+  private int maxIndex;
+  private final int consecutiveTradeLength = 10;
   
   public TradeController(InventoryController inventory) {
     Objects.requireNonNull(inventory);
@@ -27,6 +31,22 @@ public class TradeController {
   
   public int cursor() {
     return cursor;
+  }
+  
+  public int visualCursor() {
+    return visualCursor;
+  }
+  
+  public int consecutiveTradeLength() {
+    return consecutiveTradeLength;
+  }
+  
+  public int minIndex() {
+    return minIndex;
+  }
+  
+  public int maxIndex() {
+    return maxIndex;
   }
   
   public int totalLength() {
@@ -45,6 +65,8 @@ public class TradeController {
     Objects.requireNonNull(trade);
     this.trade = trade;
     this.totalLength = updateTotalLength();
+    this.maxIndex = Math.min(totalLength, consecutiveTradeLength);
+    this.minIndex = 0;
   }
   
   private int updateTotalLength() {
@@ -65,18 +87,31 @@ public class TradeController {
       trade = null;
     } else {
       cursor = 0;
+      visualCursor = 0;
     }
   }
   
   public void moveCursor(Direction dir) {
     if (!(dir == Direction.NORTH || dir == Direction.SOUTH)) return;
-    if (cursor == 0 && dir == Direction.NORTH) return;
-    if (cursor == trade.size() && dir == Direction.SOUTH) return;
 
-    if (dir == Direction.SOUTH) {
-      cursor++;
-    } else {
+    if (dir == Direction.NORTH) {
+      if (cursor == 0) return;
       cursor--;
+      if (cursor >= minIndex) {
+        visualCursor--;
+      } else {
+        minIndex--;
+        maxIndex--;
+      }
+    } else {
+      if (cursor == totalLength - 1) return;
+      cursor++;
+      if (cursor != maxIndex) {
+        visualCursor++;
+      } else {
+        minIndex++;
+        maxIndex++;
+      }
     }
   }
   

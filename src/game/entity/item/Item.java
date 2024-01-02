@@ -56,6 +56,7 @@ public interface Item extends Entity {
     case GameObjectID.THING -> new Thing(skin, name);
     case GameObjectID.WEAPON -> new Weapon(skin, name);
     case GameObjectID.CONTAINER -> new EmptyContainer(skin, name);
+    case GameObjectID.READABLE -> new Readable(skin, name);
     default -> null;
     };
   }

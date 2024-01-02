@@ -163,7 +163,7 @@ public class Draw {
     for (var line: game.field()) {
       for (Environnement env: line) {
         if (env != null) {
-          drawEnvironnement(graphics, env);            
+          drawEnvironnement(graphics, env);
         }
       }
     }

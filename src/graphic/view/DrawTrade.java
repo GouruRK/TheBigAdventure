@@ -19,8 +19,7 @@ public class DrawTrade {
   private final int tradeWidth;
   private final int tradeTopY;
   private int tradeHeight;
-  
-  private static final int consecutiveTradeLength = 10;
+  private int minSize;
   
   public DrawTrade(TradeController controller, DrawInventory inventory, int windowWidth, int windowHeight) {
     Objects.requireNonNull(controller);
@@ -33,7 +32,7 @@ public class DrawTrade {
     tradeTopY = windowHeight/4;
     
     tradeWidth = View.IMAGESIZE*6;
-    tradeHeight = View.IMAGESIZE*consecutiveTradeLength;
+    // tradeHeight = View.IMAGESIZE*consecutiveTradeLength;
     // tradeHeight = View.IMAGESIZE*(controller.trade().size() % consecutiveTradeLength);
     
     inventoryTopX = windowWidth * 3/4;
@@ -44,7 +43,9 @@ public class DrawTrade {
   public void drawTrade(Graphics2D graphics) {
     inventory.drawInventoryWithoutCursor(graphics, inventoryTopX, inventoryTopY);
     
-    tradeHeight = View.IMAGESIZE*(controller.totalLength() % consecutiveTradeLength)*2;
+    this.minSize = Math.min(controller.totalLength(), 10);
+    this.tradeHeight = View.IMAGESIZE*(minSize)*2;
+    
     
     drawTradeLayout(graphics);
     drawCursor(graphics);
@@ -64,41 +65,60 @@ public class DrawTrade {
   }
   
   private void drawCursor(Graphics2D graphics) {
+    int cursor = controller.visualCursor();
+    
     graphics.setColor(Color.BLACK);
-    graphics.drawLine(tradeTopX, tradeTopY + controller.cursor()*View.IMAGESIZE*2, tradeTopX + tradeWidth, tradeTopY + controller.cursor()*View.IMAGESIZE*2);
-    graphics.drawLine(tradeTopX, tradeTopY + (controller.cursor() + 1)*View.IMAGESIZE*2, tradeTopX + tradeWidth, tradeTopY + (controller.cursor() + 1)*View.IMAGESIZE*2);
+    graphics.drawLine(tradeTopX, tradeTopY + cursor*View.IMAGESIZE*2, tradeTopX + tradeWidth, tradeTopY + cursor*View.IMAGESIZE*2);
+    graphics.drawLine(tradeTopX, tradeTopY + (cursor + 1)*View.IMAGESIZE*2, tradeTopX + tradeWidth, tradeTopY + (cursor + 1)*View.IMAGESIZE*2);
     
     graphics.setColor(new Color(255, 0, 0, 100));
-    Rectangle2D.Double cur = new Rectangle2D.Double(tradeTopX, tradeTopY + controller.cursor()*View.IMAGESIZE*2, tradeWidth, View.IMAGESIZE*2);
+    Rectangle2D.Double cur = new Rectangle2D.Double(tradeTopX, tradeTopY + cursor*View.IMAGESIZE*2, tradeWidth, View.IMAGESIZE*2);
     graphics.fill(cur);
   }
   
   private void drawTradeItems(Graphics2D graphics) {
-    int y = 0;
+    int y = 0, index = 0;
     
     AffineTransform save = graphics.getTransform();
     graphics.scale(2, 2);
     
     for (var entry: controller.trade().entrySet()) {
       for (Item item: entry.getValue()) {
+        if (index < controller.minIndex() || controller.maxIndex() <= index) {
+          index++;
+          continue;
+        }
         drawTradeItem(graphics, entry.getKey().skin(), item.skin(), y);
-        y += 1;
+        y++;
+        index++;
       }
     }
     graphics.setTransform(save);
   }
   
   private void drawTradeItemNames(Graphics2D graphics) {
-    int y = 0;
+    int y = 0, index = 0;
     for (var entry: controller.trade().entrySet()) {
+      if (entry.getKey().hasName()) {
+        Draw.drawText(graphics, entry.getKey().name(),
+            tradeTopX + View.IMAGESIZE,
+            tradeTopY + y*View.IMAGESIZE*2 + View.IMAGESIZE*2,
+            Color.BLACK);
+      }
+      
       for (Item item: entry.getValue()) {
+        if (index < controller.minIndex() || controller.maxIndex() <= index) {
+          index++;
+          continue;
+        }
         if (item.hasName()) {
           Draw.drawText(graphics, item.name(),
               tradeTopX + View.IMAGESIZE*4,
-              tradeTopY + y*View.IMAGESIZE + View.IMAGESIZE*2,
+              tradeTopY + y*View.IMAGESIZE*2 + View.IMAGESIZE*2,
               Color.BLACK);
         }
-        y += 1;
+        y++;
+        index++;
       }
     }
   }

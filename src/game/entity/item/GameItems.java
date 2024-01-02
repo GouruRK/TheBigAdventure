@@ -91,7 +91,7 @@ public enum GameItems implements GameObject {
    * @return gameObjectID
    */
   public static GameObjectID getId(String name) {
-    return ITEMSNAMES.getOrDefault(name, GameObjectID.UNKNOWN);
+    return ITEMSNAMES.getOrDefault(name.toUpperCase(), GameObjectID.UNKNOWN);
   }
   
   GameItems(GameObjectID id) {

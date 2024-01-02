@@ -14,7 +14,6 @@ import java.util.Set;
 import game.Game;
 import game.GameObject;
 import game.GameObjectID;
-import game.entity.item.GameItems;
 import game.entity.item.Item;
 import util.PathCreator;
 import util.Position;
@@ -230,7 +229,7 @@ public class Parser {
     GameObjectID id;
     
     skinResult = lexer.nextResult();
-    id = GameItems.getId(skinResult.content());
+    id = GameObject.fromName(skinResult.content());
     if (id == GameObjectID.UNKNOWN) {
       throw new TokenException("Unknown item '" + skinResult.content() + "'");
     }
@@ -295,6 +294,7 @@ public class Parser {
     
     while (lexer.hasNext()) {
       wanted = parseItem();
+      
       isExpected(Token.ARROW);
       toSell = parseItem();
       
@@ -323,7 +323,7 @@ public class Parser {
         return encodings;
       } else {
         row = parseEncodings();
-        if (encodings.get(row.code()) != null) {
+        if (encodings.getOrDefault(row.code(), null) != null) {
           throw new TokenException("Block code '" + row.code() + "' already register");
         }
         encodings.put(row.code(), row);

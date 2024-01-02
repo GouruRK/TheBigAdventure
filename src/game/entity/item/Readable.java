@@ -4,17 +4,16 @@ import java.util.Objects;
 
 import game.GameObjectID;
 
-public record Readable(String skin, String text, String name) implements Item {
+public record Readable(String skin, String name, String text) implements Item {
 
   //------- Constructors -------
   
   public Readable {
     Objects.requireNonNull(skin);
-    Objects.requireNonNull(text);
   }
   
-  public Readable(String skin, String text) {
-    this(skin, text, null);
+  public Readable(String skin, String name) {
+    this(skin, name, null);
   }
   
   // ------- Getter -------
