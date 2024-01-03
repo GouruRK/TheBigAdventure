@@ -1,7 +1,8 @@
 package game.environnement;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import game.GameObject;
@@ -72,10 +73,11 @@ public enum GameEnvironnement implements GameObject {
   
   private final GameObjectID id;
   
-  public static final List<GameEnvironnement> BLOCKS = List.of(GameEnvironnement.values());
+  public static final Set<GameEnvironnement> BLOCKS = Set.of(GameEnvironnement.values());
   public static final Map<String, GameObjectID> BLOCKSNAMES = BLOCKS.stream()
       .collect(Collectors.toUnmodifiableMap(GameEnvironnement::name, GameEnvironnement::id));
-  
+  private static final Map<String, GameEnvironnement> TYPEBLOCKS = BLOCKS.stream()
+      .collect(Collectors.toUnmodifiableMap(GameEnvironnement::name, Function.identity()));
   
   public GameObjectID id() {
     return id;
@@ -83,6 +85,10 @@ public enum GameEnvironnement implements GameObject {
   
   public static GameObjectID getId(String name) {
     return BLOCKSNAMES.getOrDefault(name, GameObjectID.UNKNOWN);
+  }
+  
+  public static GameEnvironnement getEnvironnement(String name) {
+    return TYPEBLOCKS.get(name);
   }
   
   GameEnvironnement(GameObjectID id) {

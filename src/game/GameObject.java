@@ -25,7 +25,4 @@ public interface GameObject {
     }
     return GameObjectID.UNKNOWN;
   }
-  
-  
-  
 }

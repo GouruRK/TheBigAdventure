@@ -1,7 +1,8 @@
 package game.entity.mob;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import game.GameObject;
@@ -39,9 +40,12 @@ public enum GameMobs implements GameObject {
 
   private final GameObjectID id;
   
-  private static final List<GameMobs> MOBS = List.of(GameMobs.values());
+  private static final Set<GameMobs> MOBS = Set.of(GameMobs.values());
   private static final Map<String, GameObjectID> MOBSNAMES = MOBS.stream()
       .collect(Collectors.toUnmodifiableMap(GameMobs::name, GameMobs::id));
+  private static final Map<String, GameMobs> TYPEMOBS = MOBS.stream()
+      .collect(Collectors.toUnmodifiableMap(GameMobs::name, Function.identity()));
+  
   
   public GameObjectID id() {
     return id;
@@ -49,6 +53,10 @@ public enum GameMobs implements GameObject {
 
   public static GameObjectID getId(String name) {
     return MOBSNAMES.getOrDefault(name, GameObjectID.UNKNOWN);
+  }
+  
+  public static GameMobs getMob(String name) {
+    return TYPEMOBS.get(name);
   }
   
   GameMobs(GameObjectID id) {

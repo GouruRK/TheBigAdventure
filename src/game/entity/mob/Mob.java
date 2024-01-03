@@ -111,4 +111,10 @@ public interface Mob extends Entity {
     default -> null;
     };
   }
+  
+  //------- Other -------
+  
+  public default GameMobs getMob() {
+    return GameMobs.getMob(skin());
+  }
 }

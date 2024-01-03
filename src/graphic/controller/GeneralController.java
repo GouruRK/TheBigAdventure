@@ -4,12 +4,15 @@ import java.util.Objects;
 
 import game.Game;
 import game.entity.item.Food;
+import game.entity.item.GameItems;
+import game.entity.item.Item;
 import game.entity.item.Thing;
 import game.entity.item.Weapon;
 import game.entity.mob.Friend;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
+import game.environnement.GameEnvironnement;
 import game.environnement.Gate;
 import graphic.view.View;
 import util.Direction;
@@ -131,8 +134,11 @@ public class GeneralController {
     } else if (inventory.isInventoryDisplay()) {
       inventory.exchangeItem();
     } else {
-      if (!playerAction()) {
-        useItem();
+      Position facing = game.player().pos().facingDirection(game.player().facing());
+      Mob mob = game.searchMob(facing);
+      Environnement env = game.searchEnvironnement(facing);
+      if (!playerAction(mob, env)) {
+        useItem(mob, env);
         setHasItemBeenUsed(true);
       }
     }
@@ -142,11 +148,7 @@ public class GeneralController {
    * Manage player action to trade items
    * @return true if an action has been done, else false
    */
-  public boolean playerAction() {
-    Player player = game.player();
-    Position facing = player.pos().facingDirection(player.facing());
-    Mob mob = game.searchMob(facing);
-    
+  public boolean playerAction(Mob mob, Environnement env) {
     if (mob != null) {
       switch (mob) {
       case Friend friend -> {
@@ -166,17 +168,14 @@ public class GeneralController {
   /**
    * Use the current held item
    */
-  private void useItem() {
+  private void useItem(Mob mob, Environnement env) {
     Player player = game.player();
     if (player.hold() == null) {
       return;
     }
 
-    Position facing = player.pos().facingDirection(player.facing());
-    Environnement env = game.searchEnvironnement(facing);
-    
     switch (player.hold()) {
-      case Weapon weapon -> game.attackMob(player, game.searchMob(facing));
+      case Weapon weapon -> useWeapon(mob, env);
       case Food food -> player.eat();
       case Thing thing -> {
         if (env == null) {
@@ -188,6 +187,19 @@ public class GeneralController {
         }
       }
       default -> {}
+    }
+  }
+  
+  private void useWeapon(Mob mob, Environnement env) {
+    if (mob != null) {
+      game.attackMob(game.player(), mob);
+    } else {
+      if (env != null && env.getEnvironnement() == GameEnvironnement.TREE
+          && game.player().hold().getItem() == GameItems.SWORD) {
+        Position pos = env.pos();
+        game.removeEnvironnement(pos);
+        game.addDroppedItem(Item.createItem("box"), pos);
+      }
     }
   }
   

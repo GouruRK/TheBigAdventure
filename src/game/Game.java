@@ -274,5 +274,12 @@ public class Game {
       removeDeadMob();      
     }
   }
+  
+  public void removeEnvironnement(Position pos) {
+    Objects.requireNonNull(pos);
+    if ((0 <= pos.x() && pos.x() < size.x()) && (0 <= pos.y() && pos.y() < size.y())) {
+      field[(int)pos.y()][(int)pos.x()] = null;
+    }
+  }
 
 }

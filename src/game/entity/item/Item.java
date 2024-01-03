@@ -31,7 +31,7 @@ public interface Item extends Entity {
     };
   }
   
-  /***
+  /**
    * Create an Item
    * 
    * @param skin
@@ -42,7 +42,7 @@ public interface Item extends Entity {
   }
   
   
-  /***
+  /**
    * Create an Item from skin and name
    * 
    * @param skin
@@ -76,7 +76,7 @@ public interface Item extends Entity {
     };
   }
   
-  /***
+  /**
    * Create a DroppedItem according to different GameObjectID 
    * 
    * @param elem
@@ -91,6 +91,12 @@ public interface Item extends Entity {
     case GameObjectID.READABLE -> new DroppedItem(elem.getPosition(), new Readable(elem.getSkin(), elem.getText(), elem.getName()));
     default -> null;
     };
+  }
+  
+  //------- Other -------
+  
+  public default GameItems getItem() {
+    return GameItems.getItem(skin());
   }
   
 }

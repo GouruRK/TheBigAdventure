@@ -57,4 +57,10 @@ public interface Environnement {
   public static Environnement createEnvironnement(ElementAttributes elem) {
     return Environnement.createEnvironnement(elem, elem.getPosition());
   }
+  
+  //------- Other -------
+  
+  public default GameEnvironnement getEnvironnement() {
+    return GameEnvironnement.getEnvironnement(skin());
+  }
 }

@@ -33,6 +33,7 @@ public class Skins {
   }
   
   private static void loadEnvironnementSkin(Environnement[][] field) throws IOException {
+    loadSkin("box");
     for (var line: field) {
       for (Environnement env: line) {
         if (env != null) {

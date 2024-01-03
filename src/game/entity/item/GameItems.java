@@ -1,7 +1,8 @@
 package game.entity.item;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import game.GameObject;
@@ -76,12 +77,18 @@ public enum GameItems implements GameObject {
   /**
    * Define a List of Items
    */
-  private static final List<GameItems> ITEMS = List.of(GameItems.values());
+  private static final Set<GameItems> ITEMS = Set.of(GameItems.values());
   private static final Map<String, GameObjectID> ITEMSNAMES = ITEMS.stream()
       .collect(Collectors.toUnmodifiableMap(GameItems::name, GameItems::id));
-  
+  private static final Map<String, GameItems> TYPEITEMS = ITEMS.stream()
+      .collect(Collectors.toUnmodifiableMap(GameItems::name, Function.identity()));
+
   public GameObjectID id() {
     return id;
+  }
+  
+  public static GameItems getItem(String name) {
+    return TYPEITEMS.get(name);
   }
   
   /**
