@@ -6,10 +6,12 @@ import java.util.Objects;
 
 import game.entity.item.DroppedItem;
 import game.entity.item.Item;
+import game.entity.mob.Behaviour;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
 import util.Direction;
+import util.Math;
 import util.Position;
 
 public class Game {
@@ -122,6 +124,14 @@ public class Game {
   
   public void moveMobs() {
     mobs.forEach(mob -> move(mob, Direction.randomDirection(), 1));
+  }
+  
+  public void agressiveMob() {
+    mobs.stream()
+      .filter(mob -> mob.behaviour() == Behaviour.AGRESSIVE 
+        && Math.distance(player.pos(), mob.pos()) == 1 
+        && Math.randomBoolean())
+      .forEach(m -> player.takeDamage(m.damage()));
   }
   
   public void moveEnemies() {

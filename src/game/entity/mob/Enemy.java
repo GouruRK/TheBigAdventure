@@ -76,6 +76,10 @@ public class Enemy implements Mob {
     return facing;
   }
   
+  public Behaviour behaviour() {
+    return behaviour;
+  }
+  
   public void setFacing(Direction dir) { 
     this.facing = dir;
   }

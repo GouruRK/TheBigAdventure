@@ -92,7 +92,7 @@
   kind: enemy
   health: 10
   zone: (38, 24) (10 x 8)
-  behavior: stroll
+  behavior: agressive
   damage: 5
 
 [element]

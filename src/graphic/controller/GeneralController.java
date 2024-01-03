@@ -152,6 +152,7 @@ public class GeneralController {
     }
     if (frames % 10 == 0) {
       game.moveEnemies();
+      game.agressiveMob();
       return true;
     }
     return false;
