@@ -62,7 +62,7 @@ public class Game {
   //------- Getter -------
   
   /**
-   * define a Player
+   * Get the player instance
    * @return player
    */
   public Player player() {
@@ -70,7 +70,7 @@ public class Game {
   }
 
   /***
-   * Define an Environnement
+   * Get the environnement that contains all obstacles and scenery of the map
    * @return Environnement[][]
    */
   public Environnement[][] field() {
@@ -78,7 +78,7 @@ public class Game {
   }
 
   /***
-   * Define a List of Mob
+   * Get the list of all mobs of the game
    * @return List<Mob>
    */
   public List<Mob> mobs() {
@@ -86,22 +86,38 @@ public class Game {
   }
 
   /***
-   * Define a List of DroppedItem
+   * Get a list of DroppedItem
    * @return List<DroppedItem>
    */
   public List<DroppedItem> items() {
     return List.copyOf(items);
   }
   
+  /**
+   * Get the inventory instance
+   * @return
+   */
   public Inventory inventory() {
     return inventory;
   }
   
+  /**
+   * Search if there is an item on the ground at given position
+   * @param pos position
+   * @return the item if its on the ground, else null
+   */
   public DroppedItem searchItem(Position pos) {
+    Objects.requireNonNull(pos);
     return items.stream().filter(item -> item.pos().equals(pos)).findFirst().orElse(null);
   }
   
+  /**
+   * Search if there is a mob at given position
+   * @param pos
+   * @return the mob if its at the position, else null
+   */
   public Mob searchMob(Position pos) {
+    Objects.requireNonNull(pos);
     return mobs.stream().filter(mob -> mob.pos().equals(pos)).findFirst().orElse(null);
   }
   
@@ -112,35 +128,61 @@ public class Game {
    * @return Environnement
    */
   public Environnement searchEnvironnement(Position pos) {
+    Objects.requireNonNull(pos);
     return field[(int)pos.y()][(int)pos.x()];
   }
   
+  /**
+   * Remove an item from the DroppedItem list instance
+   * @param item to remove
+   */
   public void removeDroppedItem(DroppedItem item) {
+    Objects.requireNonNull(item);
     items.removeIf(i -> i.equals(item));
   }
 
 
   // ------- Movement related -------
   
+  /**
+   * Move all mobs of the map
+   */
   public void moveMobs() {
+    // here, all mobs moved of one square
     mobs.forEach(mob -> move(mob, Direction.randomDirection(), 1));
   }
   
+  /**
+   * Agressive mobs attack the player if he is next to a mob
+   */
   public void agressiveMob() {
+    // mobs have 0.5% chance to attack the player if he is next to the mob
     mobs.stream()
       .filter(mob -> mob.behaviour() == Behaviour.AGRESSIVE 
         && Math.distance(player.pos(), mob.pos()) == 1 
         && Math.randomBoolean())
-      .forEach(m -> player.takeDamage(m.damage()));
+      .forEach(m -> attackMob(m, player));
   }
   
+  /**
+   * Move all mobs if they are not friends
+   */
   public void moveEnemies() {
     mobs.stream()
       .filter(mob -> mob.id() == GameObjectID.ENEMY)
       .forEach(mob -> move(mob, Direction.randomDirection(), 1));
   }
   
+  /**
+   * Move the given mob one step on the given direction if the movement is possible
+   * @param mob mob to move. If mob is the player, it can pick up item from the ground
+   * @param dir direction to move
+   * @param step number (or proportion) of square to move
+   */
   public void move(Mob mob, Direction dir, double step) {
+    Objects.requireNonNull(mob);
+    Objects.requireNonNull(dir);
+    
     Position nextPos = mob.pos().computeDirection(dir, step);
     if (nextPos == null) {
       return;
@@ -148,18 +190,23 @@ public class Game {
     
     if (mob.isMoveInZonePossible(nextPos) && isMoveInGamePossible(mob, nextPos)) {
       mob.setPos(nextPos);
-      pickUpItem(mob);
+      
+      switch (mob) {
+        case Player player -> pickUpItem(player);
+        default -> {}
+      }
+      
     }
     mob.setFacing(dir);
   }
   
   /**
-   * Check if the move is possible to execute
+   * Check if the move is possible
    * 
    * @param pos
    * @return boolean
    */  
-  public boolean isMoveInGamePossible(Mob mobToMove, Position pos) {
+  private boolean isMoveInGamePossible(Mob mobToMove, Position pos) {
     Environnement env = searchEnvironnement(pos);
     Mob mob = searchMob(pos);
     
@@ -171,37 +218,57 @@ public class Game {
   
   //------- Modifiers -------
   
+  /**
+   * Remove all dead mobs
+   */
   private void removeDeadMob() {
     mobs.removeIf(Mob::isDead);
   }
   
-  public void pickUpItem(Mob mob) {
-    switch (mob) {
-    case Player p -> {
-      if (p.hold() == null) {
-        DroppedItem item = searchItem(p.pos());
-        if (item != null) {
-          p.setHold(item.item());
-          removeDroppedItem(item);
-        }
+  /**
+   * If there is an item on the ground at the same position of the player and
+   * the player doesn't already hold an item, it can pick it up and put it as
+   * a hold item
+   * @param player
+   */
+  private void pickUpItem(Player player) {
+    if (player.hold() == null) {
+      DroppedItem item = searchItem(player.pos());
+      if (item != null) {
+        player.setHold(item.item());
+        removeDroppedItem(item);
       }
-    }
-    default -> {}
     }
   }
   
+  /**
+   * Add a dropped item on the map
+   * @param item
+   */
   public void addDroppedItem(DroppedItem item) {
     Objects.requireNonNull(item);
     items.add(item);
   }
   
+  /**
+   * Create a dropped item at given position and add it to the map
+   * @param item
+   * @param pos
+   */
   public void addDroppedItem(Item item, Position pos) {
     Objects.requireNonNull(item);
     Objects.requireNonNull(pos);
     items.add(new DroppedItem(pos, item));
   }
   
+  /**
+   * Manage conflict between two mobs
+   * @param attacker
+   * @param victim
+   */
   public void attackMob(Mob attacker, Mob victim) {
+    // we manually check if instances aren't null because this method is 
+    // generic, and be called directly after a 'searchMob' which can return null
     if (attacker != null && victim != null) {
       victim.takeDamage(attacker.damage());
       removeDeadMob();      

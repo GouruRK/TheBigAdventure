@@ -1,5 +1,7 @@
 package graphic.controller;
 
+import java.util.Objects;
+
 import game.Game;
 import game.entity.item.Food;
 import game.entity.item.Thing;
@@ -15,23 +17,30 @@ import util.Position;
 
 public class GeneralController {
   
+  // ------- Fields -------
+  
   private final InventoryController inventory;
   private final TradeController trade;
   private final Game game;
   private boolean hasItemBeenUsed;
   
+  // ------- Constructor -------
+  
   public GeneralController(Game game) {
+    Objects.requireNonNull(game);
     inventory = new InventoryController(game.inventory(), game.player());
     trade = new TradeController(inventory);
     this.game = game;
     hasItemBeenUsed = false;
   }
   
-  public InventoryController inventory() {
+  // ------- Getter -------
+  
+  public InventoryController inventoryController() {
     return inventory;
   }
   
-  public TradeController trade() {
+  public TradeController tradeController() {
     return trade;
   }
   
@@ -43,7 +52,15 @@ public class GeneralController {
     hasItemBeenUsed = status;
   }
   
+  // ------- Commands -------
+  
+  /**
+   * Determine an action based on the given keyOperation
+   * @param key
+   * @return true if the game'graphics need to be updated, else false
+   */
   public boolean interpretCommand(KeyOperation key) {
+    Objects.requireNonNull(key);
     setHasItemBeenUsed(false);
     
     if (key == KeyOperation.NONE)  {
@@ -59,6 +76,11 @@ public class GeneralController {
     return true;
   }
   
+  // ------- Generic -------
+  
+  /**
+   * Toggle interfaces display
+   */
   private void toggleInterfaces() {
     if (trade.isTradeInterfaceShow()) {
       trade.toggleIsTradeInterfaceShow();
@@ -67,27 +89,10 @@ public class GeneralController {
     }
   }
   
-  private void action() {
-    if (trade.isTradeInterfaceShow()) {
-      trade.tradeItem();
-    } else if (inventory.isInventoryDisplay()) {
-      inventory.exchangeItem();
-    } else {
-      playerAction();
-      setHasItemBeenUsed(true);
-    }
-  }
-  
-  private void move(Direction dir) {
-    if (trade.isTradeInterfaceShow()) {
-      trade.moveCursor(dir);
-    } else if (inventory.isInventoryDisplay()) {
-      inventory.moveCursor(dir);
-    } else {
-      game.move(game.player(), dir, 1);
-    }
-  }
-  
+  /**
+   * If the player hold an item, drop it at its facing direction.
+   * If the next block is an obstacle, drop it at the current player position
+   */
   private void dropItem() {
     Player player = game.player();
     if (player.hold() != null) {
@@ -100,14 +105,47 @@ public class GeneralController {
       player.removeHeldItem();
     }
   }
- 
-  public void playerAction() {
+  
+  /**
+   * Interpret movements, according to which interface is currently displayed
+   * @param dir
+   */
+  private void move(Direction dir) {
+    if (trade.isTradeInterfaceShow()) {
+      trade.moveCursor(dir);
+    } else if (inventory.isInventoryDisplay()) {
+      inventory.moveCursor(dir);
+    } else {
+      game.move(game.player(), dir, 1);
+    }
+  }
+  
+  //------- Actions -------
+  
+  /**
+   * Manage player action on the map and on the interfaces
+   */
+  private void action() {
+    if (trade.isTradeInterfaceShow()) {
+      trade.tradeItem();
+    } else if (inventory.isInventoryDisplay()) {
+      inventory.exchangeItem();
+    } else {
+      if (!playerAction()) {
+        useItem();
+        setHasItemBeenUsed(true);
+      }
+    }
+  }
+  
+  /**
+   * Manage player action to trade items
+   * @return true if an action has been done, else false
+   */
+  public boolean playerAction() {
     Player player = game.player();
     Position facing = player.pos().facingDirection(player.facing());
-    Environnement env = game.searchEnvironnement(facing);
     Mob mob = game.searchMob(facing);
-    boolean exit = false;
-    
     
     if (mob != null) {
       switch (mob) {
@@ -115,20 +153,27 @@ public class GeneralController {
         if (friend.trade() != null) {
           trade.setTrade(friend.trade());
           trade.toggleIsTradeInterfaceShow();
-          exit = true;
+          return true;
         }
       }
       default -> {}
       }
+      
     }
-    
-    if (exit) {
-      return;
-    }
-    
+    return false;
+  }
+  
+  /**
+   * Use the current held item
+   */
+  private void useItem() {
+    Player player = game.player();
     if (player.hold() == null) {
       return;
     }
+
+    Position facing = player.pos().facingDirection(player.facing());
+    Environnement env = game.searchEnvironnement(facing);
     
     switch (player.hold()) {
       case Weapon weapon -> game.attackMob(player, game.searchMob(facing));
@@ -146,6 +191,11 @@ public class GeneralController {
     }
   }
   
+  /**
+   * Update entities according to the number of frames 
+   * @param frames
+   * @return
+   */
   public boolean entityUpdate(long frames) {
     if (trade.isTradeInterfaceShow() || inventory.isInventoryDisplay()) {
       return false;

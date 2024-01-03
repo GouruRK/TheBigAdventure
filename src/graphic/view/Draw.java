@@ -44,9 +44,9 @@ public class Draw {
     this.windowWidth = (int) screenInfo.getWidth();
     this.windowHeight = (int) screenInfo.getHeight();
     // Creation of submodules to draw
-    this.inventory = new DrawInventory(game.inventory(), controller.inventory());
+    this.inventory = new DrawInventory(game.inventory(), controller.inventoryController());
     this.player = new DrawPlayer(game.player());
-    this.trade = new DrawTrade(controller.trade(), inventory, windowWidth, windowHeight);
+    this.trade = new DrawTrade(controller.tradeController(), inventory, windowWidth, windowHeight);
   }
   
   //------- Main function -------
@@ -58,9 +58,9 @@ public class Draw {
       player.drawPlayer(graphics, controller.hasItemBeenUsed());
       DrawMobs.drawMobs(graphics, game.mobs());
       drawDroppedItems(graphics);
-      if (controller.trade().isTradeInterfaceShow()) {
+      if (controller.tradeController().isTradeInterfaceShow()) {
         trade.drawTrade(graphics);
-      } else if (controller.inventory().isInventoryDisplay()) {
+      } else if (controller.inventoryController().isInventoryDisplay()) {
         inventory.drawInventory(graphics, windowWidth/2, windowHeight/2);
       }
     });
