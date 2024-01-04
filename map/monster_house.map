@@ -71,25 +71,10 @@
   position: (1,1)
   health: 10
   kind: friend
-  trade: CASH little -> KEY red,
-  		 CASH -> PIZZA,
-  		 KEY -> BURGER,
-  		 BURGER -> SWORD,
-  		 SWORD -> SHOVEL,
-  		 SHOVEL -> BOLT,
-  		 BOLT -> BOOK,
-  		 BOOK -> CLOCK,
-  		 CLOCK -> CRYSTAL,
-  		 CRYSTAL -> CUP,
-  		 CUP -> DRUM,
-  		 drum -> flag,
-  		 flag -> gem
   text: """
   Hello my dear friend !
   Look what I have for you : only good quality, and at a reasonable price.
-  
   I hope you'll like them
-  
   Waldo
   """
 

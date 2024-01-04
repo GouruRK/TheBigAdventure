@@ -55,10 +55,13 @@ public class DrawTrade {
     }
     
     
-    drawTradeLayout(graphics);
-    drawCursor(graphics);
-    drawTradeItems(graphics);
-    drawTradeItemNames(graphics);
+    if (controller.hasTrade()) {
+      drawTradeLayout(graphics);
+      drawCursor(graphics);
+      drawTradeItems(graphics);
+      drawTradeItemNames(graphics);      
+    }
+    
     if (controller.hasText()) {
       drawText(graphics);
     }

@@ -152,7 +152,7 @@ public class GeneralController {
     if (mob != null) {
       switch (mob) {
       case Friend friend -> {
-        if (friend.hasTrade()) {
+        if (friend.hasTrade() || friend.hasText()) {
           trade.setFriend(friend);
           trade.toggleIsTradeInterfaceShow();
           return true;
