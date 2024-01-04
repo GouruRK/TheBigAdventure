@@ -152,8 +152,8 @@ public class GeneralController {
     if (mob != null) {
       switch (mob) {
       case Friend friend -> {
-        if (friend.trade() != null) {
-          trade.setTrade(friend.trade());
+        if (friend.hasTrade()) {
+          trade.setFriend(friend);
           trade.toggleIsTradeInterfaceShow();
           return true;
         }

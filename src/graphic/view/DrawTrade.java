@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.util.Comparator;
 import java.util.Objects;
 
 import game.entity.item.Item;
@@ -16,9 +17,11 @@ public class DrawTrade {
   private final int tradeTopX;
   private final int inventoryTopX;
   private final int inventoryTopY;
-  private final int tradeWidth;
+  private final int tradeWidth = View.IMAGESIZE*6;
   private final int tradeTopY;
   private int tradeHeight;
+  private int textWidth;
+  private int textHeight;
   private int minSize;
   
   public DrawTrade(TradeController controller, DrawInventory inventory, int windowWidth, int windowHeight) {
@@ -31,7 +34,6 @@ public class DrawTrade {
     tradeTopX = windowWidth/4;
     tradeTopY = windowHeight/4;
     
-    tradeWidth = View.IMAGESIZE*6;
     // tradeHeight = View.IMAGESIZE*consecutiveTradeLength;
     // tradeHeight = View.IMAGESIZE*(controller.trade().size() % consecutiveTradeLength);
     
@@ -46,11 +48,20 @@ public class DrawTrade {
     this.minSize = Math.min(controller.totalLength(), 10);
     this.tradeHeight = View.IMAGESIZE*(minSize)*2;
     
+    if (controller.hasText()) {
+      // this.textWidth = 6*controller.text().stream().sorted(Comparator.comparingInt(String::length).reversed()).map(String::length).findFirst().orElse(0);
+      this.textWidth = graphics.getFontMetrics().stringWidth(controller.text().stream().max(Comparator.comparingInt(String::length)).orElse(""));
+      this.textHeight = 15*controller.text().size();
+    }
+    
     
     drawTradeLayout(graphics);
     drawCursor(graphics);
     drawTradeItems(graphics);
     drawTradeItemNames(graphics);
+    if (controller.hasText()) {
+      drawText(graphics);
+    }
   }
   
   private void drawTradeLayout(Graphics2D graphics) {
@@ -130,6 +141,26 @@ public class DrawTrade {
     Draw.drawImage(graphics, toSell, tradeTopX/2 + View.IMAGESIZE*2, y);
   }
   
+  private void drawText(Graphics2D graphics) {
+    AffineTransform save = graphics.getTransform();
+    graphics.scale(1.5, 1.5);
+    
+    drawTextOutline(graphics);
+    drawTextContent(graphics);
+    
+    graphics.setTransform(save);
+  }
   
+  private void drawTextOutline(Graphics2D graphics) {
+    graphics.setColor(Color.LIGHT_GRAY);
+    Rectangle2D.Double txt = new Rectangle2D.Double(tradeTopX, tradeTopY - 10, textWidth, textHeight);
+    graphics.fill(txt);
+  }
+  
+  private void drawTextContent(Graphics2D graphics) {
+    for (int y = 0; y < controller.text().size(); y++) {
+      Draw.drawText(graphics, controller.text().get(y), tradeTopX, tradeTopY + y*15, Color.BLACK);
+    }
+  }
   
 }

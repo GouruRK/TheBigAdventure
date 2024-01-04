@@ -19,13 +19,14 @@ public class Friend implements Mob {
   private final Zone zone; 
   private final int maxHealth;
   private final Map<Item, List<Item>> trade;
+  private final List<String> text;
   private Position pos;
   private int health;
-  private Direction facing; 
+  private Direction facing;
   
   //------- Constructors -------
   
-  public Friend(String skin, Position pos, Zone zone, String name, int health, int maxHealth, Map<Item, List<Item>> trade) {
+  public Friend(String skin, Position pos, Zone zone, String name, int health, int maxHealth, Map<Item, List<Item>> trade, List<String> text) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(pos);
     Objects.requireNonNull(zone);
@@ -38,10 +39,11 @@ public class Friend implements Mob {
     this.maxHealth = health;
     this.trade = trade;
     this.facing = Direction.EAST;
+    this.text = text;
   }
   
-  public Friend(String skin, Position pos, Zone zone, String name, int health, Map<Item, List<Item>> trade) {
-    this(skin, pos, zone, name, health, health, trade);
+  public Friend(String skin, Position pos, Zone zone, String name, int health, Map<Item, List<Item>> trade, List<String> text) {
+    this(skin, pos, zone, name, health, health, trade, text);
   }
   
   //------- Getter -------
@@ -78,6 +80,24 @@ public class Friend implements Mob {
     return trade;
   }
 
+  public boolean hasText() {
+    return text != null;
+  }
+  
+  public boolean hasTrade() {
+    return trade != null;
+  }
+  
+  public List<String> text() {
+    return text;
+  }
+
+  public GameObjectID id() {
+    return GameObjectID.FRIEND;
+  }
+  
+  // ------- Modifiers -------
+  
   public void setPos(Position pos) {
   	this.pos = pos;
   }
@@ -88,10 +108,6 @@ public class Friend implements Mob {
   
   public void takeDamage(int damage) {
     this.health -= damage;
-  }
-  
-  public GameObjectID id() {
-    return GameObjectID.FRIEND;
   }
   
 }

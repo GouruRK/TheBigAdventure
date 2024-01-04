@@ -88,7 +88,7 @@ public interface Item extends Entity {
          GameObjectID.FOOD,
          GameObjectID.CONTAINER -> new DroppedItem(elem.getPosition(), Item.createItem(elem.getSkin(), elem.getName()));
     case GameObjectID.WEAPON -> new DroppedItem(elem.getPosition(), new Weapon(elem.getSkin(), elem.getDamage(), false, elem.getName()));
-    case GameObjectID.READABLE -> new DroppedItem(elem.getPosition(), new Readable(elem.getSkin(), elem.getText(), elem.getName()));
+    case GameObjectID.READABLE -> new DroppedItem(elem.getPosition(), new Readable(elem.getSkin(), elem.getName(), elem.getText()));
     default -> null;
     };
   }

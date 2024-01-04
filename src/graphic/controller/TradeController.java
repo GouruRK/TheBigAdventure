@@ -6,12 +6,13 @@ import java.util.Objects;
 
 import game.Inventory;
 import game.entity.item.Item;
+import game.entity.mob.Friend;
 import util.Direction;
 
 public class TradeController {
 
   private final InventoryController inventory;
-  private Map<Item, List<Item>> trade = null;
+  private Friend friend;
   private boolean isTradeInterfaceShow = false;
   private int cursor = 0;
   private int visualCursor = 0;
@@ -26,7 +27,15 @@ public class TradeController {
   }
   
   public Map<Item, List<Item>> trade() {
-    return trade;
+    return friend.trade();
+  }
+  
+  public List<String> text() {
+    return friend.text();
+  }
+  
+  public boolean hasText() {
+    return friend.hasText();
   }
   
   public int cursor() {
@@ -54,27 +63,27 @@ public class TradeController {
   }
   
   public boolean hasTrade() {
-    return trade != null;
+    return friend.trade() != null;
   }
   
   public boolean isTradeInterfaceShow() {
     return isTradeInterfaceShow;
   }
   
-  public void setTrade(Map<Item, List<Item>> trade) {
-    Objects.requireNonNull(trade);
-    this.trade = trade;
+  public void setFriend(Friend friend) {
+    Objects.requireNonNull(friend);
+    this.friend = friend;
     this.totalLength = updateTotalLength();
     this.maxIndex = Math.min(totalLength, consecutiveTradeLength);
     this.minIndex = 0;
   }
   
   private int updateTotalLength() {
-    if (trade == null) {
+    if (friend.trade() == null) {
       return 0;
     }
     int res = 0;
-    for (var entry: trade.entrySet()) {
+    for (var entry: friend.trade().entrySet()) {
       res += entry.getValue().size();
     }
     return res;
@@ -84,7 +93,7 @@ public class TradeController {
     isTradeInterfaceShow = !isTradeInterfaceShow;
     inventory.toggleInventoryDisplay();
     if (!isTradeInterfaceShow) {
-      trade = null;
+      friend = null;
     } else {
       cursor = 0;
       visualCursor = 0;
@@ -118,7 +127,7 @@ public class TradeController {
   public void tradeItem() {
    int index = 0;
    Inventory inv = inventory.inventory();
-   for (var entry: trade.entrySet()) {
+   for (var entry: friend.trade().entrySet()) {
      for (Item item: entry.getValue()) {
        if (index == cursor) {
          if (inventory.player().hold() != null && inventory.player().hold().equals(entry.getKey())) {

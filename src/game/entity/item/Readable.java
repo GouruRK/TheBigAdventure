@@ -1,10 +1,11 @@
 package game.entity.item;
 
+import java.util.List;
 import java.util.Objects;
 
 import game.GameObjectID;
 
-public record Readable(String skin, String name, String text) implements Item {
+public record Readable(String skin, String name, List<String> text) implements Item {
 
   //------- Constructors -------
   

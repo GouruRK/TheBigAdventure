@@ -1,8 +1,10 @@
 package parser;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import game.Game;
 import game.GameObject;
@@ -25,7 +27,7 @@ public class ElementAttributes {
   private Zone zone = null;
   private Behaviour behaviour = Behaviour.UNKNOWN;
   private int damage = -1;
-  private String text = null;
+  private List<String> text = null;
   private List<Item> steal = null;
   private Map<Item, List<Item>> trade = null;
   private Item locked = null;
@@ -148,7 +150,7 @@ public class ElementAttributes {
     return damage;
   }
   
-  public String getText() {
+  public List<String> getText() {
     return text;
   }
   
@@ -287,7 +289,17 @@ public class ElementAttributes {
   public void setText(String text) throws TokenException {
     Objects.requireNonNull(text);
     ElementAttributes.checkNull(this.text, "Text");
-    this.text = text.stripIndent();
+    
+    String temp = text.replaceAll("\\\"\\\"\\\"", "").stripIndent();
+    String[] lines = temp.split("\n");
+        
+    List<String> res = Arrays.stream(lines)
+        .map(line -> line.replaceAll("\n", ""))
+        .collect(Collectors.toList());
+    
+    res.removeIf(line -> line.isEmpty());
+    
+    this.text = res;
   }
   
   public void setSteal(List<Item> steal) throws TokenException {
