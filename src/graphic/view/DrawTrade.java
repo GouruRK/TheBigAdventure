@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.util.Comparator;
 import java.util.Objects;
 
 import game.entity.item.Item;
@@ -50,8 +49,8 @@ public class DrawTrade {
     
     if (controller.hasText()) {
       // this.textWidth = 6*controller.text().stream().sorted(Comparator.comparingInt(String::length).reversed()).map(String::length).findFirst().orElse(0);
-      this.textWidth = graphics.getFontMetrics().stringWidth(controller.text().stream().max(Comparator.comparingInt(String::length)).orElse(""));
-      this.textHeight = 15*controller.text().size();
+      this.textWidth = graphics.getFontMetrics().stringWidth(controller.text().longestLine());
+      this.textHeight = 15*controller.text().numberOfLines();
     }
     
     
@@ -149,7 +148,7 @@ public class DrawTrade {
     graphics.scale(1.5, 1.5);
     
     drawTextOutline(graphics);
-    drawTextContent(graphics);
+    Draw.drawText(graphics, controller.text(), tradeTopX, tradeTopY, Color.BLACK);
     
     graphics.setTransform(save);
   }
@@ -159,11 +158,4 @@ public class DrawTrade {
     Rectangle2D.Double txt = new Rectangle2D.Double(tradeTopX, tradeTopY - 10, textWidth, textHeight);
     graphics.fill(txt);
   }
-  
-  private void drawTextContent(Graphics2D graphics) {
-    for (int y = 0; y < controller.text().size(); y++) {
-      Draw.drawText(graphics, controller.text().get(y), tradeTopX, tradeTopY + y*15, Color.BLACK);
-    }
-  }
-  
 }

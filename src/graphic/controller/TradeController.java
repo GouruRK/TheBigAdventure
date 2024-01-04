@@ -8,6 +8,7 @@ import game.Inventory;
 import game.entity.item.Item;
 import game.entity.mob.Friend;
 import util.Direction;
+import util.Text;
 
 public class TradeController {
 
@@ -30,7 +31,7 @@ public class TradeController {
     return friend.trade();
   }
   
-  public List<String> text() {
+  public Text text() {
     return friend.text();
   }
   

@@ -1,11 +1,9 @@
 package parser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import game.Game;
 import game.GameObjectID;
@@ -15,6 +13,7 @@ import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
 import util.Position;
+import util.Text;
 import util.Zone;
 
 public class GameAttributes {
@@ -93,21 +92,6 @@ public class GameAttributes {
     this.encodings = encodings;
   }
   
-  // --------- Transformers --------- 
-  
-  private List<String> parseField() {
-    String tempData = data.replaceAll("\\\"\\\"\\\"", "").stripIndent();
-    String[] lineArray = tempData.split("\n");
-
-    
-    List<String> field = Arrays.stream(lineArray)
-        .map(line -> line.replaceAll("\n", ""))
-        .collect(Collectors.toList());
-    
-    field.removeIf(line -> line.isEmpty());
-    return field;
-  }
-  
   // --------- Check data field --------- 
   
   private void checkFieldSize(List<String> tempField) throws TokenException {
@@ -147,10 +131,10 @@ public class GameAttributes {
     }
   }
   
-  private List<String> checkField() throws TokenException {
-    List<String> field = parseField();
-    checkFieldConstruction(field);
-    checkFieldSize(field);
+  private Text checkField() throws TokenException {
+    Text field = new Text(data);
+    checkFieldConstruction(field.text());
+    checkFieldSize(field.text());
     return field;
   }
 
@@ -160,7 +144,7 @@ public class GameAttributes {
     if (encodings == null) {
       throw new TokenException("Map encoding is missing");
     }
-    List<String> oldField = checkField();
+    Text oldField = checkField();
     String line;
     
     for (int y = 0; y < size.y(); y++) {

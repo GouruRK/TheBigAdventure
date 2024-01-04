@@ -8,6 +8,7 @@ import game.GameObjectID;
 import game.entity.item.Item;
 import util.Direction;
 import util.Position;
+import util.Text;
 import util.Zone;
 
 public class Friend implements Mob {
@@ -19,14 +20,14 @@ public class Friend implements Mob {
   private final Zone zone; 
   private final int maxHealth;
   private final Map<Item, List<Item>> trade;
-  private final List<String> text;
+  private final Text text;
   private Position pos;
   private int health;
   private Direction facing;
   
   //------- Constructors -------
   
-  public Friend(String skin, Position pos, Zone zone, String name, int health, int maxHealth, Map<Item, List<Item>> trade, List<String> text) {
+  public Friend(String skin, Position pos, Zone zone, String name, int health, int maxHealth, Map<Item, List<Item>> trade, Text text) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(pos);
     Objects.requireNonNull(zone);
@@ -42,7 +43,7 @@ public class Friend implements Mob {
     this.text = text;
   }
   
-  public Friend(String skin, Position pos, Zone zone, String name, int health, Map<Item, List<Item>> trade, List<String> text) {
+  public Friend(String skin, Position pos, Zone zone, String name, int health, Map<Item, List<Item>> trade, Text text) {
     this(skin, pos, zone, name, health, health, trade, text);
   }
   
@@ -88,7 +89,7 @@ public class Friend implements Mob {
     return trade != null;
   }
   
-  public List<String> text() {
+  public Text text() {
     return text;
   }
 

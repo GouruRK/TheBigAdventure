@@ -14,6 +14,7 @@ import game.entity.item.Item;
 import game.environnement.Environnement;
 import graphic.controller.GeneralController;
 import util.Position;
+import util.Text;
 
 public class Draw {
   
@@ -157,6 +158,23 @@ public class Draw {
     drawCenteredText(graphics, text, (int)x, (int)y);
   }
    
+  public static void drawText(Graphics2D graphics, Text text, int topX, int topY) {
+    Objects.requireNonNull(text);
+    
+    for (int y = 0; y < text.numberOfLines(); y++) {
+      drawText(graphics, text.get(y), topX, topY + y*15);
+    }
+  }
+  
+  public static void drawText(Graphics2D graphics, Text text, int topX, int topY, Color color) {
+    Objects.requireNonNull(text);
+    
+    graphics.setColor(color);
+    for (int y = 0; y < text.numberOfLines(); y++) {
+      drawText(graphics, text.get(y), topX, topY + y*15);
+    }
+  }
+  
   // ------- Environment related -------
  
   private void drawMap(Graphics2D graphics) {

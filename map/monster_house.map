@@ -77,6 +77,19 @@
   I hope you'll like them
   Waldo
   """
+  trade: CASH little -> KEY red,
+  		 CASH -> PIZZA,
+  		 KEY -> BURGER,
+  		 BURGER -> SWORD,
+  		 SWORD -> SHOVEL,
+  		 SHOVEL -> BOLT,
+  		 BOLT -> BOOK,
+  		 BOOK -> CLOCK,
+  		 CLOCK -> CRYSTAL,
+  		 CRYSTAL -> CUP,
+  		 CUP -> DRUM,
+  		 drum -> flag,
+  		 flag -> gem
 
 [element]
   name: durendale
