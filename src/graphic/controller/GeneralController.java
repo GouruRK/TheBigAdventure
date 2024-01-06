@@ -6,6 +6,7 @@ import game.Game;
 import game.entity.item.Food;
 import game.entity.item.GameItems;
 import game.entity.item.Item;
+import game.entity.item.Readable;
 import game.entity.item.Thing;
 import game.entity.item.Weapon;
 import game.entity.mob.Friend;
@@ -92,9 +93,17 @@ public class GeneralController {
   private void toggleInterfaces() {
     if (trade.isTradeInterfaceShow()) {
       trade.toggleIsTradeInterfaceShow();
+    } else if (text.isTextInterfaceShow()) {
+      text.toggleIsTextInterfaceShow();
     } else {
-      inventory.toggleInventoryDisplay(); 
+      inventory.toggleInventoryDisplay();
     }
+  }
+  
+  private boolean areInterfacesShow() {
+    return trade.isTradeInterfaceShow() 
+        || text.isTextInterfaceShow() 
+        || inventory.isInventoryDisplay();
   }
   
   /**
@@ -143,7 +152,7 @@ public class GeneralController {
       Mob mob = game.searchMob(facing);
       Environnement env = game.searchEnvironnement(facing);
       if (!playerAction(mob, env)) {
-        useItem(mob, env);
+        useHeldItem(mob, env);
         setHasItemBeenUsed(true);
       }
     }
@@ -173,7 +182,7 @@ public class GeneralController {
   /**
    * Use the current held item
    */
-  private void useItem(Mob mob, Environnement env) {
+  private void useHeldItem(Mob mob, Environnement env) {
     Player player = game.player();
     if (player.hold() == null) {
       return;
@@ -182,17 +191,25 @@ public class GeneralController {
     switch (player.hold()) {
       case Weapon weapon -> useWeapon(mob, env);
       case Food food -> player.eat();
-      case Thing thing -> {
-        if (env == null) {
-          return;
-        }
-        switch (env) {
-          case Gate gate -> gate.open(player.hold());
-          default -> {}
-        }
-      }
+      case Thing thing -> useItem(mob, env);
+      case Readable item -> read(item); 
       default -> {}
     }
+  }
+  
+  private void useItem(Mob mob, Environnement env) {
+    if (env == null) {
+      return;
+    }
+    switch (env) {
+      case Gate gate -> gate.open(game.player().hold());
+      default -> {}
+    }
+  }
+  
+  private void read(Readable item) {
+    text.toggleIsTextInterfaceShow();
+    text.setText(item.text());
   }
   
   private void useWeapon(Mob mob, Environnement env) {
@@ -214,7 +231,7 @@ public class GeneralController {
    * @return
    */
   public boolean entityUpdate(long frames) {
-    if (trade.isTradeInterfaceShow() || inventory.isInventoryDisplay()) {
+    if (areInterfacesShow()) {
       return false;
     }
     if (frames % 10 == 0) {

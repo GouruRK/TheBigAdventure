@@ -64,6 +64,8 @@ public class Draw {
         trade.drawTrade(graphics);
       } else if (controller.inventoryController().isInventoryDisplay()) {
         inventory.drawInventory(graphics, windowWidth/2, windowHeight/2);
+      } else if (controller.textController().isTextInterfaceShow()) {
+        text.drawText(graphics, windowWidth/4, windowHeight/4);
       }
     });
   }

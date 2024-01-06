@@ -30,7 +30,7 @@ public record Readable(String skin, String name, Text text) implements Item {
     return obj instanceof Readable read
         && read.skin().equals(skin)
         && (read.text() == null ? read.text() == text: read.text().equals(text))
-        && (read.name() == null ? read.name() == name: read.text().equals(name))
+        && (read.name() == null ? read.name() == name: read.name().equals(name))
         && read.hashCode() == hashCode();
   }
   

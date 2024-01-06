@@ -100,4 +100,26 @@ public class Text {
     return text.get(index);
   }
   
+  @Override
+  public boolean equals(Object obj) {
+    return obj instanceof Text txt
+        && numberOfLines() == txt.numberOfLines()
+        && areTextEquals(txt)
+        && hashCode() == txt.hashCode();
+  }
+  
+  @Override
+  public int hashCode() {
+    return Objects.hash(text);
+  }
+  
+  private boolean areTextEquals(Text text) {
+    for (int i = 0; i < numberOfLines(); i++) {
+      if (!text.get(i).equals(text.get(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
 }

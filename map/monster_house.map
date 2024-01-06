@@ -66,6 +66,25 @@
   health: 10
 
 [element]
+  name: History
+  skin: book
+  position: (3, 3)
+  text: """
+  Once upon a time
+  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+  10
+  11
+  """
+
+[element]
   name: Waldo
   skin: BABA
   position: (1,1)
