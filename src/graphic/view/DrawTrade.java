@@ -13,22 +13,23 @@ public class DrawTrade {
 
   private final TradeController controller;
   private final DrawInventory inventory;
+  private final DrawText text;
   private final int tradeTopX;
   private final int inventoryTopX;
   private final int inventoryTopY;
   private final int tradeWidth = View.IMAGESIZE*6;
   private final int tradeTopY;
   private int tradeHeight;
-  private int textWidth;
-  private int textHeight;
   private int minSize;
   
-  public DrawTrade(TradeController controller, DrawInventory inventory, int windowWidth, int windowHeight) {
+  public DrawTrade(TradeController controller, DrawInventory inventory, DrawText text, int windowWidth, int windowHeight) {
     Objects.requireNonNull(controller);
     Objects.requireNonNull(inventory);
+    Objects.requireNonNull(text);
     
     this.controller = controller;
     this.inventory = inventory;
+    this.text = text;
     
     tradeTopX = windowWidth/4;
     tradeTopY = windowHeight/4;
@@ -47,13 +48,6 @@ public class DrawTrade {
     this.minSize = Math.min(controller.totalLength(), 10);
     this.tradeHeight = View.IMAGESIZE*(minSize)*2;
     
-    if (controller.hasText()) {
-      // this.textWidth = 6*controller.text().stream().sorted(Comparator.comparingInt(String::length).reversed()).map(String::length).findFirst().orElse(0);
-      this.textWidth = graphics.getFontMetrics().stringWidth(controller.text().longestLine());
-      this.textHeight = 15*controller.text().numberOfLines();
-    }
-    
-    
     if (controller.hasTrade()) {
       drawTradeLayout(graphics);
       drawCursor(graphics);
@@ -62,7 +56,7 @@ public class DrawTrade {
     }
     
     if (controller.hasText()) {
-      drawText(graphics);
+      text.drawText(graphics, tradeTopX, tradeTopY);
     }
   }
   
@@ -142,20 +136,5 @@ public class DrawTrade {
     Draw.drawImage(graphics, "arrow", tradeTopX/2 + View.IMAGESIZE, y);
     Draw.drawImage(graphics, toSell, tradeTopX/2 + View.IMAGESIZE*2, y);
   }
-  
-  private void drawText(Graphics2D graphics) {
-    AffineTransform save = graphics.getTransform();
-    graphics.scale(1.5, 1.5);
-    
-    drawTextOutline(graphics);
-    Draw.drawText(graphics, controller.text(), tradeTopX, tradeTopY, Color.BLACK);
-    
-    graphics.setTransform(save);
-  }
-  
-  private void drawTextOutline(Graphics2D graphics) {
-    graphics.setColor(Color.LIGHT_GRAY);
-    Rectangle2D.Double txt = new Rectangle2D.Double(tradeTopX, tradeTopY - 10, textWidth, textHeight);
-    graphics.fill(txt);
-  }
+ 
 }

@@ -8,11 +8,11 @@ import game.Inventory;
 import game.entity.item.Item;
 import game.entity.mob.Friend;
 import util.Direction;
-import util.Text;
 
 public class TradeController {
 
   private final InventoryController inventory;
+  private final TextController text;
   private Friend friend;
   private boolean isTradeInterfaceShow = false;
   private int cursor = 0;
@@ -22,17 +22,19 @@ public class TradeController {
   private int maxIndex;
   private final int consecutiveTradeLength = 10;
   
-  public TradeController(InventoryController inventory) {
+  public TradeController(InventoryController inventory, TextController text) {
     Objects.requireNonNull(inventory);
+    Objects.requireNonNull(text);
     this.inventory = inventory;
+    this.text = text;
   }
   
   public Map<Item, List<Item>> trade() {
     return friend.trade();
   }
   
-  public Text text() {
-    return friend.text();
+  public TextController textController() {
+    return text;
   }
   
   public boolean hasText() {
@@ -77,6 +79,9 @@ public class TradeController {
     this.totalLength = updateTotalLength();
     this.maxIndex = Math.min(totalLength, consecutiveTradeLength);
     this.minIndex = 0;
+    if (friend.hasText()) {
+      text.setText(friend.text());
+    }
   }
   
   private int updateTotalLength() {
@@ -93,6 +98,8 @@ public class TradeController {
   public void toggleIsTradeInterfaceShow() {
     isTradeInterfaceShow = !isTradeInterfaceShow;
     inventory.toggleInventoryDisplay();
+    text.toggleIsTextInterfaceShow();
+    
     if (!isTradeInterfaceShow) {
       friend = null;
     } else {
@@ -102,7 +109,10 @@ public class TradeController {
   }
   
   public void moveCursor(Direction dir) {
-    if (!(dir == Direction.NORTH || dir == Direction.SOUTH)) return;
+    if (!(dir == Direction.NORTH || dir == Direction.SOUTH)) {
+      text.changePage(dir);
+      return;
+    }
 
     if (dir == Direction.NORTH) {
       if (cursor == 0) return;

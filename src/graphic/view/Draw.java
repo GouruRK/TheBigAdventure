@@ -14,7 +14,6 @@ import game.entity.item.Item;
 import game.environnement.Environnement;
 import graphic.controller.GeneralController;
 import util.Position;
-import util.Text;
 
 public class Draw {
   
@@ -26,6 +25,7 @@ public class Draw {
   private final DrawInventory inventory;
   private final DrawPlayer player;
   private final DrawTrade trade;
+  private final DrawText text;
   private final int windowWidth;
   private final int windowHeight;
   
@@ -47,7 +47,8 @@ public class Draw {
     // Creation of submodules to draw
     this.inventory = new DrawInventory(game.inventory(), controller.inventoryController());
     this.player = new DrawPlayer(game.player());
-    this.trade = new DrawTrade(controller.tradeController(), inventory, windowWidth, windowHeight);
+    this.text = new DrawText(controller.textController());
+    this.trade = new DrawTrade(controller.tradeController(), inventory, text, windowWidth, windowHeight);
   }
   
   //------- Main function -------
@@ -156,23 +157,6 @@ public class Draw {
   public static void drawCenteredText(Graphics2D graphics, String text, double x, double y, Color color) {
     graphics.setColor(color);
     drawCenteredText(graphics, text, (int)x, (int)y);
-  }
-   
-  public static void drawText(Graphics2D graphics, Text text, int topX, int topY) {
-    Objects.requireNonNull(text);
-    
-    for (int y = 0; y < text.numberOfLines(); y++) {
-      drawText(graphics, text.get(y), topX, topY + y*15);
-    }
-  }
-  
-  public static void drawText(Graphics2D graphics, Text text, int topX, int topY, Color color) {
-    Objects.requireNonNull(text);
-    
-    graphics.setColor(color);
-    for (int y = 0; y < text.numberOfLines(); y++) {
-      drawText(graphics, text.get(y), topX, topY + y*15);
-    }
   }
   
   // ------- Environment related -------

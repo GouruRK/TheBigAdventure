@@ -25,16 +25,17 @@ public class GeneralController {
   private final InventoryController inventory;
   private final TradeController trade;
   private final Game game;
-  private boolean hasItemBeenUsed;
+  private final TextController text;
+  private boolean hasItemBeenUsed = false;
   
   // ------- Constructor -------
   
   public GeneralController(Game game) {
     Objects.requireNonNull(game);
     inventory = new InventoryController(game.inventory(), game.player());
-    trade = new TradeController(inventory);
+    text = new TextController();
+    trade = new TradeController(inventory, text);
     this.game = game;
-    hasItemBeenUsed = false;
   }
   
   // ------- Getter -------
@@ -45,6 +46,10 @@ public class GeneralController {
   
   public TradeController tradeController() {
     return trade;
+  }
+  
+  public TextController textController() {
+    return text;
   }
   
   public boolean hasItemBeenUsed() {

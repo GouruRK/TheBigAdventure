@@ -73,8 +73,10 @@
   kind: friend
   text: """
   Hello my dear friend !
-  Look what I have for you : only good quality, and at a reasonable price.
-  I hope you'll like them
+  
+  Look what I have for you : only good quality, and at a reasonable price. You can take whatever you want !
+  I hope you'll like them.
+  
   Waldo
   """
   trade: CASH little -> KEY red,

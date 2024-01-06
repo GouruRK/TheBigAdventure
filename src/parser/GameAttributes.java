@@ -132,7 +132,7 @@ public class GameAttributes {
   }
   
   private Text checkField() throws TokenException {
-    Text field = new Text(data);
+    Text field = new Text(data, true);
     checkFieldConstruction(field.text());
     checkFieldSize(field.text());
     return field;
