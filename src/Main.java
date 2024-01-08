@@ -1,24 +1,32 @@
 import java.io.IOException;
-import java.nio.file.Path;
 
 import game.Game;
 import graphic.view.View;
 import parser.Parser;
 import parser.TokenException;
+import parser.commandline.Arguments;
+import parser.commandline.CommandLineException;
 
 public class Main {
   public static void main(String[] args) {
+    try {
+      Arguments.parseArguments(args);      
+    } catch (CommandLineException e) {
+      System.err.println(e.getMessage());
+      return;
+    }
     
-    Path mapPath = Path.of("map/monster_house.map");
     Parser parser;
     Game game;
     View win = null;
     
     try {
-      parser = new Parser(mapPath);
+      parser = new Parser(Arguments.level());
       game = parser.parseMap();
      
-      game.player().takeDamage(3);
+      if (Arguments.validate()) {
+        return;
+      }
       
       win = new View(game);
       win.play();

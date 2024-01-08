@@ -16,6 +16,7 @@ import game.environnement.Environnement;
 import game.environnement.GameEnvironnement;
 import game.environnement.Gate;
 import graphic.view.View;
+import parser.commandline.Arguments;
 import util.Direction;
 import util.Position;
 
@@ -231,7 +232,7 @@ public class GeneralController {
    * @return
    */
   public boolean entityUpdate(long frames) {
-    if (areInterfacesShow()) {
+    if (areInterfacesShow() || Arguments.dryRun()) {
       return false;
     }
     if (frames % 10 == 0) {
