@@ -119,7 +119,13 @@ public class GeneralController {
       if (env != null && !env.standable()) {
         facing = player.pos();
       }
-      game.addDroppedItem(player.hold(), facing);
+
+      if (env != null && env.getEnvironnement() == GameEnvironnement.FIRE) {
+        game.addDroppedItem(Item.setFire(player.hold()), facing);
+      } else {
+        game.addDroppedItem(player.hold(), facing);        
+      }
+      
       player.removeHeldItem();
     }
   }

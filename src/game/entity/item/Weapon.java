@@ -29,6 +29,18 @@ public record Weapon(String skin, int damage, boolean burning, String name) impl
   public GameObjectID id() {
     return GameObjectID.WEAPON;
   }
+  
+  //------- Modifiers -------
+  
+  public Weapon setFire() {
+    if (!burning) {
+      GameItems type = getItem();
+      if (type == GameItems.SWORD || type == GameItems.STICK) {
+        return new Weapon(skin, damage, true, name);
+      }
+    }
+    return this;
+  }
 
   // ------- Other -------
   

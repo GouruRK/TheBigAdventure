@@ -159,7 +159,6 @@ public class Game {
     default -> move(mob, Direction.randomDirection(), 1);
     }
   }
-    
   
   /**
    * Agressive mobs attack the player if he is next to a mob
@@ -235,6 +234,7 @@ public class Game {
       if (item != null) {
         player.setHold(item.item());
         removeDroppedItem(item);
+        System.out.println(item);
       }
     }
   }

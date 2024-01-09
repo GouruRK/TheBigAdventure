@@ -4,6 +4,7 @@
     ROCK(R) LILY(l) FENCE(F) WATER(Z) HUSK(H) HUSKS(I) ROAD(r) HOUSE(h)
     REED(D) SIGN(S) ALGAE(A) TILE(t) TOWER (G) GATE(Y)
     BRICK(K) DOOR(O) RUBBLE(Q) CLIFF(c) BOG(o) BOLT(B) SPIKE(s) STATUE(U) GEM(M)
+    FIRE(m)
   data: """
   WWWWWWWWWWWWLLLLLWWWWWWWWWWWWWWWWWWWWWWWWWWLLLLLWWWWWWWWWWWWWWWWW
   W                                          LLLLLDZZZZZZZZZZZZZZZW
@@ -37,7 +38,7 @@
   W  U                                 I                          W
   W                                                               W
   W  U                                                            W
-  W  WU                    E                                      W
+  W  WU  m                 E                                      W
   WWWWU                    hEE                                    W
   WUUUU                                          WWWWWWWWWtWWWWWWWW
   W                                              WttttttttttttttttW

@@ -15,6 +15,13 @@ public interface Item extends Entity {
     return 0;
   }
 
+  public static Item setFire(Item item) {
+    return switch(item) {
+      case Weapon weapon -> weapon.setFire();
+      default -> item;
+    };
+  }
+  
   // ------- Item creation -------
   
   /**
