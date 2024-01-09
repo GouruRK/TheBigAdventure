@@ -14,7 +14,7 @@ public class InventoryController {
   
   private final Inventory inventory;
   private final Player player;
-  private boolean isInventoryDisplay;
+  private boolean isInventoryInterfaceShow;
   private Position cursor;
   
   // ------- Constructor -------
@@ -25,7 +25,7 @@ public class InventoryController {
     this.inventory = inventory;
     this.player = player;
     cursor = new Position(0, 0);
-    isInventoryDisplay = false;
+    isInventoryInterfaceShow = false;
   }
   
   // ------- Getter -------
@@ -42,14 +42,14 @@ public class InventoryController {
     return player;
   }
   
-  public boolean isInventoryDisplay() {
-    return isInventoryDisplay;
+  public boolean isInventoryInterfaceShow() {
+    return isInventoryInterfaceShow;
   }
   
   //------- Setter -------
   
-  public void toggleInventoryDisplay() {
-    isInventoryDisplay = !isInventoryDisplay;
+  public void toggleIsInventoryInterfaceShow() {
+    isInventoryInterfaceShow = !isInventoryInterfaceShow;
   }
   
   public void exchangeItem() {
@@ -61,7 +61,7 @@ public class InventoryController {
     if (held != null) {              
       inventory.add(held);
     }
-    toggleInventoryDisplay();
+    toggleIsInventoryInterfaceShow();
   }
   
   public void moveCursor(Direction dir) {

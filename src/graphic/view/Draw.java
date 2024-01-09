@@ -62,7 +62,7 @@ public class Draw {
       drawDroppedItems(graphics);
       if (controller.tradeController().isTradeInterfaceShow()) {
         trade.drawTrade(graphics);
-      } else if (controller.inventoryController().isInventoryDisplay()) {
+      } else if (controller.inventoryController().isInventoryInterfaceShow()) {
         inventory.drawInventory(graphics, windowWidth/2, windowHeight/2);
       } else if (controller.textController().isTextInterfaceShow()) {
         text.drawText(graphics, windowWidth/4, windowHeight/4);

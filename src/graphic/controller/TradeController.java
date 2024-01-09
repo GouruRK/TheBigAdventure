@@ -97,7 +97,7 @@ public class TradeController {
   
   public void toggleIsTradeInterfaceShow() {
     isTradeInterfaceShow = !isTradeInterfaceShow;
-    inventory.toggleInventoryDisplay();
+    inventory.toggleIsInventoryInterfaceShow();
     text.toggleIsTextInterfaceShow();
     
     if (!isTradeInterfaceShow) {

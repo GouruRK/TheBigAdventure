@@ -97,14 +97,14 @@ public class GeneralController {
     } else if (text.isTextInterfaceShow()) {
       text.toggleIsTextInterfaceShow();
     } else {
-      inventory.toggleInventoryDisplay();
+      inventory.toggleIsInventoryInterfaceShow();
     }
   }
   
   private boolean areInterfacesShow() {
     return trade.isTradeInterfaceShow() 
         || text.isTextInterfaceShow() 
-        || inventory.isInventoryDisplay();
+        || inventory.isInventoryInterfaceShow();
   }
   
   /**
@@ -131,8 +131,10 @@ public class GeneralController {
   private void move(Direction dir) {
     if (trade.isTradeInterfaceShow()) {
       trade.moveCursor(dir);
-    } else if (inventory.isInventoryDisplay()) {
+    } else if (inventory.isInventoryInterfaceShow()) {
       inventory.moveCursor(dir);
+    } else if (text.isTextInterfaceShow()) {
+      text.changePage(dir);
     } else {
       game.move(game.player(), dir, 1);
     }
@@ -146,7 +148,7 @@ public class GeneralController {
   private void action() {
     if (trade.isTradeInterfaceShow()) {
       trade.tradeItem();
-    } else if (inventory.isInventoryDisplay()) {
+    } else if (inventory.isInventoryInterfaceShow()) {
       inventory.exchangeItem();
     } else {
       Position facing = game.player().pos().facingDirection(game.player().facing());
@@ -236,8 +238,7 @@ public class GeneralController {
       return false;
     }
     if (frames % 10 == 0) {
-      game.moveEnemies();
-      game.agressiveMob();
+      game.moveMobs();
       return true;
     }
     return false;

@@ -149,28 +149,26 @@ public class Game {
    */
   public void moveMobs() {
     // here, all mobs moved of one square
-    mobs.forEach(mob -> move(mob, Direction.randomDirection(), 1));
+    mobs.forEach(mob -> moveMob(mob));
   }
+
+  private void moveMob(Mob mob) {
+    switch (mob.behaviour()) {
+    case Behaviour.AGRESSIVE -> moveAgressiveMob(mob);
+    case Behaviour.SHY -> move(mob, player.facing(), 1);
+    default -> move(mob, Direction.randomDirection(), 1);
+    }
+  }
+    
   
   /**
    * Agressive mobs attack the player if he is next to a mob
    */
-  public void agressiveMob() {
-    // mobs have 0.5% chance to attack the player if he is next to the mob
-    mobs.stream()
-      .filter(mob -> mob.behaviour() == Behaviour.AGRESSIVE 
-        && Math.distance(player.pos(), mob.pos()) == 1 
-        && Math.randomBoolean())
-      .forEach(m -> attackMob(m, player));
-  }
-  
-  /**
-   * Move all mobs if they are not friends
-   */
-  public void moveEnemies() {
-    mobs.stream()
-      .filter(mob -> mob.id() == GameObjectID.ENEMY)
-      .forEach(mob -> move(mob, Direction.randomDirection(), 1));
+  private void moveAgressiveMob(Mob mob) {
+    move(mob, Direction.randomDirection(), 1);
+    if (Math.distance(player.pos(), mob.pos()) == 1 && Math.randomBoolean()) {
+      attackMob(mob, player);
+    }
   }
   
   /**
