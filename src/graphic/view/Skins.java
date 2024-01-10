@@ -30,10 +30,12 @@ public class Skins {
     loadDroppedItemSkin(game.items());
     loadMobsSkin(game.mobs());
     loadPlayerSkin(game.player());
+    loadSkin("box");
+    loadSkin("arrow");
+    loadSkin("fire");
   }
   
   private static void loadEnvironnementSkin(Environnement[][] field) throws IOException {
-    loadSkin("box");
     for (var line: field) {
       for (Environnement env: line) {
         if (env != null) {
@@ -59,7 +61,6 @@ public class Skins {
   
   private static void loadTrade(Friend friend) throws IOException {
     if (friend.trade() != null) {
-      loadSkin("arrow");
       for (var entry: friend.trade().entrySet()) {
         loadSkin(entry.getKey().skin());
         for (Item item: entry.getValue()) {

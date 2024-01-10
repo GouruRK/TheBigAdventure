@@ -158,11 +158,26 @@ public class GeneralController {
       inventory.exchangeItem();
     } else {
       Position facing = game.player().pos().facingDirection(game.player().facing());
-      Mob mob = game.searchMob(facing);
-      Environnement env = game.searchEnvironnement(facing);
-      if (!playerAction(mob, env)) {
-        useHeldItem(mob, env);
-        setHasItemBeenUsed(true);
+      Mob mob;
+      Environnement env;
+      
+      if (game.player().hold() != null && game.player().hold().getItem() == GameItems.BOLT) {
+        for (int i = 0; i < 3; i++) {
+          mob = game.searchMob(facing);
+          env = game.searchEnvironnement(facing);
+          if (!playerAction(mob, env)) {
+            useHeldItem(mob, env);
+            setHasItemBeenUsed(true);
+          }
+          facing = facing.computeDirection(game.player().facing(), 1);
+        }
+      } else {
+        mob = game.searchMob(facing);
+        env = game.searchEnvironnement(facing);
+        if (!playerAction(mob, env)) {
+          useHeldItem(mob, env);
+          setHasItemBeenUsed(true);
+        }
       }
     }
   }
@@ -198,20 +213,20 @@ public class GeneralController {
     }
 
     switch (player.hold()) {
-      case Weapon weapon -> useWeapon(mob, env);
+      case Weapon weapon -> useWeapon(weapon, mob, env);
       case Food food -> player.eat();
-      case Thing thing -> useItem(mob, env);
+      case Thing thing -> useItem(thing, mob, env);
       case Readable item -> read(item); 
       default -> {}
     }
   }
   
-  private void useItem(Mob mob, Environnement env) {
+  private void useItem(Thing item, Mob mob, Environnement env) {
     if (env == null) {
       return;
     }
     switch (env) {
-      case Gate gate -> gate.open(game.player().hold());
+      case Gate gate -> gate.open(item);
       default -> {}
     }
   }
@@ -221,17 +236,23 @@ public class GeneralController {
     text.setText(item.text());
   }
   
-  private void useWeapon(Mob mob, Environnement env) {
+  private void useWeapon(Weapon weapon, Mob mob, Environnement env) {
     if (mob != null) {
       game.attackMob(game.player(), mob);
-    } else {
-      if (env != null && env.getEnvironnement() == GameEnvironnement.TREE
-          && game.player().hold().getItem() == GameItems.SWORD) {
-        Position pos = env.pos();
-        game.removeEnvironnement(pos);
-        game.addDroppedItem(Item.createItem("box"), pos);
-      }
-    }
+    } 
+     if (env != null) {
+       if (env.getEnvironnement() == GameEnvironnement.TREE) {
+         if (weapon.getItem() == GameItems.SWORD) {
+           Position pos = env.pos();
+           game.removeEnvironnement(pos);
+           game.addDroppedItem(Item.createItem("box"), pos);           
+         } else if (weapon.getItem() == GameItems.BOLT) {
+           Position pos = env.pos();
+           game.removeEnvironnement(pos);
+           game.setEnvironnement("fire", pos);
+         }
+       }
+     }
   }
   
   /**
@@ -244,7 +265,7 @@ public class GeneralController {
       return false;
     }
     if (frames % 10 == 0) {
-      game.moveMobs();
+      // game.moveMobs();
       return true;
     }
     return false;

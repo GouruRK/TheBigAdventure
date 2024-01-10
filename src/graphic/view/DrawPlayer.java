@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.Objects;
 
+import game.entity.item.GameItems;
 import game.entity.mob.Player;
 import util.Direction;
 import util.Position;
@@ -30,12 +31,16 @@ public class DrawPlayer {
       AffineTransform saveAT = graphics.getTransform();
 
       graphics.rotate(degToRad(angle), (pos.x() + 0.5)*View.IMAGESIZE, (pos.y() + 0.5)*View.IMAGESIZE);
-      drawHeldItem(graphics);
+      drawHeldItem(graphics, hasItemBeenUsed);
       graphics.setTransform(saveAT);
     }
   }
   
   private void drawHeldItem(Graphics2D graphics) {
+    drawHeldItem(graphics, false);
+  }
+  
+  private void drawHeldItem(Graphics2D graphics, boolean hasItemBeenUsed) {
     if (player.hold() == null) {
       return;
     }
@@ -44,6 +49,11 @@ public class DrawPlayer {
     Position pos = player.pos().addY(0.3).addX(0.8);
     graphics.scale(0.8, 0.8);
     Draw.drawImage(graphics, player.hold().skin(), pos, 1.25); // 1.25 because 0.8*1.25 = 1
+    
+    if (player.hold().getItem() == GameItems.BOLT && hasItemBeenUsed) {
+      Draw.drawImage(graphics, player.hold().skin(), pos.addX(1), 1.25);
+      Draw.drawImage(graphics, player.hold().skin(), pos.addX(2), 1.25);
+    }
     
     graphics.setTransform(saveAT);
   }

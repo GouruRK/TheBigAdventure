@@ -34,6 +34,7 @@ public interface Item extends Entity {
     return switch(row.id()) {
     case GameObjectID.FOOD -> new Food(row.skin());
     case GameObjectID.THING -> new Thing(row.skin());
+    case GameObjectID.WEAPON -> new Weapon(row.skin());
     default -> null;
     };
   }
@@ -78,6 +79,7 @@ public interface Item extends Entity {
   public static DroppedItem createDroppedItem(EncodingRow row, Position pos) {
     return switch (row.id()) {
       case GameObjectID.THING,
+           GameObjectID.WEAPON,
            GameObjectID.FOOD -> new DroppedItem(pos, Item.createItem(row));
     default -> null;
     };
@@ -104,6 +106,10 @@ public interface Item extends Entity {
   
   public default GameItems getItem() {
     return GameItems.getItem(skin());
+  }
+  
+  public static GameItems getItem(String skin) {
+    return GameItems.getItem(skin);
   }
   
 }

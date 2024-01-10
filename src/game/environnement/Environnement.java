@@ -38,6 +38,15 @@ public interface Environnement {
     };
   }
   
+  public static Environnement createEnvironnement(String skin, Position pos) {
+    return switch (GameEnvironnement.getId(skin)) {
+      case GameObjectID.SCENERY -> new Block(skin, pos, true);
+      case GameObjectID.OBSTACLE -> new Block(skin, pos, false);
+      case GameObjectID.GATE -> new Gate(skin, pos, null, false);
+      default -> null;
+    };
+  }
+  
   /**
    * create an Environnement depending of his type from his Attributes element
    * 
@@ -62,5 +71,9 @@ public interface Environnement {
   
   public default GameEnvironnement getEnvironnement() {
     return GameEnvironnement.getEnvironnement(skin());
+  }
+  
+  public static GameEnvironnement getEnvironnement(String skin) {
+    return GameEnvironnement.getEnvironnement(skin);
   }
 }

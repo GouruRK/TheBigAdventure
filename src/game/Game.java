@@ -234,7 +234,6 @@ public class Game {
       if (item != null) {
         player.setHold(item.item());
         removeDroppedItem(item);
-        System.out.println(item);
       }
     }
   }
@@ -257,6 +256,20 @@ public class Game {
     Objects.requireNonNull(item);
     Objects.requireNonNull(pos);
     items.add(new DroppedItem(pos, item));
+  }
+  
+  public void setEnvironnement(Environnement env) {
+    if (0 <= env.pos().x() && env.pos().x() < size.x() &&
+        0 <= env.pos().y() && env.pos().y() < size.y()) {
+      field[(int)env.pos().y()][(int)env.pos().x()] = env;
+    }
+  }
+  
+  public void setEnvironnement(String skin, Position pos) {
+    Environnement env = Environnement.createEnvironnement(skin, pos);
+    if (env != null) {
+      setEnvironnement(env);
+    }
   }
   
   /**

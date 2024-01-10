@@ -17,11 +17,11 @@ public record Weapon(String skin, int damage, boolean burning, String name) impl
   }
   
   public Weapon(String skin) {
-    this(skin, 0, false, null);
+    this(skin, Item.getItem(skin) == GameItems.BOLT ? Integer.MAX_VALUE: 0, false, null);    
   }
   
   public Weapon(String skin, String name) {
-    this(skin, 0, false, name);
+    this(skin, Item.getItem(skin) == GameItems.BOLT ? Integer.MAX_VALUE: 0, false, name);
   }
   
   // ------- Getter -------

@@ -85,11 +85,11 @@ public enum GameEnvironnement implements GameObject {
   }
   
   public static GameObjectID getId(String name) {
-    return BLOCKSNAMES.getOrDefault(name, GameObjectID.UNKNOWN);
+    return BLOCKSNAMES.getOrDefault(name.toUpperCase(), GameObjectID.UNKNOWN);
   }
   
   public static GameEnvironnement getEnvironnement(String name) {
-    return TYPEBLOCKS.get(name);
+    return TYPEBLOCKS.get(name.toUpperCase());
   }
   
   GameEnvironnement(GameObjectID id) {

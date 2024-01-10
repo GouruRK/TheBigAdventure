@@ -15,7 +15,6 @@ public enum GameItems implements GameObject {
 
   // items
   BOLD(GameObjectID.THING),
-  BOLT(GameObjectID.THING),
   BOX(GameObjectID.THING),
   CASH(GameObjectID.THING),
   CLOCK(GameObjectID.THING),
@@ -51,6 +50,7 @@ public enum GameItems implements GameObject {
   STICK(GameObjectID.WEAPON),
   SHOVEL(GameObjectID.WEAPON),
   SWORD(GameObjectID.WEAPON),
+  BOLT(GameObjectID.WEAPON),
   
   // Food
   BANANA(GameObjectID.FOOD),
@@ -88,7 +88,7 @@ public enum GameItems implements GameObject {
   }
   
   public static GameItems getItem(String name) {
-    return TYPEITEMS.get(name);
+    return TYPEITEMS.get(name.toUpperCase());
   }
   
   /**
