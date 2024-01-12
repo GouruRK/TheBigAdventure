@@ -1,7 +1,10 @@
 package graphic.controller;
 
+import java.awt.Color;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
+import fr.umlv.zen5.Application;
 import game.Game;
 import game.entity.item.Food;
 import game.entity.item.GameItems;
@@ -15,10 +18,12 @@ import game.entity.mob.Player;
 import game.environnement.Environnement;
 import game.environnement.GameEnvironnement;
 import game.environnement.Gate;
+import graphic.view.Draw;
 import graphic.view.View;
 import parser.commandline.Arguments;
 import util.Direction;
 import util.Position;
+import util.StepCalculator;
 
 public class GeneralController {
   
@@ -29,6 +34,9 @@ public class GeneralController {
   private final Game game;
   private final TextController text;
   private boolean hasItemBeenUsed = false;
+  
+  private static final int FPS = 60;
+  private long totalFrame;
   
   // ------- Constructor -------
   
@@ -123,7 +131,7 @@ public class GeneralController {
       if (env != null && env.getEnvironnement() == GameEnvironnement.FIRE) {
         game.addDroppedItem(Item.setFire(player.hold()), facing);
       } else {
-        game.addDroppedItem(player.hold(), facing);        
+        game.addDroppedItem(player.hold(), facing);
       }
       
       player.removeHeldItem();
@@ -142,7 +150,7 @@ public class GeneralController {
     } else if (text.isTextInterfaceShow()) {
       text.changePage(dir);
     } else {
-      game.move(game.player(), dir, 1);
+      game.move(game.player(), dir, StepCalculator.getStep(1));
     }
   }
   
@@ -269,6 +277,43 @@ public class GeneralController {
       return true;
     }
     return false;
+  }
+  
+  private void computeTimeDelay(long startTime, long endTime) {
+    long timeDiff = endTime - startTime;
+    double delay = 1.0 / FPS - (timeDiff / 1.0e9);
+    
+    if (delay > 0) {
+      try {
+        TimeUnit.MILLISECONDS.sleep((int)(delay * 1000));
+      } catch (InterruptedException e) {
+      }
+    }  
+  }
+  
+  public static int getFramerate() {
+    return FPS;
+  }
+  
+  public void run() {
+    Application.run(Color.BLACK, context -> {
+      long startTime;
+      Draw draw = new Draw(context, game, this);
+      KeyOperation key;
+
+      draw.drawGame();
+      while ((key = View.getOperation(context)) != KeyOperation.EXIT) {
+        startTime = System.nanoTime();
+        
+        if (interpretCommand(key) || entityUpdate(totalFrame)) {
+          draw.drawGame();
+        }
+        
+        computeTimeDelay(startTime, System.nanoTime());
+        totalFrame++;
+      }
+      context.exit(0);
+    });
   }
   
 }

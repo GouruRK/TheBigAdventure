@@ -3,8 +3,6 @@ package graphic.view;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.Map;
 import java.util.Objects;
 
 import fr.umlv.zen5.ApplicationContext;
@@ -16,6 +14,8 @@ import graphic.controller.GeneralController;
 import util.Position;
 
 public class Draw {
+  
+  public static final int IMAGESIZE = 24;
   
   //------- Fields -------
   
@@ -31,12 +31,12 @@ public class Draw {
   
   //------- Constructor -------
   
-  public Draw(ApplicationContext context, Game game, GeneralController controller, Map<String, BufferedImage> skinMap) {
+  public Draw(ApplicationContext context, Game game, GeneralController controller) {
     // Basic checks
     Objects.requireNonNull(context);
     Objects.requireNonNull(game);
     Objects.requireNonNull(controller);
-    Objects.requireNonNull(skinMap);
+    
     // Fields assignation
     this.context = context;
     this.game = game;
@@ -44,11 +44,16 @@ public class Draw {
     ScreenInfo screenInfo = context.getScreenInfo();
     this.windowWidth = (int) screenInfo.getWidth();
     this.windowHeight = (int) screenInfo.getHeight();
+    
     // Creation of submodules to draw
     this.inventory = new DrawInventory(game.inventory(), controller.inventoryController());
     this.player = new DrawPlayer(game.player());
     this.text = new DrawText(controller.textController());
     this.trade = new DrawTrade(controller.tradeController(), inventory, text, windowWidth, windowHeight);
+  }
+  
+  public static int getImageSize() {
+    return IMAGESIZE;
   }
   
   //------- Main function -------
@@ -91,11 +96,11 @@ public class Draw {
   }
 
   public static void drawImage(Graphics2D graphics, String skin, Position pos) {
-    drawImage(graphics, skin, pos.x()*View.IMAGESIZE, pos.y()*View.IMAGESIZE);
+    drawImage(graphics, skin, pos.x()*IMAGESIZE, pos.y()*IMAGESIZE);
   }
   
   public static void drawImage(Graphics2D graphics, String skin, Position pos, double factor) {
-    drawImage(graphics, skin, pos.x()*View.IMAGESIZE*factor, pos.y()*View.IMAGESIZE*factor);
+    drawImage(graphics, skin, pos.x()*IMAGESIZE*factor, pos.y()*IMAGESIZE*factor);
   }
   
   // ------- Draw images -------
@@ -104,14 +109,14 @@ public class Draw {
   public static void drawItem(Graphics2D graphics, Item item, int x, int y) {
     drawImage(graphics, item.skin(), x, y);
     if (item.hasName()) {
-      drawText(graphics, item.name(), x - item.name().length() / 2, y + View.IMAGESIZE);
+      drawText(graphics, item.name(), x - item.name().length() / 2, y + IMAGESIZE);
     }
   }
   
   public static void drawItem(Graphics2D graphics, Item item, int x, int y, Color color) {
     drawImage(graphics, item.skin(), x, y);
     if (item.hasName()) {
-      drawText(graphics, item.name(), x - item.name().length() / 2, y + View.IMAGESIZE, color);
+      drawText(graphics, item.name(), x - item.name().length() / 2, y + IMAGESIZE, color);
     }
   }
   

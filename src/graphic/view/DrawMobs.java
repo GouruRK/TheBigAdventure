@@ -32,7 +32,7 @@ public class DrawMobs {
    * @param mob
    */
   private static void drawHealthBar(Graphics2D graphics, Mob mob) {
-    int size = View.IMAGESIZE;
+    int size = Draw.IMAGESIZE;
     
     graphics.setColor(Color.RED);
     Rectangle2D.Double rectMaxHealth = new Rectangle2D.Double(mob.pos().x()*size + 4, mob.pos().y()*size + 1, 16, 4);
@@ -47,7 +47,7 @@ public class DrawMobs {
   private static void drawMobName(Graphics2D graphics, Mob mob) {
     if (mob.hasName()) {
       graphics.setColor(Color.WHITE);
-      graphics.drawString(mob.name(), (int)(mob.pos().x()*View.IMAGESIZE) - 3, (int)(mob.pos().y()*View.IMAGESIZE) + View.IMAGESIZE+ 5);
+      graphics.drawString(mob.name(), (int)(mob.pos().x()*Draw.IMAGESIZE) - 3, (int)(mob.pos().y()*Draw.IMAGESIZE) + Draw.IMAGESIZE+ 5);
     }
   }
   

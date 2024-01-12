@@ -30,7 +30,7 @@ public class DrawPlayer {
       
       AffineTransform saveAT = graphics.getTransform();
 
-      graphics.rotate(degToRad(angle), (pos.x() + 0.5)*View.IMAGESIZE, (pos.y() + 0.5)*View.IMAGESIZE);
+      graphics.rotate(degToRad(angle), (pos.x() + 0.5)*Draw.IMAGESIZE, (pos.y() + 0.5)*Draw.IMAGESIZE);
       drawHeldItem(graphics, hasItemBeenUsed);
       graphics.setTransform(saveAT);
     }
