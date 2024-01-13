@@ -2,7 +2,6 @@ package game.entity.item;
 
 import game.GameObjectID;
 import game.entity.Entity;
-import game.entity.item.container.EmptyContainer;
 import parser.ElementAttributes;
 import parser.EncodingRow;
 import util.Position;
@@ -35,6 +34,7 @@ public interface Item extends Entity {
     case GameObjectID.FOOD -> new Food(row.skin());
     case GameObjectID.THING -> new Thing(row.skin());
     case GameObjectID.WEAPON -> new Weapon(row.skin());
+    case GameObjectID.CONTAINER -> new Bucket(row.skin());
     default -> null;
     };
   }
@@ -63,7 +63,7 @@ public interface Item extends Entity {
     case GameObjectID.FOOD -> new Food(skin, name);
     case GameObjectID.THING -> new Thing(skin, name);
     case GameObjectID.WEAPON -> new Weapon(skin, name);
-    case GameObjectID.CONTAINER -> new EmptyContainer(skin, name);
+    case GameObjectID.CONTAINER -> new Bucket(skin, name);
     case GameObjectID.READABLE -> new Readable(skin, name);
     default -> null;
     };
@@ -79,7 +79,8 @@ public interface Item extends Entity {
   public static DroppedItem createDroppedItem(EncodingRow row, Position pos) {
     return switch (row.id()) {
       case GameObjectID.THING,
-           GameObjectID.WEAPON,
+           GameObjectID.WEAPON, 
+           GameObjectID.CONTAINER,
            GameObjectID.FOOD -> new DroppedItem(pos, Item.createItem(row));
     default -> null;
     };

@@ -25,7 +25,7 @@ public class GameAttributes {
   private final ArrayList<DroppedItem> items;
 
   private String data = null;
-  private Position size = null;
+  private Zone zone = null;
   private Map<Character, EncodingRow> encodings = null;
   private Environnement[][] field;
   private Player player = null;
@@ -44,8 +44,8 @@ public class GameAttributes {
     return data != null;
   }
   
-  public boolean hasSize() {
-    return size != null;
+  public boolean hasZone() {
+    return zone != null;
   }
   
   public boolean hasEncodings() {
@@ -53,12 +53,11 @@ public class GameAttributes {
   }
   
   public boolean hasGameInfo() {
-    return hasData() && hasSize() && hasEncodings();
+    return hasData() && hasZone() && hasEncodings();
   }
   
   public boolean isInsideGrid(Position pos) {
-    return (0 <= pos.x() && pos.x() < size.y()) && 
-           (0 <= pos.y() && pos.y() < size.y());
+    return zone.isInside(pos);
   }
   
   // --------- Setters --------- 
@@ -76,12 +75,12 @@ public class GameAttributes {
     elements.add(elem);
   }
   
-  public void setSize(Position size) throws TokenException {
-    Objects.requireNonNull(size);
-    if (this.size != null) {
+  public void setZone(Zone zone) throws TokenException {
+    Objects.requireNonNull(zone);
+    if (this.zone != null) {
       throw new TokenException("Size already register");
     }
-    this.size = size;
+    this.zone = zone;
   }
   
   public void setEncodings(Map<Character, EncodingRow> encodings) throws TokenException {
@@ -95,9 +94,9 @@ public class GameAttributes {
   // --------- Check data field --------- 
   
   private void checkFieldSize(List<String> tempField) throws TokenException {
-    if (!hasSize()) throw new TokenException("Size of grid is unknown");
+    if (!hasZone()) throw new TokenException("Size of grid is unknown");
     
-    int width = (int) size.x(), height = (int) size.y();
+    int width = (int) zone.bottomRight().x(), height = (int) zone.bottomRight().y();
     
     if (tempField.size() != height) {
       throw new TokenException("Invalid map height : got " + tempField.size() + " expected " + height);
@@ -148,9 +147,9 @@ public class GameAttributes {
     Text oldField = checkField();
     String line;
     
-    for (int y = 0; y < size.y(); y++) {
+    for (int y = 0; y < zone.height(); y++) {
       line = oldField.get(y);
-      for (int x = 0; x < size.x(); x++) {
+      for (int x = 0; x < zone.width(); x++) {
         if (line.charAt(x) == ' ') {
           field[y][x] = null;
           continue;
@@ -212,7 +211,7 @@ public class GameAttributes {
   public void addElements() throws TokenException {
     for (ElementAttributes element: elements) {
       if (element.isPlayer()) {
-        player = new Player(element.getSkin(), element.getPosition(), new Zone(new Position(0,0), size), element.getHealth(), element.getName(), null);
+        player = new Player(element.getSkin(), element.getPosition(), zone, element.getHealth(), element.getName(), null);
       } else if (element.hasZone() && element.getID() != GameObjectID.MOB) {
         createElementWithZone(element);
       } else {
@@ -224,7 +223,7 @@ public class GameAttributes {
   public Game createGame() throws TokenException {
     createField();
     addElements();
-    return new Game(size, field, mobs, items, player);
+    return new Game(zone, field, mobs, items, player);
   }
   
 }

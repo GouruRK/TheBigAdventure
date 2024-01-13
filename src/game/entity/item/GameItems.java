@@ -70,7 +70,9 @@ public enum GameItems implements GameObject {
   POTATO(GameObjectID.FOOD),
   PUMPKIN(GameObjectID.FOOD),
   TURNIP(GameObjectID.FOOD),
-  BUCKET(GameObjectID.FOOD);
+  
+  // Container
+  BUCKET(GameObjectID.CONTAINER);
 
   private final GameObjectID id;
   

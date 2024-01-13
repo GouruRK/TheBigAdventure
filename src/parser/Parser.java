@@ -344,7 +344,7 @@ public class Parser {
       isExpected(Token.COLON);
       
       switch (attribute) {
-      case "size" -> attributes.setSize(parseSize());
+      case "size" -> attributes.setZone(new Zone(new Position(0, 0), parseSize()));
       case "encodings" -> attributes.setEncodings(parseEncoding());
       case "data" -> attributes.setData(isExpected(Token.QUOTE));
       default -> throw new TokenException("Unknown grid attribute '" + attribute + "'");

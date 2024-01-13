@@ -1,10 +1,11 @@
 [grid]
 	size: (15x15)
 	encodings: WALL(W) BOLT(B) SHOVEL(S) STICK(s)
-		   TREE(T) GRASS(G) SWORD(e) SEED(b)
+		   TREE(T) GRASS(G) SWORD(e) SEED(b) WATER(w)
+		   BUCKET(c)
 	data: """
 	WWWWWWWWWWWWWWW
-	W             W
+	W       wwwwwwW
 	W            BW
 	W            SW
 	W            sW
@@ -14,7 +15,7 @@
 	WG            W
 	WG            W
 	W            bW
-	W             W
+	W            cW
 	W             W
 	WTTT         TW
 	WWWWWWWWWWWWWWW

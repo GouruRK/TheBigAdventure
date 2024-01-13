@@ -13,12 +13,13 @@ import game.environnement.Environnement;
 import util.Direction;
 import util.Position;
 import util.Utils;
+import util.Zone;
 
 public class Game {
 
   //------- Fields -------
   
-  private final Position size;
+  private final Zone zone;
   private final Environnement[][] field;
   private final ArrayList<Mob> mobs;
   private final ArrayList<DroppedItem> items;
@@ -37,13 +38,13 @@ public class Game {
    * @param items
    * @param player
    */
-  public Game(Position size, Environnement[][] field, ArrayList<Mob> mobs, ArrayList<DroppedItem> items, Player player) {
-    Objects.requireNonNull(size);
+  public Game(Zone zone, Environnement[][] field, ArrayList<Mob> mobs, ArrayList<DroppedItem> items, Player player) {
+    Objects.requireNonNull(zone);
     Objects.requireNonNull(field);
     Objects.requireNonNull(mobs);
     Objects.requireNonNull(items);
     Objects.requireNonNull(player);
-    this.size = size;
+    this.zone = zone;
     this.field = field;
     this.mobs = mobs;
     this.items = items;
@@ -53,7 +54,7 @@ public class Game {
 
   @Override
   public String toString() {
-    return size.toString() + "\n"
+    return zone.toString() + "\n"
         + player.toString() + "\n"
         + "Mobs: " + mobs + "\n"
         + "Items: " + items;
@@ -129,7 +130,10 @@ public class Game {
    */
   public Environnement searchEnvironnement(Position pos) {
     Objects.requireNonNull(pos);
-    return field[(int)pos.y()][(int)pos.x()];
+    if (zone.isInside(pos)) {
+      return field[(int)pos.y()][(int)pos.x()];      
+    }
+    return null;
   }
   
   /**
@@ -258,8 +262,7 @@ public class Game {
   }
   
   public void setEnvironnement(Environnement env) {
-    if (0 <= env.pos().x() && env.pos().x() < size.x() &&
-        0 <= env.pos().y() && env.pos().y() < size.y()) {
+    if (zone.isInside(env.pos())) {
       field[(int)env.pos().y()][(int)env.pos().x()] = env;
     }
   }
@@ -287,7 +290,7 @@ public class Game {
   
   public void removeEnvironnement(Position pos) {
     Objects.requireNonNull(pos);
-    if ((0 <= pos.x() && pos.x() < size.x()) && (0 <= pos.y() && pos.y() < size.y())) {
+    if (zone.isInside(pos)) {
       field[(int)pos.y()][(int)pos.x()] = null;
     }
   }

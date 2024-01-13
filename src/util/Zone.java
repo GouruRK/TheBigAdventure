@@ -28,4 +28,12 @@ public record Zone(Position topLeft, Position bottomRight) {
         + ", bottomRight: " + bottomRight.toString()
         + ")";
   }
+  
+  public int width() {
+    return (int)(bottomRight.x() - topLeft.x());
+  }
+  
+  public int height() {
+    return (int)(bottomRight.y() - topLeft.y());
+  }
 }

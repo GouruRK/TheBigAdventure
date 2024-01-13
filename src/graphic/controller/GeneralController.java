@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import fr.umlv.zen5.Application;
 import game.Game;
+import game.entity.item.Bucket;
 import game.entity.item.Food;
 import game.entity.item.GameItems;
 import game.entity.item.Item;
@@ -218,12 +219,14 @@ public class GeneralController {
     if (player.hold() == null) {
       return;
     }
+    System.out.println(player.hold());
 
     switch (player.hold()) {
       case Weapon weapon -> useWeapon(weapon, mob, env);
       case Food food -> player.eat();
       case Thing thing -> useItem(thing, mob, env);
-      case Readable item -> read(item); 
+      case Readable item -> read(item);
+      case Bucket bucket -> useBucket(bucket, env);
       default -> {}
     }
   }
@@ -235,6 +238,7 @@ public class GeneralController {
     switch (env) {
       case Gate gate -> gate.open(item);
       default -> {}
+      
     }
   }
   
@@ -265,6 +269,26 @@ public class GeneralController {
         }
       }
     }
+  }
+  
+  public void useBucket(Bucket bucket, Environnement env) {
+    System.out.println(bucket);
+    if (bucket.isEmpty()) {
+      if (env.getEnvironnement() == GameEnvironnement.WATER) {
+        bucket.fillBucket(env);
+      }
+    } else {
+      if (env != null) {
+        if (env.getEnvironnement() == GameEnvironnement.FIRE) {
+          game.removeEnvironnement(env.pos());
+          bucket.pourBucket();
+        } else if (env.getEnvironnement() == GameEnvironnement.SEED) {
+          game.removeEnvironnement(env.pos());
+          game.setEnvironnement(Environnement.createEnvironnement("tree", env.pos()));
+        }
+      }
+    }
+    System.out.println(game.player().hold());
   }
   
   /**
