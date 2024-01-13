@@ -1,11 +1,11 @@
-package game.environnement;
+package game.environment;
 
 import java.util.Objects;
 
 import game.entity.item.Item;
 import util.Position;
 
-public class Gate implements Environnement {
+public class Gate implements Environment {
   
   //------- Fields -------
   

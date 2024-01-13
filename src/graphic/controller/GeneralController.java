@@ -16,9 +16,9 @@ import game.entity.item.Weapon;
 import game.entity.mob.Friend;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
-import game.environnement.Environnement;
-import game.environnement.GameEnvironnement;
-import game.environnement.Gate;
+import game.environment.Environment;
+import game.environment.GameEnvironment;
+import game.environment.Gate;
 import graphic.view.Draw;
 import graphic.view.View;
 import parser.commandline.Arguments;
@@ -29,10 +29,10 @@ public class GeneralController {
   
   // ------- Fields -------
   
-  private final InventoryController inventory;
-  private final TradeController trade;
+  private final InventoryController inventoryController;
+  private final TradeController tradeController;
   private final Game game;
-  private final TextController text;
+  private final TextController textController;
   private boolean hasItemBeenUsed = false;
   
   private static final int FPS = 60;
@@ -42,35 +42,63 @@ public class GeneralController {
   
   public GeneralController(Game game) {
     Objects.requireNonNull(game);
-    inventory = new InventoryController(game.inventory(), game.player());
-    text = new TextController();
-    trade = new TradeController(inventory, text);
+    inventoryController = new InventoryController(game.inventory(), game.player());
+    textController = new TextController();
+    tradeController = new TradeController(inventoryController, textController);
     this.game = game;
   }
   
   // ------- Getter -------
   
+  /**
+   * Get controller for inventory
+   * @return
+   */
   public InventoryController inventoryController() {
-    return inventory;
+    return inventoryController;
   }
   
+  /**
+   * Get controller for trade
+   * @return
+   */
   public TradeController tradeController() {
-    return trade;
+    return tradeController;
   }
   
+  /**
+   * Get controller for text
+   * @return
+   */
   public TextController textController() {
-    return text;
+    return textController;
   }
   
+  /**
+   * Return if the item currently held by the player has been used
+   * @return
+   */
   public boolean hasItemBeenUsed() {
     return hasItemBeenUsed;
   }
   
+  /**
+   * Get game framerate
+   * @return
+   */
+  public static int getFramerate() {
+    return FPS;
+  }
+  
+  // ------- Commands -------  
+  
+  /**
+   * Change status of an used item
+   * @param status
+   */
   private void setHasItemBeenUsed(boolean status) {
     hasItemBeenUsed = status;
   }
-  
-  // ------- Commands -------
   
   /**
    * Determine an action based on the given keyOperation
@@ -100,19 +128,23 @@ public class GeneralController {
    * Toggle interfaces display
    */
   private void toggleInterfaces() {
-    if (trade.isTradeInterfaceShow()) {
-      trade.toggleIsTradeInterfaceShow();
-    } else if (text.isTextInterfaceShow()) {
-      text.toggleIsTextInterfaceShow();
+    if (tradeController.isTradeInterfaceShow()) {
+      tradeController.toggleIsTradeInterfaceShow();
+    } else if (textController.isTextInterfaceShow()) {
+      textController.toggleIsTextInterfaceShow();
     } else {
-      inventory.toggleIsInventoryInterfaceShow();
+      inventoryController.toggleIsInventoryInterfaceShow();
     }
   }
   
+  /**
+   * Check if any of the interfaces are displayed
+   * @return
+   */
   private boolean areInterfacesShow() {
-    return trade.isTradeInterfaceShow() 
-        || text.isTextInterfaceShow() 
-        || inventory.isInventoryInterfaceShow();
+    return tradeController.isTradeInterfaceShow() 
+        || textController.isTextInterfaceShow() 
+        || inventoryController.isInventoryInterfaceShow();
   }
   
   /**
@@ -123,12 +155,12 @@ public class GeneralController {
     Player player = game.player();
     if (player.hold() != null) {
       Position facing = player.pos().facingDirection(player.facing());
-      Environnement env = game.searchEnvironnement(facing);
+      Environment env = game.searchEnvironment(facing);
       if (env != null && !env.standable()) {
         facing = player.pos();
       }
 
-      if (env != null && env.getEnvironnement() == GameEnvironnement.FIRE) {
+      if (env != null && env.getEnvironment() == GameEnvironment.FIRE) {
         game.addDroppedItem(Item.setFire(player.hold()), facing);
       } else {
         game.addDroppedItem(player.hold(), facing);
@@ -143,12 +175,12 @@ public class GeneralController {
    * @param dir
    */
   private void move(Direction dir) {
-    if (trade.isTradeInterfaceShow()) {
-      trade.moveCursor(dir);
-    } else if (inventory.isInventoryInterfaceShow()) {
-      inventory.moveCursor(dir);
-    } else if (text.isTextInterfaceShow()) {
-      text.changePage(dir);
+    if (tradeController.isTradeInterfaceShow()) {
+      tradeController.moveCursor(dir);
+    } else if (inventoryController.isInventoryInterfaceShow()) {
+      inventoryController.moveCursor(dir);
+    } else if (textController.isTextInterfaceShow()) {
+      textController.changePage(dir);
     } else {
       game.move(game.player(), dir, 1);
     }
@@ -160,19 +192,19 @@ public class GeneralController {
    * Manage player action on the map and on the interfaces
    */
   private void action() {
-    if (trade.isTradeInterfaceShow()) {
-      trade.tradeItem();
-    } else if (inventory.isInventoryInterfaceShow()) {
-      inventory.exchangeItem();
+    if (tradeController.isTradeInterfaceShow()) {
+      tradeController.tradeItem();
+    } else if (inventoryController.isInventoryInterfaceShow()) {
+      inventoryController.exchangeItem();
     } else {
       Position facing = game.player().pos().facingDirection(game.player().facing());
       Mob mob;
-      Environnement env;
+      Environment env;
       
       if (game.player().hold() != null && game.player().hold().getItem() == GameItems.BOLT) {
         for (int i = 0; i < 3; i++) {
           mob = game.searchMob(facing);
-          env = game.searchEnvironnement(facing);
+          env = game.searchEnvironment(facing);
           if (!playerAction(mob, env)) {
             useHeldItem(mob, env);
             setHasItemBeenUsed(true);
@@ -181,7 +213,7 @@ public class GeneralController {
         }
       } else {
         mob = game.searchMob(facing);
-        env = game.searchEnvironnement(facing);
+        env = game.searchEnvironment(facing);
         if (!playerAction(mob, env)) {
           useHeldItem(mob, env);
           setHasItemBeenUsed(true);
@@ -194,13 +226,13 @@ public class GeneralController {
    * Manage player action to trade items
    * @return true if an action has been done, else false
    */
-  public boolean playerAction(Mob mob, Environnement env) {
+  public boolean playerAction(Mob mob, Environment env) {
     if (mob != null) {
       switch (mob) {
       case Friend friend -> {
         if (friend.hasTrade() || friend.hasText()) {
-          trade.setFriend(friend);
-          trade.toggleIsTradeInterfaceShow();
+          tradeController.setFriend(friend);
+          tradeController.toggleIsTradeInterfaceShow();
           return true;
         }
       }
@@ -214,7 +246,7 @@ public class GeneralController {
   /**
    * Use the current held item
    */
-  private void useHeldItem(Mob mob, Environnement env) {
+  private void useHeldItem(Mob mob, Environment env) {
     Player player = game.player();
     if (player.hold() == null) {
       return;
@@ -231,7 +263,7 @@ public class GeneralController {
     }
   }
   
-  private void useItem(Thing item, Mob mob, Environnement env) {
+  private void useItem(Thing item, Mob mob, Environment env) {
     if (env == null) {
       return;
     }
@@ -242,48 +274,63 @@ public class GeneralController {
     }
   }
   
+  /**
+   * Change controllers to display the textInterface
+   * @param item
+   */
   private void read(Readable item) {
-    text.toggleIsTextInterfaceShow();
-    text.setText(item.text());
+    textController.toggleIsTextInterfaceShow();
+    textController.setText(item.text());
   }
   
-  private void useWeapon(Weapon weapon, Mob mob, Environnement env) {
+  /**
+   * Use the given weapon on either mob or environment
+   * @param weapon
+   * @param mob
+   * @param env
+   */
+  private void useWeapon(Weapon weapon, Mob mob, Environment env) {
     if (mob != null) {
       game.attackMob(game.player(), mob);
     } 
     if (env != null) {
       Position pos = env.pos();
-      if (env.getEnvironnement() == GameEnvironnement.TREE) {
+      if (env.getEnvironment() == GameEnvironment.TREE) {
         if (weapon.getItem() == GameItems.SWORD) {
-          game.removeEnvironnement(pos);
+          game.removeEnvironment(pos);
           game.addDroppedItem(Item.createItem("box"), pos);           
         } else if (weapon.getItem() == GameItems.BOLT) {
-          game.removeEnvironnement(pos);
-          game.setEnvironnement("fire", pos);
+          game.removeEnvironment(pos);
+          game.setEnvironment("fire", pos);
         }
-      } else if (env.getEnvironnement() == GameEnvironnement.GRASS) {
+      } else if (env.getEnvironment() == GameEnvironment.GRASS) {
         if (weapon.getItem() == GameItems.SHOVEL && game.inventory().contains(new Thing("seed"))) {
-          game.removeEnvironnement(pos);
-          game.setEnvironnement("sprout", pos);
+          game.removeEnvironment(pos);
+          game.setEnvironment("sprout", pos);
           game.inventory().remove(new Thing("seed"));
         }
       }
     }
   }
   
-  private void useBucket(Bucket bucket, Environnement env) {
+  /**
+   * Use the given bucket on environment
+   * @param bucket
+   * @param env
+   */
+  private void useBucket(Bucket bucket, Environment env) {
     if (bucket.isEmpty()) {
-      if (env.getEnvironnement() == GameEnvironnement.WATER) {
+      if (env.getEnvironment() == GameEnvironment.WATER) {
         bucket.fillBucket(env);
       }
     } else {
       if (env != null) {
-        if (env.getEnvironnement() == GameEnvironnement.FIRE) {
-          game.removeEnvironnement(env.pos());
+        if (env.getEnvironment() == GameEnvironment.FIRE) {
+          game.removeEnvironment(env.pos());
           bucket.pourBucket();
-        } else if (env.getEnvironnement() == GameEnvironnement.SPROUT) {
-          game.removeEnvironnement(env.pos());
-          game.setEnvironnement(Environnement.createEnvironnement("tree", env.pos()));
+        } else if (env.getEnvironment() == GameEnvironment.SPROUT) {
+          game.removeEnvironment(env.pos());
+          game.setEnvironment(Environment.createEnvironment("tree", env.pos()));
           bucket.pourBucket();
         }
       }
@@ -306,6 +353,11 @@ public class GeneralController {
     return false;
   }
   
+  /**
+   * Compute time delay to respect the framerate
+   * @param startTime
+   * @param endTime
+   */
   private void computeTimeDelay(long startTime, long endTime) {
     long timeDiff = endTime - startTime;
     double delay = 1.0 / FPS - (timeDiff / 1.0e9);
@@ -318,10 +370,9 @@ public class GeneralController {
     }  
   }
   
-  public static int getFramerate() {
-    return FPS;
-  }
-  
+  /**
+   * Main function
+   */
   public void run() {
     Application.run(Color.BLACK, context -> {
       long startTime;

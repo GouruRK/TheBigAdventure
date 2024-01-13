@@ -9,7 +9,7 @@ import game.entity.item.Item;
 import game.entity.mob.Behaviour;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
-import game.environnement.Environnement;
+import game.environment.Environment;
 import util.Direction;
 import util.Position;
 import util.Utils;
@@ -20,7 +20,7 @@ public class Game {
   //------- Fields -------
   
   private final Zone zone;
-  private final Environnement[][] field;
+  private final Environment[][] field;
   private final ArrayList<Mob> mobs;
   private final ArrayList<DroppedItem> items;
   private final Player player;
@@ -38,7 +38,7 @@ public class Game {
    * @param items
    * @param player
    */
-  public Game(Zone zone, Environnement[][] field, ArrayList<Mob> mobs, ArrayList<DroppedItem> items, Player player) {
+  public Game(Zone zone, Environment[][] field, ArrayList<Mob> mobs, ArrayList<DroppedItem> items, Player player) {
     Objects.requireNonNull(zone);
     Objects.requireNonNull(field);
     Objects.requireNonNull(mobs);
@@ -71,10 +71,10 @@ public class Game {
   }
 
   /***
-   * Get the environnement that contains all obstacles and scenery of the map
-   * @return Environnement[][]
+   * Get the environment that contains all obstacles and scenery of the map
+   * @return Environment[][]
    */
-  public Environnement[][] field() {
+  public Environment[][] field() {
     return field;
   }
 
@@ -123,12 +123,12 @@ public class Game {
   }
   
   /***
-   * Search an Environnement with a certain Pos in the List of Environnement
+   * Search an Environment with a certain Pos in the List of Environment
    * 
    * @param pos
-   * @return Environnement
+   * @return Environment
    */
-  public Environnement searchEnvironnement(Position pos) {
+  public Environment searchEnvironment(Position pos) {
     Objects.requireNonNull(pos);
     if (zone.isInside(pos)) {
       return field[(int)pos.y()][(int)pos.x()];      
@@ -207,7 +207,7 @@ public class Game {
    * @return boolean
    */  
   private boolean isMoveInGamePossible(Mob mobToMove, Position pos) {
-    Environnement env = searchEnvironnement(pos);
+    Environment env = searchEnvironment(pos);
     Mob mob = searchMob(pos);
     
     return switch (mobToMove) {
@@ -261,16 +261,26 @@ public class Game {
     items.add(new DroppedItem(pos, item));
   }
   
-  public void setEnvironnement(Environnement env) {
+  /**
+   * Replace current environment store at 'env.pos()' and set it at its coordinates
+   * @param env
+   */
+  public void setEnvironment(Environment env) {
     if (zone.isInside(env.pos())) {
       field[(int)env.pos().y()][(int)env.pos().x()] = env;
     }
   }
   
-  public void setEnvironnement(String skin, Position pos) {
-    Environnement env = Environnement.createEnvironnement(skin, pos);
+  /**
+   * Create an environment of given skin and at given position, and replace the current
+   * stored environment at position
+   * @param skin
+   * @param pos
+   */
+  public void setEnvironment(String skin, Position pos) {
+    Environment env = Environment.createEnvironment(skin, pos);
     if (env != null) {
-      setEnvironnement(env);
+      setEnvironment(env);
     }
   }
   
@@ -288,7 +298,11 @@ public class Game {
     }
   }
   
-  public void removeEnvironnement(Position pos) {
+  /**
+   * Set current environment stored at a given position to null
+   * @param pos
+   */
+  public void removeEnvironment(Position pos) {
     Objects.requireNonNull(pos);
     if (zone.isInside(pos)) {
       field[(int)pos.y()][(int)pos.x()] = null;

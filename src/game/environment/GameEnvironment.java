@@ -1,4 +1,4 @@
-package game.environnement;
+package game.environment;
 
 import java.util.Map;
 import java.util.Set;
@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import game.GameObject;
 import game.GameObjectID;
 
-public enum GameEnvironnement implements GameObject {
+public enum GameEnvironment implements GameObject {
 
   // Scenery
   ALGAE(GameObjectID.SCENERY),
@@ -74,11 +74,11 @@ public enum GameEnvironnement implements GameObject {
   
   private final GameObjectID id;
   
-  public static final Set<GameEnvironnement> BLOCKS = Set.of(GameEnvironnement.values());
+  public static final Set<GameEnvironment> BLOCKS = Set.of(GameEnvironment.values());
   public static final Map<String, GameObjectID> BLOCKSNAMES = BLOCKS.stream()
-      .collect(Collectors.toUnmodifiableMap(GameEnvironnement::name, GameEnvironnement::id));
-  private static final Map<String, GameEnvironnement> TYPEBLOCKS = BLOCKS.stream()
-      .collect(Collectors.toUnmodifiableMap(GameEnvironnement::name, Function.identity()));
+      .collect(Collectors.toUnmodifiableMap(GameEnvironment::name, GameEnvironment::id));
+  private static final Map<String, GameEnvironment> TYPEBLOCKS = BLOCKS.stream()
+      .collect(Collectors.toUnmodifiableMap(GameEnvironment::name, Function.identity()));
   
   public GameObjectID id() {
     return id;
@@ -88,11 +88,11 @@ public enum GameEnvironnement implements GameObject {
     return BLOCKSNAMES.getOrDefault(name.toUpperCase(), GameObjectID.UNKNOWN);
   }
   
-  public static GameEnvironnement getEnvironnement(String name) {
+  public static GameEnvironment getEnvironment(String name) {
     return TYPEBLOCKS.get(name.toUpperCase());
   }
   
-  GameEnvironnement(GameObjectID id) {
+  GameEnvironment(GameObjectID id) {
     this.id = id;
   }
   

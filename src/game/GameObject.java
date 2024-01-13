@@ -2,12 +2,12 @@ package game;
 
 import game.entity.item.GameItems;
 import game.entity.mob.GameMobs;
-import game.environnement.GameEnvironnement;
+import game.environment.GameEnvironment;
 
 public interface GameObject {
  
 	/**
-	 * Precise the type of the Name (item, mob, environnement)
+	 * Precise the type of the Name (item, mob, environment)
 	 * 
 	 * @param name
 	 * @return gameObjectID
@@ -20,7 +20,7 @@ public interface GameObject {
     if ((id = GameItems.getId(name)) != GameObjectID.UNKNOWN) {
       return id;
     }
-    if ((id = GameEnvironnement.getId(name)) != GameObjectID.UNKNOWN) {
+    if ((id = GameEnvironment.getId(name)) != GameObjectID.UNKNOWN) {
       return id;
     }
     return GameObjectID.UNKNOWN;

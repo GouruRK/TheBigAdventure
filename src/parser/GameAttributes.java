@@ -11,7 +11,7 @@ import game.entity.item.DroppedItem;
 import game.entity.item.Item;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
-import game.environnement.Environnement;
+import game.environment.Environment;
 import util.Position;
 import util.Text;
 import util.Zone;
@@ -27,7 +27,7 @@ public class GameAttributes {
   private String data = null;
   private Zone zone = null;
   private Map<Character, EncodingRow> encodings = null;
-  private Environnement[][] field;
+  private Environment[][] field;
   private Player player = null;
   
   // --------- Constructors --------- 
@@ -107,7 +107,7 @@ public class GameAttributes {
       throw new TokenException("Invalid map width : got " + l.length() + " expected " + width + " at " + l);
     }
     
-    field = new Environnement[height][width];
+    field = new Environment[height][width];
   }
   
   private boolean checkFullLineOfField(String line) {
@@ -162,10 +162,10 @@ public class GameAttributes {
   // --------- Element Creation ---------
   
   private void createElement(EncodingRow row, Position pos) throws TokenException {
-    Environnement env;
+    Environment env;
     DroppedItem item;
     
-    if ((env = Environnement.createEnvironnement(row, pos)) != null) {
+    if ((env = Environment.createEnvironment(row, pos)) != null) {
       field[(int) pos.y()][(int) pos.x()] = env;
     } else if ((item = Item.createDroppedItem(row, pos)) != null) {
       items.add(item);
@@ -175,7 +175,7 @@ public class GameAttributes {
   }
   
   private void createElement(ElementAttributes element, Position pos) throws TokenException {
-    Environnement env;
+    Environment env;
     DroppedItem item;
     Mob mob;
     
@@ -183,7 +183,7 @@ public class GameAttributes {
       mobs.add(mob);
     } else if((item = Item.createDroppedItem(element)) != null) {
       items.add(item);
-    } else if ((env = Environnement.createEnvironnement(element, pos)) != null) {
+    } else if ((env = Environment.createEnvironment(element, pos)) != null) {
       field[(int) env.pos().y()][(int) env.pos().x()] = env;
     } else {      
       throw new TokenException("Element '" + element.getSkin() + "' is not a map element");

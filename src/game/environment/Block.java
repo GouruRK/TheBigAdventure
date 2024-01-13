@@ -1,10 +1,10 @@
-package game.environnement;
+package game.environment;
 
 import java.util.Objects;
 
 import util.Position;
 
-public record Block(String skin, Position pos, boolean standable) implements Environnement {
+public record Block(String skin, Position pos, boolean standable) implements Environment {
   
   //------- Constructors -------
   

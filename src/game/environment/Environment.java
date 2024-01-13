@@ -1,11 +1,11 @@
-package game.environnement;
+package game.environment;
 
 import game.GameObjectID;
 import parser.ElementAttributes;
 import parser.EncodingRow;
 import util.Position;
 
-public interface Environnement {
+public interface Environment {
 
   //------- Getters -------
   
@@ -27,9 +27,9 @@ public interface Environnement {
    * 
    * @param row
    * @param pos
-   * @return Environnement
+   * @return Environment
    */
-  public static Environnement createEnvironnement(EncodingRow row, Position pos) {
+  public static Environment createEnvironment(EncodingRow row, Position pos) {
     return switch (row.id()) {
       case GameObjectID.SCENERY -> new Block(row.skin(), pos, true);
       case GameObjectID.OBSTACLE -> new Block(row.skin(), pos, false);
@@ -38,8 +38,8 @@ public interface Environnement {
     };
   }
   
-  public static Environnement createEnvironnement(String skin, Position pos) {
-    return switch (GameEnvironnement.getId(skin)) {
+  public static Environment createEnvironment(String skin, Position pos) {
+    return switch (GameEnvironment.getId(skin)) {
       case GameObjectID.SCENERY -> new Block(skin, pos, true);
       case GameObjectID.OBSTACLE -> new Block(skin, pos, false);
       case GameObjectID.GATE -> new Gate(skin, pos, null, false);
@@ -48,13 +48,13 @@ public interface Environnement {
   }
   
   /**
-   * create an Environnement depending of his type from his Attributes element
+   * create an Environment depending of his type from his Attributes element
    * 
    * @param elem
    * @param pos
-   * @return Environnement
+   * @return Environment
    */
-  public static Environnement createEnvironnement(ElementAttributes elem, Position pos) {
+  public static Environment createEnvironment(ElementAttributes elem, Position pos) {
     return switch (elem.getID()) {
     case GameObjectID.SCENERY -> new Block(elem.getSkin(), pos, true);
     case GameObjectID.OBSTACLE -> new Block(elem.getSkin(), pos, false);
@@ -63,18 +63,18 @@ public interface Environnement {
     };
   }
   
-  public static Environnement createEnvironnement(ElementAttributes elem) {
-    return Environnement.createEnvironnement(elem, elem.getPosition());
+  public static Environment createEnvironment(ElementAttributes elem) {
+    return Environment.createEnvironment(elem, elem.getPosition());
   }
   
   //------- Other -------
   
-  public default GameEnvironnement getEnvironnement() {
-    return GameEnvironnement.getEnvironnement(skin());
+  public default GameEnvironment getEnvironment() {
+    return GameEnvironment.getEnvironment(skin());
   }
   
-  public static GameEnvironnement getEnvironnement(String skin) {
-    return GameEnvironnement.getEnvironnement(skin);
+  public static GameEnvironment getEnvironment(String skin) {
+    return GameEnvironment.getEnvironment(skin);
   }
   
 }

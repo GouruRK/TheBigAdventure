@@ -3,7 +3,7 @@ package game.entity.item;
 import java.util.Objects;
 
 import game.GameObjectID;
-import game.environnement.Environnement;
+import game.environment.Environment;
 
 public class Bucket implements Item {
 
@@ -11,11 +11,11 @@ public class Bucket implements Item {
   
   private final String skin;
   private final String name;
-  private Environnement content;
+  private Environment content;
   
   // ------- Constructors -------
   
-  public Bucket(String skin, String name, Environnement content) {
+  public Bucket(String skin, String name, Environment content) {
     Objects.requireNonNull(skin);
     this.skin = skin;
     this.name = name;
@@ -46,11 +46,11 @@ public class Bucket implements Item {
     return content == null;
   }
   
-  public Environnement getContent() {
+  public Environment getContent() {
     return content;
   }
   
-  public void fillBucket(Environnement env) {
+  public void fillBucket(Environment env) {
     Objects.requireNonNull(env);
     this.content = env;
   }

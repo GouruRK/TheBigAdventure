@@ -1,4 +1,4 @@
-package game.environnement;
+package game.environment;
 
 import java.util.Objects;
 

@@ -9,7 +9,7 @@ import fr.umlv.zen5.ApplicationContext;
 import fr.umlv.zen5.ScreenInfo;
 import game.Game;
 import game.entity.item.Item;
-import game.environnement.Environnement;
+import game.environment.Environment;
 import graphic.controller.GeneralController;
 import util.Position;
 
@@ -170,15 +170,15 @@ public class Draw {
  
   private void drawMap(Graphics2D graphics) {
     for (var line: game.field()) {
-      for (Environnement env: line) {
+      for (Environment env: line) {
         if (env != null) {
-          drawEnvironnement(graphics, env);
+          drawEnvironment(graphics, env);
         }
       }
     }
   }
   
-  private void drawEnvironnement(Graphics2D graphics, Environnement env) {
+  private void drawEnvironment(Graphics2D graphics, Environment env) {
     drawImage(graphics, env.skin(), env.pos());
   }
 

@@ -46,7 +46,7 @@ Voici l'architecture de l'archive avec les différents modules
     │   │   ├── item        // Objets
     │   │   │   └── container
     │   │   └── mob         // Mobs
-    │   └── environnement   // Obstacles, Décorations, Biome
+    │   └── environment   // Obstacles, Décorations, Biome
     ├── graph               // Structures graphiques
     ├── parser              // Structures pour parser une map
     ├── util                // Zone, Directions, Position

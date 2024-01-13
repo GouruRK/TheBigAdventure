@@ -14,19 +14,19 @@ import game.entity.item.Item;
 import game.entity.mob.Friend;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
-import game.environnement.Environnement;
+import game.environment.Environment;
 import util.PathCreator;
 
 public class Skins {
   private static final HashMap<String, BufferedImage> SKINS = new HashMap<String, BufferedImage>();
   
   /**
-   * load all skin of Environnement, DroppedItem, Mob to setup de map
+   * load all skin of Environment, DroppedItem, Mob to setup de map
    * 
    * @throws IOException
    */
   public static void loadSkinFromGame(Game game) throws IOException {
-    loadEnvironnementSkin(game.field());
+    loadEnvironmentSkin(game.field());
     loadDroppedItemSkin(game.items());
     loadMobsSkin(game.mobs());
     loadPlayerSkin(game.player());
@@ -36,9 +36,9 @@ public class Skins {
     loadSkin("sprout");
   }
   
-  private static void loadEnvironnementSkin(Environnement[][] field) throws IOException {
+  private static void loadEnvironmentSkin(Environment[][] field) throws IOException {
     for (var line: field) {
-      for (Environnement env: line) {
+      for (Environment env: line) {
         if (env != null) {
           loadSkin(env.skin());          
         }
