@@ -65,7 +65,7 @@ public class Gate implements Environnement {
   @Override
   public boolean equals(Object obj) {
     return obj instanceof Gate gate
-        && gate.skin().equals(skin)
+        && gate.skin().equalsIgnoreCase(skin)
         && gate.pos().equals(pos)
         && (gate.key() == null ? gate.key() == key: gate.key().equals(key))
         && gate.open() == open
@@ -75,6 +75,6 @@ public class Gate implements Environnement {
   
   @Override
   public int hashCode() {
-    return Objects.hash(skin, pos, key, open);
+    return Objects.hash(skin.toUpperCase(), pos, key, open);
   }
 }

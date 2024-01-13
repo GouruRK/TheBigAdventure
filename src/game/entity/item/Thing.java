@@ -27,14 +27,14 @@ public record Thing(String skin, String name) implements Item {
   @Override
   public boolean equals(Object obj) {
     return obj instanceof Thing thing
-        && thing.skin().equals(skin)
+        && thing.skin().equalsIgnoreCase(skin)
         && (thing.name() == null ? thing.name() == name: thing.name().equals(name))
         && thing.hashCode() == hashCode();
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(skin, name);
+    return Objects.hash(skin.toUpperCase(), name);
   }
   
 }

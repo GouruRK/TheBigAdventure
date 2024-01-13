@@ -76,4 +76,5 @@ public interface Environnement {
   public static GameEnvironnement getEnvironnement(String skin) {
     return GameEnvironnement.getEnvironnement(skin);
   }
+  
 }

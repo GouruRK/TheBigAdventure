@@ -104,7 +104,8 @@ public class GameAttributes {
     }
     
     if (!tempField.stream().allMatch(line -> line.length() == width)) {
-      throw new TokenException("Invalid map width");
+      String l = tempField.stream().filter(line -> line.length() != width).findFirst().orElse("");
+      throw new TokenException("Invalid map width : got " + l.length() + " expected " + width + " at " + l);
     }
     
     field = new Environnement[height][width];

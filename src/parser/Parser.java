@@ -301,6 +301,10 @@ public class Parser {
       map.computeIfAbsent(wanted, key -> new ArrayList<Item>()).add(toSell);
 
       res = lexer.nextResult();
+      if (res == null) {
+        break;
+      }
+      
       if (res.token() == Token.COMMA) {
         continue;
       }

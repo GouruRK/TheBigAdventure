@@ -247,19 +247,24 @@ public class GeneralController {
     if (mob != null) {
       game.attackMob(game.player(), mob);
     } 
-     if (env != null) {
-       if (env.getEnvironnement() == GameEnvironnement.TREE) {
-         if (weapon.getItem() == GameItems.SWORD) {
-           Position pos = env.pos();
-           game.removeEnvironnement(pos);
-           game.addDroppedItem(Item.createItem("box"), pos);           
-         } else if (weapon.getItem() == GameItems.BOLT) {
-           Position pos = env.pos();
-           game.removeEnvironnement(pos);
-           game.setEnvironnement("fire", pos);
-         }
-       }
-     }
+    if (env != null) {
+      Position pos = env.pos();
+      if (env.getEnvironnement() == GameEnvironnement.TREE) {
+        if (weapon.getItem() == GameItems.SWORD) {
+          game.removeEnvironnement(pos);
+          game.addDroppedItem(Item.createItem("box"), pos);           
+        } else if (weapon.getItem() == GameItems.BOLT) {
+          game.removeEnvironnement(pos);
+          game.setEnvironnement("fire", pos);
+        }
+      } else if (env.getEnvironnement() == GameEnvironnement.GRASS) {
+        if (weapon.getItem() == GameItems.SHOVEL && game.inventory().contains(new Thing("seed"))) {
+          game.removeEnvironnement(pos);
+          game.setEnvironnement("seed", pos);
+          game.inventory().remove(new Thing("seed"));
+        }
+      }
+    }
   }
   
   /**

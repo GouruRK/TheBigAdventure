@@ -25,7 +25,7 @@ public record Block(String skin, Position pos, boolean standable) implements Env
   @Override
   public boolean equals(Object obj) {
     return obj instanceof Block block
-        && block.skin().equals(skin)
+        && block.skin().equalsIgnoreCase(skin)
         && block.pos().equals(pos)
         && block.standable() == standable
         && block.hashCode() == hashCode();
@@ -33,7 +33,15 @@ public record Block(String skin, Position pos, boolean standable) implements Env
   
   @Override
   public int hashCode() {
-    return Objects.hash(skin, pos, standable);
+    return Objects.hash(skin.toUpperCase(), pos, standable);
+  }
+  
+  @Override
+  public String toString() {
+    return "Block[skin: " + skin
+            + " pos: " + pos
+            + " standable: " + standable
+            + "]";
   }
   
 }

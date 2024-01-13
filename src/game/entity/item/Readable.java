@@ -28,7 +28,7 @@ public record Readable(String skin, String name, Text text) implements Item {
   @Override
   public boolean equals(Object obj) {
     return obj instanceof Readable read
-        && read.skin().equals(skin)
+        && read.skin().equalsIgnoreCase(skin)
         && (read.text() == null ? read.text() == text: read.text().equals(text))
         && (read.name() == null ? read.name() == name: read.name().equals(name))
         && read.hashCode() == hashCode();
@@ -36,6 +36,6 @@ public record Readable(String skin, String name, Text text) implements Item {
   
   @Override
   public int hashCode() {
-    return Objects.hash(skin, text, name);
+    return Objects.hash(skin.toUpperCase(), text, name);
   }
 }

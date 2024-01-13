@@ -1,0 +1,57 @@
+[grid]
+	size: (15x15)
+	encodings: WALL(W) BOLT(B) SHOVEL(S) STICK(s)
+		   TREE(T) GRASS(G) SWORD(e) SEED(b)
+	data: """
+	WWWWWWWWWWWWWWW
+	W             W
+	W            BW
+	W            SW
+	W            sW
+	W            eW
+	W             W
+	WG            W
+	WG            W
+	WG            W
+	W            bW
+	W             W
+	W             W
+	WTTT         TW
+	WWWWWWWWWWWWWWW
+	"""
+
+[element]
+  	player: true
+  	skin: BABA
+  	position: (1, 1)
+  	health: 10
+
+
+[element]
+  	skin: BABA
+  	position: (1, 5)
+  	health: 10
+	kind: friend
+	text: """
+  	Hello my dear friend !
+  
+  	Look what I have for you : only good quality, and at a reasonable price. You can take whatever you want !
+  	I hope you'll like them.
+  
+  	Waldo
+  	"""
+	trade: CASH little -> KEY red,
+  		 CASH -> PIZZA,
+  		 KEY -> BURGER,
+  		 BURGER -> SWORD,
+  		 SWORD -> SHOVEL,
+  		 SHOVEL -> BOLT,
+  		 BOLT -> BOOK,
+  		 BOOK -> CLOCK,
+  		 CLOCK -> CRYSTAL,
+  		 CRYSTAL -> CUP,
+  		 CUP -> DRUM,
+  		 drum -> flag,
+  		 flag -> gem
+
+

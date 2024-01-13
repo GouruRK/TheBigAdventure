@@ -83,6 +83,7 @@ public class Skins {
    * @throws IOException
    */
   private static void loadSkin(String skin) throws IOException {
+    skin = skin.toUpperCase();
     if (SKINS.get(skin) != null) {
       return;
     }
@@ -95,7 +96,7 @@ public class Skins {
   }
   
   public static BufferedImage getSkin(String skin) {
-    return SKINS.get(skin);
+    return SKINS.get(skin.toUpperCase());
   }
   
 }
