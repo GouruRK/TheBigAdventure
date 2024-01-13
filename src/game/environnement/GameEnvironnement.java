@@ -26,7 +26,6 @@ public enum GameEnvironnement implements GameObject {
   TRACK(GameObjectID.SCENERY), 
   VINE(GameObjectID.SCENERY),
   FIRE(GameObjectID.SCENERY),
-  SEED(GameObjectID.SCENERY),
   
   // Obstacle
   BED(GameObjectID.OBSTACLE),

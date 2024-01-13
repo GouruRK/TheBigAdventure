@@ -33,6 +33,7 @@ public class Skins {
     loadSkin("box");
     loadSkin("arrow");
     loadSkin("fire");
+    loadSkin("sprout");
   }
   
   private static void loadEnvironnementSkin(Environnement[][] field) throws IOException {

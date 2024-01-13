@@ -264,15 +264,14 @@ public class GeneralController {
       } else if (env.getEnvironnement() == GameEnvironnement.GRASS) {
         if (weapon.getItem() == GameItems.SHOVEL && game.inventory().contains(new Thing("seed"))) {
           game.removeEnvironnement(pos);
-          game.setEnvironnement("seed", pos);
+          game.setEnvironnement("sprout", pos);
           game.inventory().remove(new Thing("seed"));
         }
       }
     }
   }
   
-  public void useBucket(Bucket bucket, Environnement env) {
-    System.out.println(bucket);
+  private void useBucket(Bucket bucket, Environnement env) {
     if (bucket.isEmpty()) {
       if (env.getEnvironnement() == GameEnvironnement.WATER) {
         bucket.fillBucket(env);
@@ -282,13 +281,13 @@ public class GeneralController {
         if (env.getEnvironnement() == GameEnvironnement.FIRE) {
           game.removeEnvironnement(env.pos());
           bucket.pourBucket();
-        } else if (env.getEnvironnement() == GameEnvironnement.SEED) {
+        } else if (env.getEnvironnement() == GameEnvironnement.SPROUT) {
           game.removeEnvironnement(env.pos());
           game.setEnvironnement(Environnement.createEnvironnement("tree", env.pos()));
+          bucket.pourBucket();
         }
       }
     }
-    System.out.println(game.player().hold());
   }
   
   /**
