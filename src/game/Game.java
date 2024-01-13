@@ -247,6 +247,7 @@ public class Game {
    */
   public void addDroppedItem(DroppedItem item) {
     Objects.requireNonNull(item);
+    
     items.add(item);
   }
   
@@ -258,6 +259,7 @@ public class Game {
   public void addDroppedItem(Item item, Position pos) {
     Objects.requireNonNull(item);
     Objects.requireNonNull(pos);
+    
     items.add(new DroppedItem(pos, item));
   }
   
@@ -266,6 +268,8 @@ public class Game {
    * @param env
    */
   public void setEnvironment(Environment env) {
+    Objects.requireNonNull(env);
+    
     if (zone.isInside(env.pos())) {
       field[(int)env.pos().y()][(int)env.pos().x()] = env;
     }
@@ -278,6 +282,9 @@ public class Game {
    * @param pos
    */
   public void setEnvironment(String skin, Position pos) {
+    Objects.requireNonNull(skin);
+    Objects.requireNonNull(pos);
+    
     Environment env = Environment.createEnvironment(skin, pos);
     if (env != null) {
       setEnvironment(env);
@@ -304,6 +311,7 @@ public class Game {
    */
   public void removeEnvironment(Position pos) {
     Objects.requireNonNull(pos);
+    
     if (zone.isInside(pos)) {
       field[(int)pos.y()][(int)pos.x()] = null;
     }

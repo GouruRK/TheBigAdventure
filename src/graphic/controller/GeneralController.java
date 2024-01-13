@@ -36,12 +36,15 @@ public class GeneralController {
   private boolean hasItemBeenUsed = false;
   
   private static final int FPS = 60;
+  private static final int MOVEMENT_OFFSET = 1;
   private long totalFrame;
+  
   
   // ------- Constructor -------
   
   public GeneralController(Game game) {
     Objects.requireNonNull(game);
+    
     inventoryController = new InventoryController(game.inventory(), game.player());
     textController = new TextController();
     tradeController = new TradeController(inventoryController, textController);
@@ -182,7 +185,7 @@ public class GeneralController {
     } else if (textController.isTextInterfaceShow()) {
       textController.changePage(dir);
     } else {
-      game.move(game.player(), dir, 1);
+      game.move(game.player(), dir, MOVEMENT_OFFSET);
     }
   }
   
@@ -201,23 +204,18 @@ public class GeneralController {
       Mob mob;
       Environment env;
       
+      int maximumItemRange = 1;
       if (game.player().hold() != null && game.player().hold().getItem() == GameItems.BOLT) {
-        for (int i = 0; i < 3; i++) {
-          mob = game.searchMob(facing);
-          env = game.searchEnvironment(facing);
-          if (!playerAction(mob, env)) {
-            useHeldItem(mob, env);
-            setHasItemBeenUsed(true);
-          }
-          facing = facing.computeDirection(game.player().facing(), 1);
-        }
-      } else {
+        maximumItemRange = 3;
+      }
+      for (int i = 0; i < maximumItemRange; i++) {
         mob = game.searchMob(facing);
         env = game.searchEnvironment(facing);
         if (!playerAction(mob, env)) {
           useHeldItem(mob, env);
           setHasItemBeenUsed(true);
         }
+        facing = facing.computeDirection(game.player().facing(), MOVEMENT_OFFSET);
       }
     }
   }
@@ -226,7 +224,7 @@ public class GeneralController {
    * Manage player action to trade items
    * @return true if an action has been done, else false
    */
-  public boolean playerAction(Mob mob, Environment env) {
+  private boolean playerAction(Mob mob, Environment env) {
     if (mob != null) {
       switch (mob) {
       case Friend friend -> {
@@ -263,6 +261,12 @@ public class GeneralController {
     }
   }
   
+  /**
+   * Use given item on either mob or environment
+   * @param item
+   * @param mob
+   * @param env
+   */
   private void useItem(Thing item, Mob mob, Environment env) {
     if (env == null) {
       return;
@@ -347,7 +351,7 @@ public class GeneralController {
       return false;
     }
     if (frames % 10 == 0) {
-      // game.moveMobs();
+      game.moveMobs();
       return true;
     }
     return false;
