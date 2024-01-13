@@ -23,7 +23,6 @@ import graphic.view.View;
 import parser.commandline.Arguments;
 import util.Direction;
 import util.Position;
-import util.StepCalculator;
 
 public class GeneralController {
   
@@ -150,7 +149,7 @@ public class GeneralController {
     } else if (text.isTextInterfaceShow()) {
       text.changePage(dir);
     } else {
-      game.move(game.player(), dir, StepCalculator.getStep(1));
+      game.move(game.player(), dir, 1);
     }
   }
   

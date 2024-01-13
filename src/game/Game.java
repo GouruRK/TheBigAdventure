@@ -11,8 +11,8 @@ import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environnement.Environnement;
 import util.Direction;
-import util.Math;
 import util.Position;
+import util.Utils;
 
 public class Game {
 
@@ -165,7 +165,7 @@ public class Game {
    */
   private void moveAgressiveMob(Mob mob) {
     move(mob, Direction.randomDirection(), 1);
-    if (Math.distance(player.pos(), mob.pos()) == 1 && Math.randomBoolean()) {
+    if (Utils.distance(player.pos(), mob.pos()) == 1 && Utils.randomBoolean()) {
       attackMob(mob, player);
     }
   }
@@ -180,11 +180,10 @@ public class Game {
     Objects.requireNonNull(mob);
     Objects.requireNonNull(dir);
     
-    Position nextPos = mob.pos().computeDirection(dir, step);
+    Position nextPos = mob.pos().computeDirection(dir, step);    
     if (nextPos == null) {
       return;
     }
-    
     if (mob.isMoveInZonePossible(nextPos) && isMoveInGamePossible(mob, nextPos)) {
       mob.setPos(nextPos);
       
@@ -210,7 +209,7 @@ public class Game {
     return switch (mobToMove) {
       case Player p -> (env == null || env.standable() || env.isOpen()) && mob == null;
       default -> (env == null || env.standable() || env.isOpen()) && !pos.equals(player.pos());
-    }; 
+    };
   }
   
   //------- Modifiers -------

@@ -30,7 +30,7 @@ public enum Direction {
    * @return
    */
   public static Direction randomDirection() {
-    return switch (Math.randomInt(0, 4)) {
+    return switch (Utils.randomInt(0, 4)) {
     case 0 -> Direction.EAST;
     case 1 -> Direction.WEST;
     case 2 -> Direction.NORTH;

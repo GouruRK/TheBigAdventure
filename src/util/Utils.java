@@ -2,7 +2,7 @@ package util;
 
 import java.util.Random;
 
-public class Math {
+public class Utils {
 
   private static final Random generator = new Random();
   
