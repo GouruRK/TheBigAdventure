@@ -37,7 +37,10 @@ public class GeneralController {
   
   private static final int FPS = 60;
   private static final int MOVEMENT_OFFSET = 1;
+  private static final int MOB_INTERVAL = 20;
+  private static final int FIRE_INTERVAL = 100;
   private long totalFrame;
+  
   
   
   // ------- Constructor -------
@@ -249,7 +252,6 @@ public class GeneralController {
     if (player.hold() == null) {
       return;
     }
-    System.out.println(player.hold());
 
     switch (player.hold()) {
       case Weapon weapon -> useWeapon(weapon, mob, env);
@@ -323,6 +325,9 @@ public class GeneralController {
    * @param env
    */
   private void useBucket(Bucket bucket, Environment env) {
+    if (env == null) {
+      return;
+    }
     if (bucket.isEmpty()) {
       if (env.getEnvironment() == GameEnvironment.WATER) {
         bucket.fillBucket(env);
@@ -346,15 +351,31 @@ public class GeneralController {
    * @param frames
    * @return
    */
-  public boolean entityUpdate(long frames) {
+  public boolean entityUpdate() {
     if (areInterfacesShow() || Arguments.dryRun()) {
       return false;
     }
-    if (frames % 10 == 0) {
+    if (totalFrame % MOB_INTERVAL == 0) {
       game.moveMobs();
       return true;
     }
     return false;
+  }
+  
+  /**
+   * Spread fire according to the number of frames
+   * @return
+   */
+  public boolean fireUpdate() {
+    if (areInterfacesShow()) {
+      return false;
+    }
+    if (totalFrame % FIRE_INTERVAL == 0) {
+      game.spreadFire();
+      return true;
+    }
+    return false;
+    
   }
   
   /**
@@ -383,11 +404,16 @@ public class GeneralController {
       Draw draw = new Draw(context, game, this);
       KeyOperation key;
 
+      boolean command, entity, fire;
+      
       draw.drawGame();
       while ((key = View.getOperation(context)) != KeyOperation.EXIT) {
         startTime = System.nanoTime();
         
-        if (interpretCommand(key) || entityUpdate(totalFrame)) {
+        command = interpretCommand(key);
+        entity = entityUpdate();
+        fire = fireUpdate();
+        if (command || entity || fire) {
           draw.drawGame();
         }
         

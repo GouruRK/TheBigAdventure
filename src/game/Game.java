@@ -10,6 +10,7 @@ import game.entity.mob.Behaviour;
 import game.entity.mob.Mob;
 import game.entity.mob.Player;
 import game.environment.Environment;
+import game.environment.GameEnvironment;
 import util.Direction;
 import util.Position;
 import util.Utils;
@@ -17,6 +18,10 @@ import util.Zone;
 
 public class Game {
 
+  //------- Constants -------
+  
+  private static final int FIRE_SPREADING_PERCENTAGE = 20;
+  
   //------- Fields -------
   
   private final Zone zone;
@@ -317,4 +322,39 @@ public class Game {
     }
   }
 
+  // ------- Fire -------
+  
+  /**
+   * Spread fire around the given fire
+   * @param env
+   */
+  private void spreadFire(Environment env) {
+    // fire as 20% chance to spread
+    if (Utils.randomInt(0, 100) <= FIRE_SPREADING_PERCENTAGE) {
+      List<Position> around = env.pos().getAround();
+      Position posToSpread = around.get(Utils.randomInt(0, around.size() - 1));
+      Environment tile = searchEnvironment(posToSpread);
+      if (tile == null) {
+        setEnvironment("fire", posToSpread);
+      } else if (tile.getEnvironment() == GameEnvironment.TREE) {
+        removeEnvironment(posToSpread);
+        setEnvironment("fire", posToSpread);
+      }
+    }
+  }
+  
+  /**
+   * Search for fires on the entire map and spread them
+   */
+  public void spreadFire() {
+    for (int y = 0; y < zone.height(); y++) {
+      for (int x = 0; x < zone.width(); x++) {
+        Environment env = field[y][x]; 
+        if (env != null && env.getEnvironment() == GameEnvironment.FIRE) {
+          spreadFire(env);
+        }
+      }
+    }
+  }
+  
 }

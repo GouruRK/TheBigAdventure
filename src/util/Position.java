@@ -1,5 +1,8 @@
 package util;
 
+import java.util.List;
+import java.util.Objects;
+
 public class Position {
 
   private double x;
@@ -57,6 +60,7 @@ public class Position {
   }
   
   public Position computeDirection(Direction dir, double step) {
+    Objects.requireNonNull(dir);
     return switch (dir) {
       case NORTH -> addY(-step);
       case WEST -> addX(-step);
@@ -67,6 +71,8 @@ public class Position {
   }
   
   public Position facingDirection(Direction dir) {
+    Objects.requireNonNull(dir);
+    
     return switch (dir) {
       case NORTH -> addY(-1);
       case WEST -> addX(-1);
@@ -74,6 +80,13 @@ public class Position {
       case EAST -> addX(1);
       default -> null;    
     };
+  }
+  
+  public List<Position> getAround() {
+    return List.<Position>of(facingDirection(Direction.NORTH),
+                             facingDirection(Direction.WEST),
+                             facingDirection(Direction.SOUTH),
+                             facingDirection(Direction.EAST));
   }
   
   @Override
