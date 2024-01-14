@@ -1,10 +1,10 @@
 package graphic.view;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
@@ -84,20 +84,23 @@ public class Skins {
    * @throws IOException
    */
   private static void loadSkin(String skin) throws IOException {
-    skin = skin.toUpperCase();
+    skin = skin.toUpperCase(Locale.ROOT);
     if (SKINS.get(skin) != null) {
       return;
     }
-    File imagePath = new File(PathCreator.imagePath(skin.toLowerCase()));
-    try {
-      SKINS.put(skin, ImageIO.read(imagePath));
-    } catch (IOException e) {
-      throw new IOException("Cannot find image for skin '" + skin + "' (path is '" + imagePath + "')");
+    
+    BufferedImage image;
+    try (var input = Skins.class.getResourceAsStream(PathCreator.imagePath(skin))) {
+      if (input == null) {
+        throw new IOException("Cannot load image + " + PathCreator.imagePath(skin));
+      }
+      image = ImageIO.read(input);
     }
+    SKINS.put(skin, image);
   }
   
   public static BufferedImage getSkin(String skin) {
-    return SKINS.get(skin.toUpperCase());
+    return SKINS.get(skin.toUpperCase(Locale.ROOT));
   }
   
 }

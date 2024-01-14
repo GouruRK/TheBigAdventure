@@ -1,5 +1,6 @@
 package game.entity.item;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -90,7 +91,7 @@ public enum GameItems implements GameObject {
   }
   
   public static GameItems getItem(String name) {
-    return TYPEITEMS.get(name.toUpperCase());
+    return TYPEITEMS.get(name.toUpperCase(Locale.ROOT));
   }
   
   /**
@@ -100,7 +101,7 @@ public enum GameItems implements GameObject {
    * @return gameObjectID
    */
   public static GameObjectID getId(String name) {
-    return ITEMSNAMES.getOrDefault(name.toUpperCase(), GameObjectID.UNKNOWN);
+    return ITEMSNAMES.getOrDefault(name.toUpperCase(Locale.ROOT), GameObjectID.UNKNOWN);
   }
   
   GameItems(GameObjectID id) {

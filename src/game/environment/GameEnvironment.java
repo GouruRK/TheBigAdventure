@@ -1,5 +1,6 @@
 package game.environment;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -85,11 +86,11 @@ public enum GameEnvironment implements GameObject {
   }
   
   public static GameObjectID getId(String name) {
-    return BLOCKSNAMES.getOrDefault(name.toUpperCase(), GameObjectID.UNKNOWN);
+    return BLOCKSNAMES.getOrDefault(name.toUpperCase(Locale.ROOT), GameObjectID.UNKNOWN);
   }
   
   public static GameEnvironment getEnvironment(String name) {
-    return TYPEBLOCKS.get(name.toUpperCase());
+    return TYPEBLOCKS.get(name.toUpperCase(Locale.ROOT));
   }
   
   GameEnvironment(GameObjectID id) {
