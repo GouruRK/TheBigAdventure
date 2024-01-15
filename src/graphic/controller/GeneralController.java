@@ -41,8 +41,6 @@ public class GeneralController {
   private static final int FIRE_INTERVAL = 100;
   private long totalFrame;
   
-  
-  
   // ------- Constructor -------
   
   public GeneralController(Game game) {
@@ -118,14 +116,17 @@ public class GeneralController {
     if (key == KeyOperation.NONE)  {
       return false;
     }
+    
+    boolean quit = false;
+    
     switch (key) {
-    case KeyOperation.INVENTORY -> toggleInterfaces();
-    case KeyOperation.DROP -> dropItem();
-    case KeyOperation.UP, KeyOperation.DOWN, KeyOperation.LEFT, KeyOperation.RIGHT -> move(View.keyToDirection(key));
-    case KeyOperation.ACTION -> action();
-    default -> {}
+      case KeyOperation.INVENTORY -> toggleInterfaces();
+      case KeyOperation.DROP -> dropItem();
+      case KeyOperation.UP, KeyOperation.DOWN, KeyOperation.LEFT, KeyOperation.RIGHT -> quit = move(View.keyToDirection(key));
+      case KeyOperation.ACTION -> action();
+      default -> {}
     }
-    return true;
+    return quit;
   }
   
   // ------- Generic -------
@@ -180,7 +181,7 @@ public class GeneralController {
    * Interpret movements, according to which interface is currently displayed
    * @param dir
    */
-  private void move(Direction dir) {
+  private boolean move(Direction dir) {
     if (tradeController.isTradeInterfaceShow()) {
       tradeController.moveCursor(dir);
     } else if (inventoryController.isInventoryInterfaceShow()) {
@@ -190,6 +191,7 @@ public class GeneralController {
     } else {
       game.move(game.player(), dir, MOVEMENT_OFFSET);
     }
+    return false;
   }
   
   //------- Actions -------
@@ -404,18 +406,14 @@ public class GeneralController {
       Draw draw = new Draw(context, game, this);
       KeyOperation key;
 
-      boolean command, entity, fire;
-      
       draw.drawGame();
       while ((key = View.getOperation(context)) != KeyOperation.EXIT) {
         startTime = System.nanoTime();
         
-        command = interpretCommand(key);
-        entity = entityUpdate();
-        fire = fireUpdate();
-        if (command || entity || fire) {
-          draw.drawGame();
-        }
+        interpretCommand(key);
+        entityUpdate();
+        fireUpdate();
+        draw.drawGame();
         
         computeTimeDelay(startTime, System.nanoTime());
         totalFrame++;

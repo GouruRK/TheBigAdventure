@@ -33,6 +33,7 @@ public class ElementAttributes {
   private Direction flow = Direction.UNKNOWN;
   private boolean phantomized = false;
   private Game teleport = null;
+  private boolean back = false;
   
   private static <E> void checkNull(E object, String name) throws TokenException {
     if (object != null) {
@@ -102,6 +103,10 @@ public class ElementAttributes {
   
   public boolean hasTeleport() {
     return teleport != null;
+  }
+  
+  public boolean hasBack() {
+    return back != false;
   }
   
   public GameObjectID getID() {
@@ -176,6 +181,10 @@ public class ElementAttributes {
   
   public Game getTeleport() {
     return teleport;
+  }
+  
+  public boolean getBack() {
+    return back;
   }
   
   public void setSkin(String skin) throws TokenException {
@@ -345,6 +354,13 @@ public class ElementAttributes {
     Objects.requireNonNull(game);
     ElementAttributes.checkNull(this.teleport, "Teleport");
     this.teleport = game;
+  }
+  
+  public void setBack() throws TokenException {
+    if (back) {
+      throw new TokenException("Back is already register");
+    }
+    this.back = true;
   }
   
   public boolean isValid() {

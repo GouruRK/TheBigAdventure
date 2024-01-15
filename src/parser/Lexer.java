@@ -57,11 +57,11 @@ public class Lexer {
       next = filteredNextResult();
       line++;
     }
-    last = next;
-    if (next != null) {
-      return new Result(next.token(), next.content(), line);
+    if (next == null) {
+      return null;
     }
-    return next;
+    last = next;
+    return new Result(next.token(), next.content(), line);
   }
   
   public Result filteredNextResult() {

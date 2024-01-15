@@ -2,6 +2,7 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import game.entity.item.DroppedItem;
@@ -24,12 +25,16 @@ public class Game {
   
   //------- Fields -------
   
+  private static final Inventory inventory = new Inventory();
+  
   private final Zone zone;
   private final Environment[][] field;
   private final ArrayList<Mob> mobs;
   private final ArrayList<DroppedItem> items;
-  private final Player player;
-  private final Inventory inventory;
+  private final Position startingPosition;
+  private final Map<Position, Game> teleports;
+  private final Position backPos;
+  private Player player = null;
 
   
   // -------- Constructor --------
@@ -43,18 +48,22 @@ public class Game {
    * @param items
    * @param player
    */
-  public Game(Zone zone, Environment[][] field, ArrayList<Mob> mobs, ArrayList<DroppedItem> items, Player player) {
+  public Game(Zone zone, Environment[][] field, ArrayList<Mob> mobs, ArrayList<DroppedItem> items,
+              Position startingPosition, Map<Position, Game> teleports, Position backPos, Player player) {
     Objects.requireNonNull(zone);
     Objects.requireNonNull(field);
     Objects.requireNonNull(mobs);
     Objects.requireNonNull(items);
-    Objects.requireNonNull(player);
+    Objects.requireNonNull(startingPosition);
+    Objects.requireNonNull(teleports);
     this.zone = zone;
     this.field = field;
     this.mobs = mobs;
     this.items = items;
+    this.startingPosition = startingPosition;
+    this.teleports = teleports;
+    this.backPos = backPos;
     this.player = player;
-    this.inventory = new Inventory();
   }
 
   @Override
@@ -105,6 +114,24 @@ public class Game {
    */
   public Inventory inventory() {
     return inventory;
+  }
+  
+  public Position startingPosition() {
+    return startingPosition;
+  }
+  
+  public Map<Position, Game> teleports() {
+    return teleports;
+  }
+  
+  public Position back() {
+    return backPos;
+  }
+  
+  public void setPlayer(Player player) {
+    Objects.requireNonNull(player);
+    this.player = player;
+    this.player.setPos(startingPosition);
   }
   
   /**

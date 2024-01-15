@@ -1,6 +1,7 @@
 package parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,16 +24,20 @@ public class GameAttributes {
   private final ArrayList<ElementAttributes> elements;
   private final ArrayList<Mob> mobs;
   private final ArrayList<DroppedItem> items;
+  private final HashMap<Position, Game> teleports;
 
   private String data = null;
   private Zone zone = null;
   private Map<Character, EncodingRow> encodings = null;
   private Environment[][] field;
   private Player player = null;
+  private Position startingPos = null;
+  private Position backPos = null;
   
   // --------- Constructors --------- 
   
   public GameAttributes() {
+    teleports = new HashMap<Position, Game>();
     elements = new ArrayList<ElementAttributes>();
     mobs = new ArrayList<Mob>();
     items = new ArrayList<DroppedItem>();
@@ -56,9 +61,14 @@ public class GameAttributes {
     return hasData() && hasZone() && hasEncodings();
   }
   
+  public boolean hasStartingPos() {
+    return startingPos != null;
+  }
+
   public boolean isInsideGrid(Position pos) {
     return zone.isInside(pos);
   }
+  
   
   // --------- Setters --------- 
   
@@ -89,6 +99,14 @@ public class GameAttributes {
       throw new TokenException("Encodings already register");
     }
     this.encodings = encodings;
+  }
+  
+  public void setStartingPos(Position pos) throws TokenException {
+    Objects.requireNonNull(pos);
+    if (startingPos != null) {
+      throw new TokenException("Starting pos already register");
+    }
+    this.startingPos = pos;
   }
   
   // --------- Check data field --------- 
@@ -185,6 +203,11 @@ public class GameAttributes {
       items.add(item);
     } else if ((env = Environment.createEnvironment(element, pos)) != null) {
       field[(int) env.pos().y()][(int) env.pos().x()] = env;
+      if (element.hasTeleport()) {
+        teleports.put(element.getPosition(), element.getTeleport());
+      } else if (element.hasBack()) {
+        backPos = element.getPosition();
+      }
     } else {      
       throw new TokenException("Element '" + element.getSkin() + "' is not a map element");
     }
@@ -208,7 +231,7 @@ public class GameAttributes {
     }
   }
   
-  public void addElements() throws TokenException {
+  private void addElements() throws TokenException {
     for (ElementAttributes element: elements) {
       if (element.isPlayer()) {
         player = new Player(element.getSkin(), element.getPosition(), zone, element.getHealth(), element.getName(), null);
@@ -223,7 +246,10 @@ public class GameAttributes {
   public Game createGame() throws TokenException {
     createField();
     addElements();
-    return new Game(zone, field, mobs, items, player);
+    if (startingPos == null) {
+      throw new TokenException("No starting position found from either teleport or player");
+    }
+    return new Game(zone, field, mobs, items, startingPos, Map.copyOf(teleports), backPos, player);
   }
   
 }

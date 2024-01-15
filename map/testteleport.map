@@ -1,0 +1,27 @@
+[grid]
+	size: (15x15)
+	encodings: WALL(W) KEY(K)
+	data: """
+	WWWWWWWWWWWWWWW
+	W             W
+	W             W
+	W             W
+	W             W
+	W             W
+	W             W
+	W             W
+	W             W
+	W             W
+	W             W
+	W             W
+	W             W
+	W             W
+	WWWWWWWWWWWWWWW
+	"""
+
+[element]
+	skin: house
+	teleport: back
+	position: (13, 13)
+	locked: KEY
+	

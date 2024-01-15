@@ -2,7 +2,7 @@
 	size: (15x15)
 	encodings: WALL(W) BOLT(B) SHOVEL(S) STICK(s)
 		   TREE(T) GRASS(G) SWORD(e) SEED(b) WATER(w)
-		   BUCKET(c)
+		   BUCKET(c) KEY (K)
 	data: """
 	WWWWWWWWWWWWWWW
 	W       wwwwwwW
@@ -15,7 +15,7 @@
 	WG            W
 	WG            W
 	W            bW
-	W            cW
+	WK           cW
 	W             W
 	WTTT         TW
 	WWWWWWWWWWWWWWW
@@ -55,4 +55,10 @@
   		 drum -> flag,
   		 flag -> gem
 
+[element]
+	skin: house
+	teleport: testteleport.map
+	position: (1, 3)
+	locked: KEY
+	
 
