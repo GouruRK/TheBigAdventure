@@ -2,6 +2,8 @@ package game.environment;
 
 import java.util.Objects;
 
+import game.Game;
+import game.GameObjectID;
 import game.entity.item.Item;
 import util.Position;
 
@@ -12,21 +14,31 @@ public class Gate implements Environment {
   private final String skin;
   private final Position pos;
   private final Item key;
+  private final Game teleports;
   private boolean open;
   
   //------- Constructors -------
   
-  public Gate(String skin, Position pos, Item key, boolean open) {
+  public Gate(String skin, Position pos, Item key, Game teleports, boolean open) {
     Objects.requireNonNull(skin);
     Objects.requireNonNull(pos);
     this.skin = skin;
     this.pos = pos;
     this.key = key;
+    this.teleports = teleports;
     this.open = open;
   }
   
+  public Gate(String skin, Position pos, Item key, Game teleports) {
+    this(skin, pos, key, teleports, false);
+  }
+  
   public Gate(String skin, Position pos, Item key) {
-    this(skin, pos, key, false);
+    this(skin, pos, key, null, false);
+  }
+  
+  public Gate(String skin, Position pos) {
+    this(skin, pos, null, null, false);
   }
 
   //------- Getter -------
@@ -43,6 +55,10 @@ public class Gate implements Environment {
   
   public boolean open() {
     return open;
+  }
+  
+  public Game teleports() {
+    return teleports;
   }
   
   public Item key() {
@@ -76,5 +92,10 @@ public class Gate implements Environment {
   @Override
   public int hashCode() {
     return Objects.hash(skin.toUpperCase(), pos, key, open);
+  }
+
+  @Override
+  public GameObjectID id() {
+    return GameObjectID.GATE;
   }
 }

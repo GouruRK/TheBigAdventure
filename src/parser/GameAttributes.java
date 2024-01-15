@@ -1,7 +1,6 @@
 package parser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,7 +23,6 @@ public class GameAttributes {
   private final ArrayList<ElementAttributes> elements;
   private final ArrayList<Mob> mobs;
   private final ArrayList<DroppedItem> items;
-  private final HashMap<Position, Game> teleports;
 
   private String data = null;
   private Zone zone = null;
@@ -37,7 +35,6 @@ public class GameAttributes {
   // --------- Constructors --------- 
   
   public GameAttributes() {
-    teleports = new HashMap<Position, Game>();
     elements = new ArrayList<ElementAttributes>();
     mobs = new ArrayList<Mob>();
     items = new ArrayList<DroppedItem>();
@@ -203,9 +200,7 @@ public class GameAttributes {
       items.add(item);
     } else if ((env = Environment.createEnvironment(element, pos)) != null) {
       field[(int) env.pos().y()][(int) env.pos().x()] = env;
-      if (element.hasTeleport()) {
-        teleports.put(element.getPosition(), element.getTeleport());
-      } else if (element.hasBack()) {
+      if (element.hasBack()) {
         backPos = element.getPosition();
       }
     } else {      
@@ -249,7 +244,7 @@ public class GameAttributes {
     if (startingPos == null) {
       throw new TokenException("No starting position found from either teleport or player");
     }
-    return new Game(zone, field, mobs, items, startingPos, Map.copyOf(teleports), backPos, player);
+    return new Game(zone, field, mobs, items, startingPos, backPos, player);
   }
   
 }

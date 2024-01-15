@@ -39,7 +39,8 @@ public class GeneralController {
   private static final int MOVEMENT_OFFSET = 1;
   private static final int MOB_INTERVAL = 20;
   private static final int FIRE_INTERVAL = 100;
-  private long totalFrame;
+  private static final int FIRE_DAMAGE_TICK = 40;
+  private long totalFrames;
   
   // ------- Constructor -------
   
@@ -117,16 +118,14 @@ public class GeneralController {
       return false;
     }
     
-    boolean quit = false;
-    
     switch (key) {
       case KeyOperation.INVENTORY -> toggleInterfaces();
       case KeyOperation.DROP -> dropItem();
-      case KeyOperation.UP, KeyOperation.DOWN, KeyOperation.LEFT, KeyOperation.RIGHT -> quit = move(View.keyToDirection(key));
+      case KeyOperation.UP, KeyOperation.DOWN, KeyOperation.LEFT, KeyOperation.RIGHT -> move(View.keyToDirection(key));
       case KeyOperation.ACTION -> action();
       default -> {}
     }
-    return quit;
+    return true;
   }
   
   // ------- Generic -------
@@ -181,7 +180,7 @@ public class GeneralController {
    * Interpret movements, according to which interface is currently displayed
    * @param dir
    */
-  private boolean move(Direction dir) {
+  private void move(Direction dir) {
     if (tradeController.isTradeInterfaceShow()) {
       tradeController.moveCursor(dir);
     } else if (inventoryController.isInventoryInterfaceShow()) {
@@ -191,7 +190,10 @@ public class GeneralController {
     } else {
       game.move(game.player(), dir, MOVEMENT_OFFSET);
     }
-    return false;
+    Environment env = game.searchEnvironment(game.player().pos());
+    if (env != null) {
+      standingOn(env);
+    }
   }
   
   //------- Actions -------
@@ -223,6 +225,28 @@ public class GeneralController {
         facing = facing.computeDirection(game.player().facing(), MOVEMENT_OFFSET);
       }
     }
+  }
+  
+  private void standingOn(Environment env) {
+    switch (env) {
+      case Gate gate -> {
+        if (gate.teleports() != null) {
+          // teleport player here
+        }
+      }
+      default -> {}
+    }
+  }
+  
+  public boolean passiveAction() {
+    Environment env = game.searchEnvironment(game.player().pos());
+    if (env != null) {
+      if (env.getEnvironment() == GameEnvironment.FIRE && totalFrames % FIRE_DAMAGE_TICK == 0) {
+        game.player().takeDamage(1);
+        return true;
+      }
+    }
+    return false;
   }
   
   /**
@@ -357,7 +381,7 @@ public class GeneralController {
     if (areInterfacesShow() || Arguments.dryRun()) {
       return false;
     }
-    if (totalFrame % MOB_INTERVAL == 0) {
+    if (totalFrames % MOB_INTERVAL == 0) {
       game.moveMobs();
       return true;
     }
@@ -372,7 +396,7 @@ public class GeneralController {
     if (areInterfacesShow()) {
       return false;
     }
-    if (totalFrame % FIRE_INTERVAL == 0) {
+    if (totalFrames % FIRE_INTERVAL == 0) {
       game.spreadFire();
       return true;
     }
@@ -406,17 +430,24 @@ public class GeneralController {
       Draw draw = new Draw(context, game, this);
       KeyOperation key;
 
+      boolean needUpdate;
+      
       draw.drawGame();
       while ((key = View.getOperation(context)) != KeyOperation.EXIT) {
+        needUpdate = false;
         startTime = System.nanoTime();
         
-        interpretCommand(key);
-        entityUpdate();
-        fireUpdate();
-        draw.drawGame();
+        needUpdate |= interpretCommand(key);
+        needUpdate |= entityUpdate();
+        needUpdate |= fireUpdate();
+        needUpdate |= passiveAction();
+        
+        if (needUpdate) {
+          draw.drawGame();
+        }
         
         computeTimeDelay(startTime, System.nanoTime());
-        totalFrame++;
+        totalFrames++;
       }
       context.exit(0);
     });

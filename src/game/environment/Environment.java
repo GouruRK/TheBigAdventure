@@ -11,6 +11,7 @@ public interface Environment {
   
   public abstract String skin();
   public abstract Position pos();
+  public abstract GameObjectID id();
   
   public default boolean standable() {
     return false;
@@ -33,7 +34,7 @@ public interface Environment {
     return switch (row.id()) {
       case GameObjectID.SCENERY -> new Block(row.skin(), pos, true);
       case GameObjectID.OBSTACLE -> new Block(row.skin(), pos, false);
-      case GameObjectID.GATE -> new Gate(row.skin(), pos, null, false);
+      case GameObjectID.GATE -> new Gate(row.skin(), pos);
       default -> null;
     };
   }
@@ -42,7 +43,7 @@ public interface Environment {
     return switch (GameEnvironment.getId(skin)) {
       case GameObjectID.SCENERY -> new Block(skin, pos, true);
       case GameObjectID.OBSTACLE -> new Block(skin, pos, false);
-      case GameObjectID.GATE -> new Gate(skin, pos, null, false);
+      case GameObjectID.GATE -> new Gate(skin, pos);
       default -> null;
     };
   }
@@ -58,7 +59,7 @@ public interface Environment {
     return switch (elem.getID()) {
     case GameObjectID.SCENERY -> new Block(elem.getSkin(), pos, true);
     case GameObjectID.OBSTACLE -> new Block(elem.getSkin(), pos, false);
-    case GameObjectID.GATE -> new Gate(elem.getSkin(), pos, elem.getLocked(), false);
+    case GameObjectID.GATE -> new Gate(elem.getSkin(), pos, elem.getLocked(), elem.getTeleport(), false);
     default -> null;
     };
   }

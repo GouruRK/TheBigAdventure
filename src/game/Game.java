@@ -2,7 +2,6 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import game.entity.item.DroppedItem;
@@ -17,6 +16,9 @@ import util.Position;
 import util.Utils;
 import util.Zone;
 
+/**
+ * Main game structure to create interfaces between the current game and datas
+ */
 public class Game {
 
   //------- Constants -------
@@ -27,41 +29,68 @@ public class Game {
   
   private static final Inventory inventory = new Inventory();
   
+  /**
+   * Map zone
+   */
   private final Zone zone;
+  
+  /**
+   * Contains map element like obstacles and scenery
+   */
   private final Environment[][] field;
+  
+  /**
+   * Contains mobs
+   */
   private final ArrayList<Mob> mobs;
+  
+  /**
+   * Array of dropped item
+   */
   private final ArrayList<DroppedItem> items;
+  
+  /**
+   * Position where the players appears in the map
+   * Very useful when the players come from an 
+   * other map
+   */
   private final Position startingPosition;
-  private final Map<Position, Game> teleports;
+  
+  /**
+   * Position where the players needs to be to be teleported back
+   */
   private final Position backPos;
+  
+  /**
+   * Player field. Not final in case of teleportation, because a map
+   * when teleported, the player come from another map
+   */
   private Player player = null;
 
   
   // -------- Constructor --------
   
   /***
-   * define a Game
+   * Creates a game
    * 
-   * @param size
-   * @param field
-   * @param mobs
-   * @param items
-   * @param player
+   * @param size field size
+   * @param field field that contains obstacles and scenery
+   * @param mobs arrays of mobs
+   * @param items array of dropped item
+   * @param backPos position where the players needs to be to leave the current game
    */
   public Game(Zone zone, Environment[][] field, ArrayList<Mob> mobs, ArrayList<DroppedItem> items,
-              Position startingPosition, Map<Position, Game> teleports, Position backPos, Player player) {
+              Position startingPosition, Position backPos, Player player) {
     Objects.requireNonNull(zone);
     Objects.requireNonNull(field);
     Objects.requireNonNull(mobs);
     Objects.requireNonNull(items);
     Objects.requireNonNull(startingPosition);
-    Objects.requireNonNull(teleports);
     this.zone = zone;
     this.field = field;
     this.mobs = mobs;
     this.items = items;
     this.startingPosition = startingPosition;
-    this.teleports = teleports;
     this.backPos = backPos;
     this.player = player;
   }
@@ -69,7 +98,6 @@ public class Game {
   @Override
   public String toString() {
     return zone.toString() + "\n"
-        + player.toString() + "\n"
         + "Mobs: " + mobs + "\n"
         + "Items: " + items;
   }
@@ -116,18 +144,26 @@ public class Game {
     return inventory;
   }
   
+  /**
+   * Get position when the player appears on the map
+   * @return
+   */
   public Position startingPosition() {
     return startingPosition;
   }
   
-  public Map<Position, Game> teleports() {
-    return teleports;
-  }
-  
+  /**
+   * Get position the player needs to be to go back the previous map
+   * @return
+   */
   public Position back() {
     return backPos;
   }
   
+  /**
+   * 
+   * @param player
+   */
   public void setPlayer(Player player) {
     Objects.requireNonNull(player);
     this.player = player;

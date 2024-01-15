@@ -2,6 +2,7 @@ package game.environment;
 
 import java.util.Objects;
 
+import game.GameObjectID;
 import util.Position;
 
 public record Block(String skin, Position pos, boolean standable) implements Environment {
@@ -43,5 +44,12 @@ public record Block(String skin, Position pos, boolean standable) implements Env
             + " standable: " + standable
             + "]";
   }
+
+  @Override
+  public GameObjectID id() {
+    return standable ? GameObjectID.SCENERY: GameObjectID.OBSTACLE;
+  }
+  
+  
   
 }
