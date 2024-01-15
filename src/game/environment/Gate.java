@@ -57,14 +57,26 @@ public class Gate implements Environment {
     return open;
   }
   
+  /**
+   * Get teleports. Can be null
+   * @return
+   */
   public Game teleports() {
     return teleports;
   }
   
+  /**
+   * Return item to open the gate
+   * @return
+   */
   public Item key() {
     return key;
   }
   
+  /**
+   * Open the gate with the given item
+   * @param item
+   */
   public void open(Item item) {
     if (key.equals(item)) {
       open = !open;

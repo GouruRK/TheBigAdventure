@@ -18,6 +18,7 @@ public record Thing(String skin, String name) implements Item {
   
   // ------- Getter -------
   
+  @Override
   public GameObjectID id() {
     return GameObjectID.THING;
   }

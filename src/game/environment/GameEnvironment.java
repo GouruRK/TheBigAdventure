@@ -2,6 +2,7 @@ package game.environment;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -75,8 +76,8 @@ public enum GameEnvironment implements GameObject {
   
   private final GameObjectID id;
   
-  public static final Set<GameEnvironment> BLOCKS = Set.of(GameEnvironment.values());
-  public static final Map<String, GameObjectID> BLOCKSNAMES = BLOCKS.stream()
+  private static final Set<GameEnvironment> BLOCKS = Set.of(GameEnvironment.values());
+  private static final Map<String, GameObjectID> BLOCKSNAMES = BLOCKS.stream()
       .collect(Collectors.toUnmodifiableMap(GameEnvironment::name, GameEnvironment::id));
   private static final Map<String, GameEnvironment> TYPEBLOCKS = BLOCKS.stream()
       .collect(Collectors.toUnmodifiableMap(GameEnvironment::name, Function.identity()));
@@ -86,10 +87,12 @@ public enum GameEnvironment implements GameObject {
   }
   
   public static GameObjectID getId(String name) {
+    Objects.requireNonNull(name);
     return BLOCKSNAMES.getOrDefault(name.toUpperCase(Locale.ROOT), GameObjectID.UNKNOWN);
   }
   
   public static GameEnvironment getEnvironment(String name) {
+    Objects.requireNonNull(name);
     return TYPEBLOCKS.get(name.toUpperCase(Locale.ROOT));
   }
   

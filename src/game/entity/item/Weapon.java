@@ -26,12 +26,17 @@ public record Weapon(String skin, int damage, boolean burning, String name) impl
   
   // ------- Getter -------
   
+  @Override
   public GameObjectID id() {
     return GameObjectID.WEAPON;
   }
   
   //------- Modifiers -------
   
+  /**
+   * Set weapon on fire
+   * @return
+   */
   public Weapon setFire() {
     if (!burning) {
       GameItems type = getItem();

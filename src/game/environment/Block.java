@@ -50,6 +50,4 @@ public record Block(String skin, Position pos, boolean standable) implements Env
     return standable ? GameObjectID.SCENERY: GameObjectID.OBSTACLE;
   }
   
-  
-  
 }

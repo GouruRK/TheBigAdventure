@@ -2,6 +2,7 @@ package game.entity.item;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ public enum GameItems implements GameObject {
   
   // readable
   BOOK(GameObjectID.READABLE),
+  PAPER(GameObjectID.READABLE),
 
   // items
   BOLD(GameObjectID.THING),
@@ -34,7 +36,6 @@ public enum GameItems implements GameObject {
   MOON(GameObjectID.THING),
   ORB(GameObjectID.THING),
   PANTS(GameObjectID.THING),
-  PAPER(GameObjectID.THING),
   PLANET(GameObjectID.THING),
   RING(GameObjectID.THING),
   ROSE(GameObjectID.THING),
@@ -91,6 +92,7 @@ public enum GameItems implements GameObject {
   }
   
   public static GameItems getItem(String name) {
+    Objects.requireNonNull(name);
     return TYPEITEMS.get(name.toUpperCase(Locale.ROOT));
   }
   
@@ -101,6 +103,7 @@ public enum GameItems implements GameObject {
    * @return gameObjectID
    */
   public static GameObjectID getId(String name) {
+    Objects.requireNonNull(name);
     return ITEMSNAMES.getOrDefault(name.toUpperCase(Locale.ROOT), GameObjectID.UNKNOWN);
   }
   

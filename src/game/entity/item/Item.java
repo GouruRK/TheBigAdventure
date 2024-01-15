@@ -1,5 +1,7 @@
 package game.entity.item;
 
+import java.util.Objects;
+
 import game.GameObjectID;
 import game.entity.Entity;
 import parser.ElementAttributes;
@@ -8,13 +10,14 @@ import util.Position;
 
 public interface Item extends Entity {
   
-  //------- Constructors -------
+  //------- Default -------
   
   public default int damage() {
     return 0;
   }
 
   public static Item setFire(Item item) {
+    Objects.requireNonNull(item);
     return switch(item) {
       case Weapon weapon -> weapon.setFire();
       default -> item;
@@ -46,6 +49,7 @@ public interface Item extends Entity {
    * @return Item
    */
   public static Item createItem(String skin) {
+    Objects.requireNonNull(skin);
     return Item.createItem(skin, null);
   }
   
@@ -58,6 +62,8 @@ public interface Item extends Entity {
    * @return Item
    */
   public static Item createItem(String skin, String name) {
+    Objects.requireNonNull(skin);
+    // no check on name because item can have no name
     GameObjectID id = GameItems.getId(skin);
     return switch (id) {
     case GameObjectID.FOOD -> new Food(skin, name);
@@ -77,6 +83,8 @@ public interface Item extends Entity {
    * @return DroppedItem
    */
   public static DroppedItem createDroppedItem(EncodingRow row, Position pos) {
+    Objects.requireNonNull(row);
+    Objects.requireNonNull(pos);
     return switch (row.id()) {
       case GameObjectID.THING,
            GameObjectID.WEAPON, 
@@ -93,6 +101,7 @@ public interface Item extends Entity {
    * @return DroppedItem
    */
   public static DroppedItem createDroppedItem(ElementAttributes elem) {
+    Objects.requireNonNull(elem);
     return switch (elem.getID()) {
     case GameObjectID.THING,
          GameObjectID.FOOD,
@@ -110,6 +119,7 @@ public interface Item extends Entity {
   }
   
   public static GameItems getItem(String skin) {
+    Objects.requireNonNull(skin);
     return GameItems.getItem(skin);
   }
   

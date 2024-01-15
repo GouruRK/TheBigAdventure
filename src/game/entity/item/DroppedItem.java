@@ -17,14 +17,17 @@ public record DroppedItem(Position pos, Item item) implements Entity {
 
   // ------- Getter -------
   
+  @Override
   public String skin() {
     return item.skin();
   }
 
+  @Override
   public String name() {
     return item.name();
   }
   
+  @Override
   public GameObjectID id() {
     return item.id();
   }

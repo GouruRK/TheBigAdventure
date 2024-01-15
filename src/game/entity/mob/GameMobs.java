@@ -1,6 +1,7 @@
 package game.entity.mob;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -52,10 +53,12 @@ public enum GameMobs implements GameObject {
   }
 
   public static GameObjectID getId(String name) {
+    Objects.requireNonNull(name);
     return MOBSNAMES.getOrDefault(name, GameObjectID.UNKNOWN);
   }
   
   public static GameMobs getMob(String name) {
+    Objects.requireNonNull(name);
     return TYPEMOBS.get(name);
   }
   

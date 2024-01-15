@@ -9,8 +9,19 @@ public class Bucket implements Item {
 
   // ------- Fields -------
   
+  /**
+   * Bucket skin
+   */
   private final String skin;
+  
+  /**
+   * Bucket name
+   */
   private final String name;
+  
+  /**
+   * Environment that the bucket contains
+   */
   private Environment content;
   
   // ------- Constructors -------
@@ -22,6 +33,7 @@ public class Bucket implements Item {
     this.content = content;
   }
 
+  
   public Bucket(String skin, String name) {
     this(skin, name, null);
   }
@@ -30,7 +42,7 @@ public class Bucket implements Item {
     this(skin, null, null);
   }
     
-  // ------- Constructors -------
+  //------- Getter -------
   
   @Override
   public String skin() {
@@ -42,27 +54,43 @@ public class Bucket implements Item {
     return name;
   }
   
+  
   public boolean isEmpty() {
     return content == null;
   }
   
+  /**
+   * Get bucket content. Content can be null
+   * @return
+   */
   public Environment getContent() {
     return content;
   }
+
+  @Override
+  public GameObjectID id() {
+    return GameObjectID.CONTAINER;
+  }
   
+  //------- Modifiers -------
+  
+  /**
+   * Replace current bucket content by the given one
+   * @param env
+   */
   public void fillBucket(Environment env) {
     Objects.requireNonNull(env);
     this.content = env;
   }
   
+  /**
+   * Pour bucket content
+   */
   public void pourBucket() {
     this.content = null;
   }
   
-  @Override
-  public GameObjectID id() {
-    return GameObjectID.CONTAINER;
-  }
+  //------- Other -------
   
   @Override
   public String toString() {

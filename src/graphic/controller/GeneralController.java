@@ -238,7 +238,14 @@ public class GeneralController {
     }
   }
   
+  /**
+   * Apply passive action for player when standing on some tiles
+   * @return true if view needs to be updated
+   */
   public boolean passiveAction() {
+    if (areInterfacesShow()) {
+      return false;
+    }
     Environment env = game.searchEnvironment(game.player().pos());
     if (env != null) {
       if (env.getEnvironment() == GameEnvironment.FIRE && totalFrames % FIRE_DAMAGE_TICK == 0) {

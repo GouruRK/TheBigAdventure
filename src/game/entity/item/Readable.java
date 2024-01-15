@@ -19,6 +19,7 @@ public record Readable(String skin, String name, Text text) implements Item {
   
   // ------- Getter -------
   
+  @Override
   public GameObjectID id() {
     return GameObjectID.READABLE;
   }
