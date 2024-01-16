@@ -39,6 +39,14 @@ public class Position {
   	return new Position(this.x + x, y);
   }
   
+  public void addLocalX(double x) {
+    this.x += x;
+  }
+  
+  public void addLocalX(int x) {
+    this.x += x;
+  }
+  
   public double y() {
     return y;
   }
@@ -57,6 +65,14 @@ public class Position {
   
   public Position addY(int y) {
   	return new Position(x,this.y + y);
+  }
+  
+  public void addLocalY(double y) {
+    this.x += x;
+  }
+  
+  public void addLocalY(int y) {
+    this.x += y;
   }
   
   public Position computeDirection(Direction dir, double step) {

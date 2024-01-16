@@ -30,6 +30,7 @@ public class GeneralController {
   // ------- Fields -------
   
   private final InventoryController inventoryController;
+  private final WindowController windowController;
   private final TradeController tradeController;
   private final Game game;
   private final TextController textController;
@@ -50,6 +51,7 @@ public class GeneralController {
     inventoryController = new InventoryController(game.inventory(), game.player());
     textController = new TextController();
     tradeController = new TradeController(inventoryController, textController);
+    windowController = new WindowController(game.zone(), game.player().pos());
     this.game = game;
   }
   
@@ -77,6 +79,10 @@ public class GeneralController {
    */
   public TextController textController() {
     return textController;
+  }
+  
+  public WindowController windowController() {
+    return windowController;
   }
   
   /**
@@ -131,7 +137,7 @@ public class GeneralController {
   // ------- Generic -------
   
   /**
-   * Toggle interfaces display
+   * Toggl)e interfaces display
    */
   private void toggleInterfaces() {
     if (tradeController.isTradeInterfaceShow()) {
@@ -188,7 +194,9 @@ public class GeneralController {
     } else if (textController.isTextInterfaceShow()) {
       textController.changePage(dir);
     } else {
-      game.move(game.player(), dir, MOVEMENT_OFFSET);
+      if (game.move(game.player(), dir, MOVEMENT_OFFSET)) {
+        windowController.moveWindow(dir, game.player().pos());
+      }
     }
     Environment env = game.searchEnvironment(game.player().pos());
     if (env != null) {

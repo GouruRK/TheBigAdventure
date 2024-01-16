@@ -36,4 +36,12 @@ public record Zone(Position topLeft, Position bottomRight) {
   public int height() {
     return (int)(bottomRight.y() - topLeft.y());
   }
+  
+  public int middleX() {
+    return (int) (topLeft.x() + width()/2);
+  }
+  
+  public int middleY() {
+    return (int) (topLeft.y() + height()/2);
+  }
 }

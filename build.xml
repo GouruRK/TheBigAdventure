@@ -1,24 +1,44 @@
-<project>
-    <target name="clean">
-        <delete dir="build"/>
-    </target>
+<project name="TheBigAdventure" basedir="." default="main">
+    
+    <property name="src.dir"     value="src"/>
 
-    <target name="compile">
-        <mkdir dir="build/classes"/>
-        <javac srcdir="src" destdir="build/classes"/>
-    </target>
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+	<property name="lib.dir"     value="lib"/>
 
-    <target name="jar">
-        <mkdir dir="build/jar"/>
-        <jar destfile="build/jar/HelloWorld.jar" basedir="build/classes">
+    <property name="main-class"  value="main"/>
+	
+	<path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+	
+	<target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+	
+	<target name="compile">
+		<mkdir dir="${classes.dir}"/>
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" includeantruntime="false"/>
+	</target>
+	
+	<target name="jar" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
             <manifest>
-                <attribute name="Main-Class" value="TheBigAdventure.Main"/>
+                <attribute name="Main-Class" value="Main"/>
             </manifest>
         </jar>
-    </target>
+	</target>
 
-    <target name="run">
-        <java jar="build/jar/TheBigAdventure.jar" fork="true"/>
+	<target name="run" depends="jar">
+        <java fork="true" classname="Main">
+            <classpath>
+                <path refid="classpath"/>
+            	<fileset dir="ressources" includes="*.png" />
+                <path location="${jar.dir}/${ant.project.name}.jar"/>
+            </classpath>
+        </java>
     </target>
-
+	
 </project>

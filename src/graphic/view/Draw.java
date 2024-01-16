@@ -2,6 +2,7 @@ package graphic.view;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
@@ -50,6 +51,8 @@ public class Draw {
     this.player = new DrawPlayer(game.player());
     this.text = new DrawText(controller.textController());
     this.trade = new DrawTrade(controller.tradeController(), inventory, text, windowWidth, windowHeight);
+    
+    controller.windowController().setWindowDimensions(windowWidth, windowHeight);
   }
   
   public static int getImageSize() {
@@ -59,12 +62,23 @@ public class Draw {
   //------- Main function -------
   
   public void drawGame() {
+    double x = controller.windowController().scaleX();
+    double y = controller.windowController().scaleY();
     context.renderFrame(graphics -> {
       clearWindow(graphics);
+      
+      AffineTransform saveAT = graphics.getTransform();
+      
+      graphics.scale(x / IMAGESIZE, y / IMAGESIZE);
+      graphics.translate(-controller.windowController().xOffset()*IMAGESIZE, -controller.windowController().yOffset()*IMAGESIZE);
+      
       drawMap(graphics);
       player.drawPlayer(graphics, controller.hasItemBeenUsed());
       DrawMobs.drawMobs(graphics, game.mobs());
       drawDroppedItems(graphics);
+      
+      graphics.setTransform(saveAT);
+      
       if (controller.tradeController().isTradeInterfaceShow()) {
         trade.drawTrade(graphics);
       } else if (controller.inventoryController().isInventoryInterfaceShow()) {

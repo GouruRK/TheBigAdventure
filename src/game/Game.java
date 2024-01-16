@@ -160,6 +160,10 @@ public class Game {
     return backPos;
   }
   
+  public Zone zone() {
+    return zone;
+  }
+  
   /**
    * 
    * @param player
@@ -248,13 +252,13 @@ public class Game {
    * @param dir direction to move
    * @param step number (or proportion) of square to move
    */
-  public void move(Mob mob, Direction dir, double step) {
+  public boolean move(Mob mob, Direction dir, double step) {
     Objects.requireNonNull(mob);
     Objects.requireNonNull(dir);
     
     Position nextPos = mob.pos().computeDirection(dir, step);    
     if (nextPos == null) {
-      return;
+      return false;
     }
     if (mob.isMoveInZonePossible(nextPos) && isMoveInGamePossible(mob, nextPos)) {
       mob.setPos(nextPos);
@@ -263,9 +267,10 @@ public class Game {
         case Player player -> pickUpItem(player);
         default -> {}
       }
-      
+      return true;
     }
     mob.setFacing(dir);
+    return false;
   }
   
   /**
