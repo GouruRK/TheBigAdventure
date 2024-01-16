@@ -11,19 +11,15 @@ public class WindowController {
   private static final int maxWidth = 40;
   private static final int maxHeight = maxWidth/2;
   
+  private final Position corner;
   private final Zone game;
-  private final Zone onScreen;
   private int windowWidth;
   private int windowHeight;
   
   public WindowController(Zone game, Position player) {
     Objects.requireNonNull(game);
     this.game = game;
-    Position topLeft = new Position(Math.max(0, player.x() - maxWidth), Math.max(0, player.y() - maxHeight));
-    Position bottomRight = new Position(Math.min(game.bottomRight().x(), player.x() + maxWidth) + 3,
-                                        Math.min(game.bottomRight().y(), player.y() + maxHeight) + 3);    
-    
-    this.onScreen = new Zone(topLeft, bottomRight);
+    this.corner = new Position(Math.max(0, player.x() - maxWidth), Math.max(0, player.y() - maxHeight));
   }
   
   public void setWindowDimensions(int windowWidth, int windowHeight) {
@@ -40,51 +36,52 @@ public class WindowController {
   }
   
   public int xOffset() {
-    if (game.width() < maxWidth) {
-      return -(maxWidth/2 - game.width()/2);
-    }
-    return (int)onScreen.topLeft().x();
+    return (int)corner.x();
   }
   
   public int yOffset() {
-    if (game.height() < maxHeight) {
-      return -(maxHeight/2 - game.height()/2);
-    }
-    return (int)onScreen.topLeft().y();
+    return (int)corner.y();
   }
   
   public void moveWindow(Direction dir, Position player) {
     Objects.requireNonNull(dir);
     
-    if (dir == Direction.NORTH) {
-      if (onScreen.topLeft().y() != game.topLeft().y()) {
-        if (player.y() == onScreen.middleY()) {
-          onScreen.topLeft().addLocalY(-1);
-          onScreen.bottomRight().addLocalY(-1);          
-        }
+    if (dir == Direction.NORTH && corner.y() != 0) {
+      if (0 <= player.y() && player.y() <= maxHeight/2) {
+        corner.addLocalY(-1);
       }
-    } else if (dir == Direction.SOUTH) {
-      if (onScreen.bottomRight().y() != game.bottomRight().y()) {
-        if (player.y() == onScreen.middleY()) {
-          onScreen.topLeft().addLocalY(1);
-          onScreen.bottomRight().addLocalY(1);          
-        }
+    } else if (dir == Direction.SOUTH && corner.y() + maxHeight != game.bottomRight().y()) {
+      if (!(game.bottomRight().y() - maxHeight/2 <= player.y() && player.y() <= game.bottomRight().y())) {
+        corner.addLocalY(1);
       }
-    } else if (dir == Direction.WEST) {
-      if (onScreen.topLeft().x() != game.topLeft().x()) {
-        if (player.x() == onScreen.middleX()) {
-          onScreen.topLeft().addLocalX(-1);
-          onScreen.bottomRight().addLocalX(-1);          
-        }
+    } else if (dir == Direction.WEST && corner.x() != 0) {
+      if (0 <= player.x() && player.x() <= maxWidth/2) {
+        corner.addLocalX(-1);
       }
-    } else if (dir == Direction.EAST) {
-      if (onScreen.bottomRight().x() != game.bottomRight().x()) {
-        if (player.x() == onScreen.middleX()) {
-          onScreen.topLeft().addLocalX(1);
-          onScreen.bottomRight().addLocalX(1);
-        }
+    } else if (dir == Direction.EAST && corner.x() + maxWidth != game.bottomRight().x()) {
+      if (!(game.bottomRight().x() - maxWidth/2 <= player.x() && player.x() <= game.bottomRight().x())) {
+        corner.addLocalX(1);
       }
     }
+    
+//    if (dir == Direction.NORTH && corner.y() != 0) {
+//      if (player.y() == corner.y() + maxHeight/2 || player.y() == corner.y() + maxHeight/2 + 1) {
+//        corner.addLocalY(-1);
+//      }
+//    } else if (dir == Direction.SOUTH && corner.y() + maxHeight != game.bottomRight().y()) { 
+//      if (player.y() == corner.y() + maxHeight/2 || player.y() == corner.y() + maxHeight/2 + 1) {
+//        corner.addLocalY(1); 
+//      }
+//    } else if (dir == Direction.WEST && corner.x() != 0) {
+//      if (player.x() == corner.x() + maxWidth/2 || player.x() == corner.x() + maxWidth/2 + 1) {
+//        corner.addLocalX(-1);
+//      }
+//    } else if (dir == Direction.EAST && corner.x() + maxWidth != game.bottomRight().x()) {
+//      if (player.x() == corner.x() + maxWidth/2 || player.x() == corner.x() + maxWidth/2 + 1)
+//        corner.addLocalX(1);
+//    }
   }
+    
+    
   
 }

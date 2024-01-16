@@ -68,11 +68,11 @@ public class Position {
   }
   
   public void addLocalY(double y) {
-    this.x += x;
+    this.y += y;
   }
   
   public void addLocalY(int y) {
-    this.x += y;
+    this.y += y;
   }
   
   public Position computeDirection(Direction dir, double step) {
