@@ -24,7 +24,10 @@
 	
 	<target name="jar" depends="compile">
         <mkdir dir="${jar.dir}"/>
-		<jar destfile="${jar.dir}/${ant.project.name}.jar" manifest="MANIFEST.MF">
+		<jar destfile="${jar.dir}/${ant.project.name}.jar">
+			<manifest>
+				<attribute name="Main-Class" value="fr.uge.thebigadventure.Main" />
+			</manifest>
         	<fileset dir="ressources"/>
         	<fileset dir="${lib.dir}" includes="**/*.jar"/>
         	<fileset dir="${classes.dir}" />

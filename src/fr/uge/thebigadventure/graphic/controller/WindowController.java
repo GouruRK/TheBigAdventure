@@ -46,42 +46,36 @@ public class WindowController {
   public void moveWindow(Direction dir, Position player) {
     Objects.requireNonNull(dir);
     
-    if (dir == Direction.NORTH && corner.y() != 0) {
-      if (0 <= player.y() && player.y() <= maxHeight/2) {
-        corner.addLocalY(-1);
+    if (dir == Direction.EAST || dir == Direction.WEST) {
+      if (player.x() < maxWidth/2 || player.x() > game.bottomRight().x() - maxWidth/2) {
+        return;
       }
-    } else if (dir == Direction.SOUTH && corner.y() + maxHeight != game.bottomRight().y()) {
-      if (!(game.bottomRight().y() - maxHeight/2 <= player.y() && player.y() <= game.bottomRight().y())) {
-        corner.addLocalY(1);
-      }
-    } else if (dir == Direction.WEST && corner.x() != 0) {
-      if (0 <= player.x() && player.x() <= maxWidth/2) {
-        corner.addLocalX(-1);
-      }
-    } else if (dir == Direction.EAST && corner.x() + maxWidth != game.bottomRight().x()) {
-      if (!(game.bottomRight().x() - maxWidth/2 <= player.x() && player.x() <= game.bottomRight().x())) {
-        corner.addLocalX(1);
+    } else if (dir == Direction.NORTH || dir == Direction.SOUTH) {
+      if (player.y() < maxHeight/2 || player.y() > game.bottomRight().y() - maxHeight/2) {
+        return;
       }
     }
     
-//    if (dir == Direction.NORTH && corner.y() != 0) {
-//      if (player.y() == corner.y() + maxHeight/2 || player.y() == corner.y() + maxHeight/2 + 1) {
-//        corner.addLocalY(-1);
-//      }
-//    } else if (dir == Direction.SOUTH && corner.y() + maxHeight != game.bottomRight().y()) { 
-//      if (player.y() == corner.y() + maxHeight/2 || player.y() == corner.y() + maxHeight/2 + 1) {
-//        corner.addLocalY(1); 
-//      }
-//    } else if (dir == Direction.WEST && corner.x() != 0) {
-//      if (player.x() == corner.x() + maxWidth/2 || player.x() == corner.x() + maxWidth/2 + 1) {
-//        corner.addLocalX(-1);
-//      }
-//    } else if (dir == Direction.EAST && corner.x() + maxWidth != game.bottomRight().x()) {
-//      if (player.x() == corner.x() + maxWidth/2 || player.x() == corner.x() + maxWidth/2 + 1)
-//        corner.addLocalX(1);
-//    }
+    if (dir == Direction.NORTH) {
+      if (corner.y() == 0) {
+        return;
+      }
+      corner.addLocalY(-1);        
+    } else if (dir == Direction.SOUTH) {
+      if (corner.y() + maxHeight == game.bottomRight().y()) {
+        return;
+      }
+      corner.addLocalY(1);          
+    } else if (dir == Direction.WEST) {
+      if (corner.x() == 0) {
+        return;
+      }
+      corner.addLocalX(-1);        
+    } else if (dir == Direction.EAST) {
+      if (corner.x() + maxWidth == game.bottomRight().x()) {
+        return;
+      }
+      corner.addLocalX(1);
+    }
   }
-    
-    
-  
 }
