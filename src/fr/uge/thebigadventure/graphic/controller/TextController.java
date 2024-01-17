@@ -7,42 +7,109 @@ import fr.uge.thebigadventure.util.Text;
 
 public class TextController {
 
+  //------- Constants -------  
+  
+  /**
+   * Maximum of lines displayed at the same time
+   */
   private final int maxLinePerPage = 10;
+  
+  //------- Fields -------
+  
+  /**
+   * Give intel if the text interface is currently displayed
+   */
   private boolean isTextInterfaceShow = false;
+  
+  /**
+   * Number of pages to read
+   */
   private int numberOfPages = 0;
+  
+  /**
+   * Current lowest line index displayed
+   */
   private int minLineIndex = 0;
-  private int pageNumber = 0;
+  
+  /**
+   * Current greatest line index displayed
+   */
   private int maxLineIndex;
+  
+  /**
+   * Current page number
+   */
+  private int pageNumber = 0;
+  
+  /**
+   * Current text displayed
+   */
   private Text text = null;
   
+  /***
+   * Get current page number
+   * @return
+   */
   public int page() {
     return pageNumber;
   }
   
+  //------- Getters -------
+  
+  /**
+   * Get current lowest line index displayed
+   * @return
+   */
   public int minLineIndex() {
     return minLineIndex;
   }
   
+  /**
+   * Get current greatest line index displayed
+   * @return
+   */
   public int maxLineIndex() {
     return maxLineIndex;
   }
   
+  /**
+   * Get number of pages
+   * @return
+   */
   public int numberOfPages() {
     return numberOfPages;
   }
   
+  /**
+   * Get intel if the text interface is currently show
+   * @return
+   */
   public boolean isTextInterfaceShow() {
     return isTextInterfaceShow;
   }
   
+  /**
+   * Get minimum line per page
+   * @return
+   */
   public int getLinePerPage() {
     return Math.min(maxLinePerPage, text.numberOfLines());
   }
   
+  /**
+   * Get current text
+   * @return
+   */
   public Text text() {
     return text;
   }
+
+  //------- Modifiers -------
   
+  /**
+   * Change current displayed text
+   * @param text
+   */
   public void setText(Text text) {
     Objects.requireNonNull(text);
     this.text = text;
@@ -56,11 +123,20 @@ public class TextController {
     pageNumber = 0; 
   }
   
+  /**
+   * Toggle text interface
+   */
   public void toggleIsTextInterfaceShow() {
     isTextInterfaceShow = !isTextInterfaceShow;
   }
   
+  /**
+   * Change current page
+   * @param dir
+   */
   public void changePage(Direction dir) {
+    Objects.requireNonNull(dir);
+    
     if (numberOfPages != 0) {
       if (dir == Direction.WEST && pageNumber != 0) {
         pageNumber--;

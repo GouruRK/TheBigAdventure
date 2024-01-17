@@ -27,20 +27,63 @@ import fr.umlv.zen5.Application;
 
 public class GeneralController {
   
+  // ------- Constants -------
+  
+  /**
+   * Framerate the game is running
+   */
+  private static final int FPS = 60;
+  
+  /**
+   * Frame interval to move mobs
+   */
+  private static final int MOB_INTERVAL = 20;
+  
+  /**
+   * Frame interval to spread fire
+   */
+  private static final int FIRE_INTERVAL = 100;
+  
+  /**
+   * Frame interval to give player damages if he's standing on fire
+   */
+  private static final int FIRE_DAMAGE_TICK = 40;
+
   // ------- Fields -------
   
+  /**
+   * Controller for the inventory interface
+   */
   private final InventoryController inventoryController;
+  
+  /**
+   * Controller for the slinding window
+   */
   private final WindowController windowController;
+  
+  /**
+   * Controller for the trade interface
+   */
   private final TradeController tradeController;
-  private final Game game;
+  
+  /**
+   * Controller for the text interface
+   */
   private final TextController textController;
+  
+  /**
+   * Game to control
+   */
+  private final Game game;
+  
+  /**
+   * Intels if the played has used an item
+   */
   private boolean hasItemBeenUsed = false;
   
-  private static final int FPS = 60;
-  private static final int MOVEMENT_OFFSET = 1;
-  private static final int MOB_INTERVAL = 20;
-  private static final int FIRE_INTERVAL = 100;
-  private static final int FIRE_DAMAGE_TICK = 40;
+  /**
+   * Total number of frames
+   */
   private long totalFrames;
   
   // ------- Constructor -------
@@ -194,7 +237,7 @@ public class GeneralController {
     } else if (textController.isTextInterfaceShow()) {
       textController.changePage(dir);
     } else {
-      if (game.move(game.player(), dir, MOVEMENT_OFFSET)) {
+      if (game.move(game.player(), dir)) {
         windowController.moveWindow(dir, game.player().pos());
       }
     }
@@ -230,11 +273,15 @@ public class GeneralController {
           useHeldItem(mob, env);
           setHasItemBeenUsed(true);
         }
-        facing = facing.computeDirection(game.player().facing(), MOVEMENT_OFFSET);
+        facing = facing.computeDirection(game.player().facing());
       }
     }
   }
   
+  /**
+   * Action if player is standing on some environment
+   * @param env
+   */
   private void standingOn(Environment env) {
     switch (env) {
       case Gate gate -> {
@@ -432,6 +479,9 @@ public class GeneralController {
       try {
         TimeUnit.MILLISECONDS.sleep((int)(delay * 1000));
       } catch (InterruptedException e) {
+        // forced to have a catch there because we cannot throw the error
+        // because computeTimeDelay is called from a lambda function
+        // and cannot handle errors
       }
     }  
   }
@@ -452,6 +502,7 @@ public class GeneralController {
         needUpdate = false;
         startTime = System.nanoTime();
         
+        // refresh the game only if data's been modified
         needUpdate |= interpretCommand(key);
         needUpdate |= entityUpdate();
         needUpdate |= fireUpdate();

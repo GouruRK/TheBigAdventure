@@ -8,13 +8,34 @@ import fr.uge.thebigadventure.util.Zone;
 
 public class WindowController {
 
-  private static final int maxWidth = 40;
-  private static final int maxHeight = maxWidth/2;
+  //------- Constants -------
   
+  private final int maxWidth = 40;
+  private final int maxHeight = maxWidth/2;
+  
+  //------- Fields -------
+  
+  /**
+   * Top left corner of the slinding window
+   */
   private final Position corner;
+  
+  /**
+   * Game dimensions
+   */
   private final Zone game;
+  
+  /**
+   * Window width
+   */
   private int windowWidth;
+  
+  /**
+   * Window height
+   */
   private int windowHeight;
+  
+  //------- Constructor -------
   
   public WindowController(Zone game, Position player) {
     Objects.requireNonNull(game);
@@ -22,29 +43,60 @@ public class WindowController {
     this.corner = new Position(Math.max(0, player.x() - maxWidth/2), Math.max(0, player.y() - maxHeight/2));
   }
   
+  //------- Getters -------
+  
+  /**
+   * Get scale factor for abscissa
+   * @return
+   */
+  public double scaleX() {
+    return windowWidth / maxWidth;
+  }
+  
+  /**
+   * Get scale factor for ordinates
+   * @return
+   */
+  public double scaleY() {
+    return windowHeight / maxHeight;
+  }
+
+  /**
+   * Get abscissa offset (move the window on the x axe)
+   * @return
+   */
+  public int xOffset() {
+    return (int)corner.x();
+  }
+  
+  /**
+   * Get ordinate offset (move the window on the y axe)
+   * @return
+   */
+  public int yOffset() {
+    return (int)corner.y();
+  }
+
+  //------- Modifiers -------
+  
+  /**
+   * Change window's onscreen dimensions
+   * @param windowWidth
+   * @param windowHeight
+   */
   public void setWindowDimensions(int windowWidth, int windowHeight) {
     this.windowWidth = windowWidth;
     this.windowHeight = windowHeight;
   }
   
-  public double scaleX() {
-    return windowWidth / maxWidth;
-  }
-  
-  public double scaleY() {
-    return windowHeight / maxHeight;
-  }
-  
-  public int xOffset() {
-    return (int)corner.x();
-  }
-  
-  public int yOffset() {
-    return (int)corner.y();
-  }
-  
+  /**
+   * Controller for moving the window
+   * @param dir
+   * @param player
+   */
   public void moveWindow(Direction dir, Position player) {
     Objects.requireNonNull(dir);
+    Objects.requireNonNull(player);
     
     if (dir == Direction.EAST || dir == Direction.WEST) {
       if (player.x() < maxWidth/2 || player.x() > game.bottomRight().x() - maxWidth/2) {

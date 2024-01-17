@@ -75,15 +75,8 @@ public class Position {
     this.y += y;
   }
   
-  public Position computeDirection(Direction dir, double step) {
-    Objects.requireNonNull(dir);
-    return switch (dir) {
-      case NORTH -> addY(-step);
-      case WEST -> addX(-step);
-      case SOUTH -> addY(step);
-      case EAST -> addX(step);
-      default -> null;    
-    };
+  public Position computeDirection(Direction dir) {
+    return facingDirection(dir);
   }
   
   public Position facingDirection(Direction dir) {

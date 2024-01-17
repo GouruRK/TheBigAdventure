@@ -231,8 +231,8 @@ public class Game {
   private void moveMob(Mob mob) {
     switch (mob.behaviour()) {
     case Behaviour.AGRESSIVE -> moveAgressiveMob(mob);
-    case Behaviour.SHY -> move(mob, player.facing(), 1);
-    default -> move(mob, Direction.randomDirection(), 1);
+    case Behaviour.SHY -> move(mob, player.facing());
+    default -> move(mob, Direction.randomDirection());
     }
   }
   
@@ -240,7 +240,7 @@ public class Game {
    * Agressive mobs attack the player if he is next to a mob
    */
   private void moveAgressiveMob(Mob mob) {
-    move(mob, Direction.randomDirection(), 1);
+    move(mob, Direction.randomDirection());
     if (Utils.distance(player.pos(), mob.pos()) == 1 && Utils.randomBoolean()) {
       attackMob(mob, player);
     }
@@ -252,11 +252,11 @@ public class Game {
    * @param dir direction to move
    * @param step number (or proportion) of square to move
    */
-  public boolean move(Mob mob, Direction dir, double step) {
+  public boolean move(Mob mob, Direction dir) {
     Objects.requireNonNull(mob);
     Objects.requireNonNull(dir);
     
-    Position nextPos = mob.pos().computeDirection(dir, step);    
+    Position nextPos = mob.pos().computeDirection(dir);    
     if (nextPos == null) {
       return false;
     }
