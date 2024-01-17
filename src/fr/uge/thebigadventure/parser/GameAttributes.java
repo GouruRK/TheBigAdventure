@@ -169,7 +169,10 @@ public class GameAttributes {
           field[y][x] = null;
           continue;
         }
-        createElement(encodings.getOrDefault(line.charAt(x), null), new Position(x, y));
+        EncodingRow row = encodings.getOrDefault(line.charAt(x), null);
+        if (row != null) {
+          createElement(row, new Position(x, y));
+        }
       }
     }
   }

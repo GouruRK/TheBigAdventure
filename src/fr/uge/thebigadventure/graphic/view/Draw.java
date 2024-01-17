@@ -19,7 +19,7 @@ public class Draw {
   /**
    * Dimensions of images used
    */
-  private static final int IMAGESIZE = 24;
+  public static final int IMAGESIZE = 24;
   
   //------- Fields -------
   
