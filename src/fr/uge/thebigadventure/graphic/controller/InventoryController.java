@@ -8,6 +8,9 @@ import fr.uge.thebigadventure.game.entity.mob.Player;
 import fr.uge.thebigadventure.util.Direction;
 import fr.uge.thebigadventure.util.Position;
 
+/**
+ * Controller for player's input in the inventory
+ */
 public class InventoryController {
   
   // ------- Fields -------

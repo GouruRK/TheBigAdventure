@@ -9,6 +9,9 @@ import fr.uge.thebigadventure.game.entity.item.Item;
 import fr.uge.thebigadventure.game.entity.mob.Friend;
 import fr.uge.thebigadventure.util.Direction;
 
+/**
+ * Trade controller. Handle player's input while a the trade interface
+ */
 public class TradeController {
 
   //------- Constants -------

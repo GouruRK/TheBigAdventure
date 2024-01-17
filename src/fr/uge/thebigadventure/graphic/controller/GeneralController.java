@@ -25,6 +25,12 @@ import fr.uge.thebigadventure.util.Direction;
 import fr.uge.thebigadventure.util.Position;
 import fr.umlv.zen5.Application;
 
+/**
+ * General controller for the given game.
+ * Handle key interactions, framerate, and calls function from game to modified its data according 
+ * to the player'insteractions.
+ * This controller call other controller for more specific tasks and to control interfaces.
+ */
 public class GeneralController {
   
   // ------- Constants -------

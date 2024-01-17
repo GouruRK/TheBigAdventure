@@ -1,6 +1,5 @@
 package fr.uge.thebigadventure.graphic.view;
 
-import fr.uge.thebigadventure.graphic.controller.KeyController;
 import fr.uge.thebigadventure.graphic.controller.KeyOperation;
 import fr.uge.thebigadventure.util.Direction;
 import fr.umlv.zen5.ApplicationContext;
@@ -42,6 +41,6 @@ public class View {
     }
     KeyboardKey key = event.getKey();
     
-    return key == null ? KeyOperation.NONE: KeyController.getOperation(key);
+    return key == null ? KeyOperation.NONE: KeyOperation.getOperation(key);
   }
 }

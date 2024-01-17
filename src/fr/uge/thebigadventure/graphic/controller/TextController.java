@@ -5,6 +5,10 @@ import java.util.Objects;
 import fr.uge.thebigadventure.util.Direction;
 import fr.uge.thebigadventure.util.Text;
 
+/**
+ * Text controller to handle player's interactions while on a text interface
+ * Display a given text correctly, and change pages if its require
+ */
 public class TextController {
 
   //------- Constants -------  

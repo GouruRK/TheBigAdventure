@@ -62,8 +62,8 @@ import fr.uge.thebigadventure.util.Zone;
  * </ul>
  * 
  * 
- * @see {@link fr.uge.thebigadventure.
- * @see {@link fr.uge.thebigadventure.
+ * @see {@link fr.uge.thebigadventure.parser.Parser}
+ * @see {@link fr.uge.thebigadventure.parser.Lexer}
  * 
  * @author De Oliveira Nelson
  * @author Kies Rémy

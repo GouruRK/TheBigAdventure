@@ -6,6 +6,9 @@ import fr.uge.thebigadventure.util.Direction;
 import fr.uge.thebigadventure.util.Position;
 import fr.uge.thebigadventure.util.Zone;
 
+/**
+ * Control the sliding window to follow the player on the game
+ */
 public class WindowController {
 
   //------- Constants -------

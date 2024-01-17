@@ -16,18 +16,56 @@ import fr.umlv.zen5.ScreenInfo;
 
 public class Draw {
   
-  public static final int IMAGESIZE = 24;
+  /**
+   * Dimensions of images used
+   */
+  private static final int IMAGESIZE = 24;
   
   //------- Fields -------
   
+  /**
+   * On screen application context
+   */
   private final ApplicationContext context;
+  
+  /**
+   * Game to draw
+   */
   private final Game game;
+  
+  /**
+   * Controller to handle player's interaction
+   */
   private final GeneralController controller;
+  
+  /**
+   * Display of the inventory interface
+   */
   private final DrawInventory inventory;
+  
+  /**
+   * Display the player
+   */
   private final DrawPlayer player;
+  
+  /**
+   * Display of the trade interface
+   */
   private final DrawTrade trade;
+  
+  /**
+   * Display of the text interface
+   */
   private final DrawText text;
+  
+  /**
+   * Window width
+   */
   private final int windowWidth;
+  
+  /**
+   * Window height
+   */
   private final int windowHeight;
   
   //------- Constructor -------
@@ -55,12 +93,17 @@ public class Draw {
     controller.windowController().setWindowDimensions(windowWidth, windowHeight);
   }
   
+  //------- Getter -------
+  
   public static int getImageSize() {
     return IMAGESIZE;
   }
   
   //------- Main function -------
   
+  /**
+   * Display game
+   */
   public void drawGame() {
     double x = controller.windowController().scaleX();
     double y = controller.windowController().scaleY();
@@ -68,7 +111,7 @@ public class Draw {
       clearWindow(graphics);
       
       AffineTransform saveAT = graphics.getTransform();
-      
+      // The sliding window works by translating the game with offsets
       graphics.scale(x / IMAGESIZE, y / IMAGESIZE);
       graphics.translate(-controller.windowController().xOffset()*IMAGESIZE, -controller.windowController().yOffset()*IMAGESIZE);
       
@@ -79,20 +122,28 @@ public class Draw {
       
       graphics.setTransform(saveAT);
       
-      if (controller.tradeController().isTradeInterfaceShow()) {
-        trade.drawTrade(graphics);
-      } else if (controller.inventoryController().isInventoryInterfaceShow()) {
-        inventory.drawInventory(graphics, windowWidth/2, windowHeight/2);
-      } else if (controller.textController().isTextInterfaceShow()) {
-        text.drawText(graphics, windowWidth/4, windowHeight/4);
-      }
+      drawInterfaces(graphics);
     });
+  }
+  
+  /**
+   * Display interfaces
+   * @param graphics current context
+   */
+  private void drawInterfaces(Graphics2D graphics) {
+    if (controller.tradeController().isTradeInterfaceShow()) {
+      trade.drawTrade(graphics);
+    } else if (controller.inventoryController().isInventoryInterfaceShow()) {
+      inventory.drawInventory(graphics, windowWidth/2, windowHeight/2);
+    } else if (controller.textController().isTextInterfaceShow()) {
+      text.drawText(graphics, windowWidth/4, windowHeight/4);
+    }
   }
   
   /**
    * Clear the window
    * 
-   * @param graphics
+   * @param graphics current context
    */
   private void clearWindow(Graphics2D graphics) {
     graphics.setColor(Color.BLACK);
@@ -101,25 +152,58 @@ public class Draw {
   
   // ------- Draw images -------
   
+  /**
+   * Draw image with integer coordinates
+   * @param graphics current context
+   * @param skin skin to draw
+   * @param x
+   * @param y
+   */
   public static void drawImage(Graphics2D graphics, String skin, int x, int y) {
     graphics.drawImage(Skins.getSkin(skin), x, y, null);
   }
   
+  /**
+   * Draw image with double coordinates
+   * @param graphics current context
+   * @param skin skin to draw
+   * @param x
+   * @param y
+   */
   public static void drawImage(Graphics2D graphics, String skin, double x, double y) {
     drawImage(graphics, skin, (int)x, (int)y);
   }
 
+  /***
+   * Draw image at position
+   * @param graphics current context
+   * @param skin skin to draw
+   * @param pos position to draw
+   */
   public static void drawImage(Graphics2D graphics, String skin, Position pos) {
     drawImage(graphics, skin, pos.x()*IMAGESIZE, pos.y()*IMAGESIZE);
   }
   
+  /**
+   * Draw image at position and apply a factor to the coordinates
+   * @param graphics current context
+   * @param skin skin to draw
+   * @param pos position to draw
+   * @param factor factor to apply
+   */
   public static void drawImage(Graphics2D graphics, String skin, Position pos, double factor) {
     drawImage(graphics, skin, pos.x()*IMAGESIZE*factor, pos.y()*IMAGESIZE*factor);
   }
   
   // ------- Draw images -------
   
-  
+  /**
+   * Draw item at coordiantes
+   * @param graphics current context
+   * @param item item to display
+   * @param x
+   * @param y
+   */
   public static void drawItem(Graphics2D graphics, Item item, int x, int y) {
     drawImage(graphics, item.skin(), x, y);
     if (item.hasName()) {
@@ -127,6 +211,14 @@ public class Draw {
     }
   }
   
+  /**
+   * Draw item and its name at coordiantes 
+   * @param graphics current context
+   * @param item item to display
+   * @param x
+   * @param y
+   * @param color item name color
+   */
   public static void drawItem(Graphics2D graphics, Item item, int x, int y, Color color) {
     drawImage(graphics, item.skin(), x, y);
     if (item.hasName()) {
@@ -134,10 +226,25 @@ public class Draw {
     }
   }
   
+  /**
+   * Draw item at coordinates
+   * @param graphics current context
+   * @param item item to display
+   * @param x
+   * @param y
+   */
   public static void drawItem(Graphics2D graphics, Item item, double x, double y) {
     drawItem(graphics, item, (int)x, (int)y);
   }
   
+  /**
+   * Draw item and its name at coordinates
+   * @param graphics current context
+   * @param item item to display
+   * @param x
+   * @param y
+   * @param color item name color
+   */
   public static void drawItem(Graphics2D graphics, Item item, double x, double y, Color color) {
     drawItem(graphics, item, (int)x, (int)y, color);
   }
