@@ -18,7 +18,7 @@ Pour la phase 0, voici les fonctionnalitées qui ont été implémentées :
 * Parser du format `.map` avec tous les attributs
   * Les remontés d'erreurs se font pour l'instant via les `throw`
   * Les erreurs indiquent le fichier source et la ligne qui a trigger l'erreur.
-  * Pour l'instant, le parser s'arrête à la première erreur rencontrée
+  * Pour l'instant, le fr.uge.thebigadventure.
 * Affichage d'une map
   * Pas encore de scrolling
   * Affichage de tous les éléments précédemment parsés
@@ -48,7 +48,7 @@ Voici l'architecture de l'archive avec les différents modules
     │   │   └── mob         // Mobs
     │   └── environment   // Obstacles, Décorations, Biome
     ├── graph               // Structures graphiques
-    ├── parser              // Structures pour parser une map
+    ├── fr.uge.thebigadventure.
     ├── util                // Zone, Directions, Position
     └── zen5                // Sources de Zen5
 ```
@@ -73,7 +73,7 @@ Pour compiler et exécuter le projet, on peut :
 # Difficultées rencontrées
 
 * La première grosse difficulté était de trouver une structure adéquate au jeu et à tous les éléments.
-* La second est de faire un parser avec un format de carte extrèmement modulable, et de pouvoir créer les éléments en conséquence. Faire un parser sans avoir un code ignoble est un défi intéressant
+* La second est de faire un fr.uge.thebigadventure.
 * La dernière étape est de lier le tout avec l'affichage, en séparant bien le moteur du jeu avec les structures.
 
 ___

@@ -43,7 +43,7 @@ def det_folder(url: str) -> tuple[str, str]:
     return "other", url.split('/')[7][:-6].lower()
 
 def extract_image_url(content: str) -> list[str]:
-    soup = BeautifulSoup(content, features="html.parser")
+    soup = BeautifulSoup(content, features="html.fr.uge.thebigadventure.
     urls = []
     for img in soup.findAll('img'):
         res = re.findall('data-src="([^"]*)"', img.__repr__())

@@ -1,4 +1,4 @@
-<project name="TheBigAdventure" basedir="." default="main">
+<project name="TheBigAdventure" basedir="." default="jar">
     
     <property name="src.dir"     value="src"/>
 
@@ -24,10 +24,11 @@
 	
 	<target name="jar" depends="compile">
         <mkdir dir="${jar.dir}"/>
-        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
-            <manifest>
-                <attribute name="Main-Class" value="Main"/>
-            </manifest>
+		<jar destfile="${jar.dir}/${ant.project.name}.jar" manifest="MANIFEST.MF">
+        	<fileset dir="ressources"/>
+        	<fileset dir="${lib.dir}" includes="**/*.jar"/>
+        	<fileset dir="${classes.dir}" />
+        	<zipfileset src="lib/zen5.jar" includes="**/*.class"/>
         </jar>
 	</target>
 
@@ -35,7 +36,6 @@
         <java fork="true" classname="Main">
             <classpath>
                 <path refid="classpath"/>
-            	<fileset dir="ressources" includes="*.png" />
                 <path location="${jar.dir}/${ant.project.name}.jar"/>
             </classpath>
         </java>
