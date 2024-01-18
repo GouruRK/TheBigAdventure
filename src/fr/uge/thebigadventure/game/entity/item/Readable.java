@@ -23,20 +23,4 @@ public record Readable(String skin, String name, Text text) implements Item {
   public GameObjectID id() {
     return GameObjectID.READABLE;
   }
-  
-  // ------- Other -------
-  
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof Readable read
-        && read.skin().equalsIgnoreCase(skin)
-        && (read.text() == null ? read.text() == text: read.text().equals(text))
-        && (read.name() == null ? read.name() == name: read.name().equals(name))
-        && read.hashCode() == hashCode();
-  }
-  
-  @Override
-  public int hashCode() {
-    return Objects.hash(skin.toUpperCase(), text, name);
-  }
 }

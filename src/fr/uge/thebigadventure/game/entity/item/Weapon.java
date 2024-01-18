@@ -46,22 +46,5 @@ public record Weapon(String skin, int damage, boolean burning, String name) impl
     }
     return this;
   }
-
-  // ------- Other -------
-  
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof Weapon weapon
-        && weapon.skin().equalsIgnoreCase(skin)
-        && weapon.damage() == damage
-        && weapon.burning() == burning
-        && (weapon.name() == null ? weapon.name() == name: weapon.name().equals(name))
-        && weapon.hashCode() == hashCode();
-  }
-  
-  @Override
-  public int hashCode() {
-    return Objects.hash(skin.toUpperCase(), damage, burning, name);
-  }
   
 }

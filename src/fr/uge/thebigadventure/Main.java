@@ -13,16 +13,10 @@ import fr.uge.thebigadventure.parser.commandline.CommandLineException;
 public class Main {
   public static void main(String[] args) {
     try {
-      Arguments.parseArguments(args);      
-    } catch (CommandLineException e) {
-      System.err.println(e.getMessage());
-      return;
-    }
+      Arguments.parseArguments(args);
     
-    Parser parser;
-    Game game;
-    
-    try {
+      Parser parser;
+      Game game;
       parser = new Parser(Arguments.level());
       game = parser.parseMap();
      
@@ -38,7 +32,8 @@ public class Main {
       System.err.println(e.getMessage());
     } catch (IOException e) {
       System.err.println(e.getMessage());
+    } catch (CommandLineException e) {
+      System.err.println(e.getMessage());
     }
-    
   }
 }

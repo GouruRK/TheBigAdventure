@@ -21,21 +21,12 @@ public record Block(String skin, Position pos, boolean standable) implements Env
     return standable;
   }
 
+  @Override
+  public GameObjectID id() {
+    return standable ? GameObjectID.SCENERY: GameObjectID.OBSTACLE;
+  }
+
   //------- Other -------
-  
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof Block block
-        && block.skin().equalsIgnoreCase(skin)
-        && block.pos().equals(pos)
-        && block.standable() == standable
-        && block.hashCode() == hashCode();
-  }
-  
-  @Override
-  public int hashCode() {
-    return Objects.hash(skin.toUpperCase(), pos, standable);
-  }
   
   @Override
   public String toString() {
@@ -43,11 +34,6 @@ public record Block(String skin, Position pos, boolean standable) implements Env
             + " pos: " + pos
             + " standable: " + standable
             + "]";
-  }
-
-  @Override
-  public GameObjectID id() {
-    return standable ? GameObjectID.SCENERY: GameObjectID.OBSTACLE;
   }
   
 }

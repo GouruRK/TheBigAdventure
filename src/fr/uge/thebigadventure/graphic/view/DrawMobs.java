@@ -8,25 +8,40 @@ import java.util.Objects;
 
 import fr.uge.thebigadventure.game.entity.mob.Mob;
 
+/**
+ * Main object to draw mobs and their name
+ * This class only contains static methods
+ */
 public class DrawMobs {
+  
   /**
-   * draw all mobs
-   * 
+   * Draw all mobs
    * @param graphics
+   * @param mobs
    */
   public static void drawMobs(Graphics2D graphics, List<Mob> mobs) {
+    Objects.requireNonNull(graphics);
     Objects.requireNonNull(mobs);
+    
     mobs.forEach(mob -> drawMob(graphics, mob));
   }
   
+  /**
+   * Draw one mob
+   * @param graphics
+   * @param mob
+   */
   public static void drawMob(Graphics2D graphics, Mob mob) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(mob);
+    
     Draw.drawImage(graphics, mob.skin(), mob.pos());
     drawHealthBar(graphics, mob);
     drawMobName(graphics, mob);
   }
   
   /**
-   * draw health bar's Mobs
+   * Draw a mob health bar
    * 
    * @param graphics
    * @param mob
@@ -44,6 +59,11 @@ public class DrawMobs {
     graphics.fill(rectCurrentHealth);
   }
   
+  /**
+   * Draw a mob name
+   * @param graphics
+   * @param mob
+   */
   private static void drawMobName(Graphics2D graphics, Mob mob) {
     if (mob.hasName()) {
       graphics.setColor(Color.WHITE);

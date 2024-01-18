@@ -70,10 +70,20 @@ import fr.uge.thebigadventure.util.Zone;
  * 
  */
 public class Parser {
+
+  //------- Constants -------
   
-  private static final Set<String> PARSEDMAP = new HashSet<String>();
   /**
-   * Current file the fr.uge.thebigadventure.
+   * Set of maps that were parsed.
+   * Use in case of maps that teleports player from one to another
+   * and in reverse (A -> B and B -> A)
+   */
+  private static final Set<String> PARSEDMAP = new HashSet<String>();
+  
+  //------- Fields -------
+  
+  /**
+   * Current file that's parsed
    */
   private final String sourceFile;
   
@@ -81,13 +91,14 @@ public class Parser {
    * Lexer to give tokens
    */
   private final Lexer lexer;
-  private final GameAttributes attributes;
   
   /**
-   * Create a Parser object for the given text from the sourcFile
-   * @param text
-   * @param sourceFile
+   * Current game attributes
    */
+  private final GameAttributes attributes;
+  
+  //------- Constructor -------
+  
   public Parser(String text, String sourceFile) {
     Objects.requireNonNull(text);
     Objects.requireNonNull(sourceFile);
@@ -97,11 +108,6 @@ public class Parser {
     PARSEDMAP.add(sourceFile);
   }
   
-  /**
-   * Create a fr.uge.thebigadventure.
-   * @param filePath
-   * @throws IOException
-   */
   public Parser(Path filePath) throws IOException {
     Objects.requireNonNull(filePath);
     String text = Files.readString(filePath);
@@ -111,6 +117,8 @@ public class Parser {
     this.sourceFile = filePath.toString();
     PARSEDMAP.add(sourceFile);
   }
+  
+  //------- Methods -------
   
   /**
    * Check if the next token is the expected one
@@ -135,9 +143,9 @@ public class Parser {
       return res.content();
     } 
     if (res != null) {
-      throw new TokenException("Awaited token of type " + token + ", got " + res.token() + " : " + res.content());
+      throw new TokenException("Awaited token of type " + token + ", got " + res.token() + " : " + res.content(), sourceFile, lexer.last().line());
     }
-    throw new TokenException("No more tokens");
+    throw new TokenException("No more tokens", sourceFile, lexer.last().line());
   }
   
   /**
@@ -160,19 +168,24 @@ public class Parser {
    * @return content of the result
    * @throws TokenException
    */
-  private static String isExpected(Result res, Token token, String content) throws TokenException {
+  private String isExpected(Result res, Token token, String content) throws TokenException {
     if (res != null && res.token() == token && res.content().equals(content)) {
       return res.content();
     }
     if (res != null) {
-      throw new TokenException("Awaited '" + content + "', got " + res.content());
+      throw new TokenException("Awaited '" + content + "', got " + res.content(), sourceFile, lexer.last().line());
     }
-    throw new TokenException("Awaited token, got none");
+    throw new TokenException("Awaited token, got none", sourceFile, lexer.last().line());
   }
   
+  /**
+   * Parse a size. Size pattern is: "('w' x 'h')" with 'w' and 'h' respectively the width and height
+   * @return
+   * @throws TokenException
+   */
   private Position parseSize() throws TokenException {
     // Note : here after "Result[token=IDENTIFIER, content=size]" and "Result[token=COLON, content=:]" 
-    // Next : wait for : "( 'n' x 'm')"
+    // Next : wait for: "( 'w' x 'h')"
     double width, height;
     isExpected(Token.LEFT_PARENS);
     width = Integer.parseInt(isExpected(Token.NUMBER));
@@ -182,9 +195,14 @@ public class Parser {
     return new Position(width, height);
   }
   
+  /**
+   * Parse a position with the pattern: "('x', 'y')"  
+   * @return
+   * @throws TokenException
+   */
   private Position parsePosition() throws TokenException {
     // Note : here after "Result[token=IDENTIFIER, content=position]" and "Result[token=COLON, content=:]"
-    // Next : wait for : "('x', 'y')"
+    // Next : wait for: "('x', 'y')"
     double x, y;
     isExpected(Token.LEFT_PARENS);
     x = Integer.parseInt(isExpected(Token.NUMBER));
@@ -194,6 +212,11 @@ public class Parser {
     return new Position(x, y);
   }
   
+  /**
+   * Parse a zone with the pattern "('x', 'y') ('w' x 'h')"
+   * @return
+   * @throws TokenException
+   */
   public Zone parseZone() throws TokenException { 
     // Note : here after "Result[token=IDENTIFIER, content=zone]" and "Result[token=COLON, content=:]"
     // Next : wait for "('x', 'y') ('w' x 'h')"
@@ -202,6 +225,11 @@ public class Parser {
     return new Zone(topLeft, new Position(topLeft.x() + size.x(), topLeft.y() + size.y()));
   }
   
+  /**
+   * Parse encodings with the pattern: "SKIN(S)" with 'S' encoding the skin on data
+   * @return
+   * @throws TokenException
+   */
   private EncodingRow parseEncodings() throws TokenException {
     // Note : here after "Result[token=IDENTIFIER, content=encodings]" and "Result[token=COLON, content=:]"
     // wait for "OBJECT(O)"
@@ -211,17 +239,22 @@ public class Parser {
     identifier = isExpected(Token.IDENTIFIER);
     id = GameObject.fromName(identifier);
     if (id == GameObjectID.UNKNOWN) {
-      throw new TokenException("Unknown element '" + identifier + "'");
+      throw new TokenException("Unknown element '" + identifier + "'", sourceFile, lexer.last().line());
     }
     isExpected(Token.LEFT_PARENS);
     code = isExpected(Token.IDENTIFIER);
     if (code.length() != 1) {
-      throw new TokenException("Code for '" + identifier + "' must be one character");
+      throw new TokenException("Code for '" + identifier + "' must be one character", sourceFile, lexer.last().line());
     }
     isExpected(Token.RIGHT_PARENS);
     return new EncodingRow(identifier, code.charAt(0), id);
   }
   
+  /**
+   * Parse Item with the pattern: "SKIN name" or "SKIN" with 'name' is optional
+   * @return
+   * @throws TokenException
+   */
   private Item parseItem() throws TokenException {
     // wait for "SKIN name" or "SKIN"
     Result skinResult, nameResult, next;
@@ -231,7 +264,7 @@ public class Parser {
     skinResult = lexer.nextResult();
     id = GameObject.fromName(skinResult.content());
     if (id == GameObjectID.UNKNOWN) {
-      throw new TokenException("Unknown item '" + skinResult.content() + "'");
+      throw new TokenException("Unknown item '" + skinResult.content() + "'", sourceFile, lexer.last().line());
     }
     skin = skinResult.content();
     
@@ -262,6 +295,11 @@ public class Parser {
     return Item.createItem(skin, name);
   }
   
+  /**
+   * Parse steal list with the pattern: "SKIN name, SKIN", with 'name' optional
+   * @return
+   * @throws TokenException
+   */
   private List<Item> parseSteal() throws TokenException {
     // Note : here after "Result[token=IDENTIFIER, content=steal]" and "Result[token=COLON, content=:]"
     // wait for "SKIN name, SKIN name, SKIN"
@@ -285,6 +323,11 @@ public class Parser {
     return List.copyOf(lst);
   }
   
+  /**
+   * Parse a trade map with the pattern "WANTED_ITEM_SKIN name -> SELL_ITEM_SKIN name", with 'name' optional
+   * @return
+   * @throws TokenException
+   */
   private Map<Item, List<Item>> parseTrade() throws TokenException {
     // Note : here after "Result[token=IDENTIFIER, content=trade]" and "Result[token=COLON, content=:]"
     // wait for "SKIN -> SKIN name" or "SKIN -> SKIN"
@@ -315,6 +358,11 @@ public class Parser {
     return Map.copyOf(map);
   }
   
+  /**
+   * Parse encodings
+   * @return
+   * @throws TokenException
+   */
   private Map<Character, EncodingRow> parseEncoding() throws TokenException {
     HashMap<Character, EncodingRow> encodings = new HashMap<Character, EncodingRow>();
     Result res;
@@ -328,7 +376,7 @@ public class Parser {
       } else {
         row = parseEncodings();
         if (encodings.getOrDefault(row.code(), null) != null) {
-          throw new TokenException("Block code '" + row.code() + "' already register");
+          throw new TokenException("Block code '" + row.code() + "' already register", sourceFile, lexer.last().line());
         }
         encodings.put(row.code(), row);
       }
@@ -336,6 +384,12 @@ public class Parser {
     return Map.copyOf(encodings);
   }
   
+  /**
+   * Parse teleport
+   * @param element
+   * @throws TokenException
+   * @throws IOException
+   */
   private void parseTeleport(ElementAttributes element) throws TokenException, IOException {
     String name = isExpected(Token.IDENTIFIER);
     if (name.equals("back")) {
@@ -350,16 +404,20 @@ public class Parser {
       Parser parser = new Parser(Path.of(path));
       Game game = parser.parseMap();
       if (game.player() != null) {
-        throw new TokenException("Map to be teleported can't contains a player");
+        throw new TokenException("Map to be teleported can't contains a player", sourceFile);
       } else {
         if (game.startingPosition() == null) {
-          throw new TokenException("Map to be teleported must have an element with 'teleport: back'");
+          throw new TokenException("Map to be teleported must have an element with 'teleport: back'", sourceFile);
         }
       }
       element.setTeleport(game);
     }
   }
   
+  /**
+   * Parse game's attributes
+   * @throws TokenException
+   */
   private void parseGame() throws TokenException {
     String attribute;
     
@@ -371,20 +429,29 @@ public class Parser {
       case "size" -> attributes.setZone(new Zone(new Position(0, 0), parseSize()));
       case "encodings" -> attributes.setEncodings(parseEncoding());
       case "data" -> attributes.setData(isExpected(Token.QUOTE));
-      default -> throw new TokenException("Unknown grid attribute '" + attribute + "'");
+      default -> throw new TokenException("Unknown grid attribute '" + attribute + "'", sourceFile, lexer.last().line());
       };      
     }
   }
   
+  /**
+   * Parse player
+   * @param element
+   * @throws TokenException
+   */
   private void parsePlayer(ElementAttributes element) throws TokenException {
     if (PARSEDMAP.size() != 1) {
-      throw new TokenException("Map to be teleported mustn't contains a player");
+      throw new TokenException("Map to be teleported mustn't contains a player", sourceFile, lexer.last().line());
     }
     element.setPlayer(isExpected(Token.IDENTIFIER));
   }
   
-  private void parseElement() throws TokenException,
-                                    IOException {
+  /**
+   * Parse element with all its attributes
+   * @throws TokenException
+   * @throws IOException
+   */
+  private void parseElement() throws TokenException, IOException {
     Result res;
     ElementAttributes elem = new ElementAttributes();
     
@@ -413,47 +480,49 @@ public class Parser {
         case "flow" -> elem.setFlow(isExpected(Token.IDENTIFIER));
         case "phantomize" -> elem.setPhantomize(isExpected(Token.IDENTIFIER));
         case "teleport" -> parseTeleport(elem);
-        default -> throw new TokenException("Unknown attribute '" + res.content() + "'");
+        default -> throw new TokenException("Unknown attribute '" + res.content() + "'", sourceFile, lexer.last().line());
       };
     }
     
     if (elem.hasBack()) {
       if (elem.hasPosition()) {
-        attributes.setStartingPos(elem.getPosition());
+        attributes.setStartingPos(elem.position());
       } else {
-        throw new TokenException("Element that teleports back must have a position");
+        throw new TokenException("Element that teleports back must have a position", sourceFile, lexer.last().line());
       }
     }
     
     if (elem.isPlayer()) {
       if (elem.hasPosition()) {
-        attributes.setStartingPos(elem.getPosition());
+        attributes.setStartingPos(elem.position());
       } else {
-        throw new TokenException("Player must have a position");
+        throw new TokenException("Player must have a position", sourceFile, lexer.last().line());
       }
     }
     
-    if (!elem.isValid()) throw new TokenException("Element must have a skin");
+    if (!elem.isValid()) throw new TokenException("Element must have a skin", sourceFile, lexer.last().line());
     attributes.addElement(elem);
   }
   
+  /**
+   * Parse a map and return the game associated with
+   * @return
+   * @throws TokenException
+   * @throws IOException
+   */
   public Game parseMap() throws TokenException, IOException {
     String blockIdentifier;
-    try {
-      while (lexer.hasNext()) {
-        isExpected(Token.LEFT_BRACKET);
-        blockIdentifier = isExpected(Token.IDENTIFIER);
-        isExpected(Token.RIGHT_BRACKET);
-        if ("grid".equals(blockIdentifier)) {
-          parseGame();
-        } else if ("element".equals(blockIdentifier)) {
-          parseElement();
-        } else {
-          throw new TokenException("Unknown block name '" + blockIdentifier + "'");
-        }
+    while (lexer.hasNext()) {
+      isExpected(Token.LEFT_BRACKET);
+      blockIdentifier = isExpected(Token.IDENTIFIER);
+      isExpected(Token.RIGHT_BRACKET);
+      if ("grid".equals(blockIdentifier)) {
+        parseGame();
+      } else if ("element".equals(blockIdentifier)) {
+        parseElement();
+      } else {
+        throw new TokenException("Unknown block name '" + blockIdentifier + "'", sourceFile, lexer.last().line());
       }
-    } catch (TokenException e) {
-      throw new TokenException("Error at " + sourceFile + ": line " + lexer.last().line() + " " + e.getMessage());
     }
     return attributes.createGame();
   }

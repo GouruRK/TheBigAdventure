@@ -32,19 +32,4 @@ public record DroppedItem(Position pos, Item item) implements Entity {
     return item.id();
   }
   
-  // ------- Other ------
-  
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof DroppedItem dItem
-        && dItem.item().equals(item)
-        && dItem.pos().equals(pos)
-        && dItem.hashCode() == hashCode();
-  }
-  
-  @Override
-  public int hashCode() {
-    return Objects.hash(pos, item);
-  }
-  
 }

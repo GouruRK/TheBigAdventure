@@ -14,6 +14,10 @@ import fr.uge.thebigadventure.util.Position;
 import fr.umlv.zen5.ApplicationContext;
 import fr.umlv.zen5.ScreenInfo;
 
+/**
+ * Main class to interact with the window context
+ * Provide basic toolbase methods to draw things
+ */
 public class Draw {
   
   /**
@@ -160,6 +164,8 @@ public class Draw {
    * @param y
    */
   public static void drawImage(Graphics2D graphics, String skin, int x, int y) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(skin);
     graphics.drawImage(Skins.getSkin(skin), x, y, null);
   }
   
@@ -171,6 +177,8 @@ public class Draw {
    * @param y
    */
   public static void drawImage(Graphics2D graphics, String skin, double x, double y) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(skin);
     drawImage(graphics, skin, (int)x, (int)y);
   }
 
@@ -181,6 +189,9 @@ public class Draw {
    * @param pos position to draw
    */
   public static void drawImage(Graphics2D graphics, String skin, Position pos) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(skin);
+    Objects.requireNonNull(pos);
     drawImage(graphics, skin, pos.x()*IMAGESIZE, pos.y()*IMAGESIZE);
   }
   
@@ -192,6 +203,9 @@ public class Draw {
    * @param factor factor to apply
    */
   public static void drawImage(Graphics2D graphics, String skin, Position pos, double factor) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(skin);
+    Objects.requireNonNull(pos);
     drawImage(graphics, skin, pos.x()*IMAGESIZE*factor, pos.y()*IMAGESIZE*factor);
   }
   
@@ -205,6 +219,8 @@ public class Draw {
    * @param y
    */
   public static void drawItem(Graphics2D graphics, Item item, int x, int y) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(item);
     drawImage(graphics, item.skin(), x, y);
     if (item.hasName()) {
       drawText(graphics, item.name(), x - item.name().length() / 2, y + IMAGESIZE);
@@ -220,6 +236,9 @@ public class Draw {
    * @param color item name color
    */
   public static void drawItem(Graphics2D graphics, Item item, int x, int y, Color color) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(item);
+    Objects.requireNonNull(color);
     drawImage(graphics, item.skin(), x, y);
     if (item.hasName()) {
       drawText(graphics, item.name(), x - item.name().length() / 2, y + IMAGESIZE, color);
@@ -234,6 +253,8 @@ public class Draw {
    * @param y
    */
   public static void drawItem(Graphics2D graphics, Item item, double x, double y) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(item);
     drawItem(graphics, item, (int)x, (int)y);
   }
   
@@ -246,49 +267,135 @@ public class Draw {
    * @param color item name color
    */
   public static void drawItem(Graphics2D graphics, Item item, double x, double y, Color color) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(item);
+    Objects.requireNonNull(color);
     drawItem(graphics, item, (int)x, (int)y, color);
   }
   
   // ------- Draw Text -------
   
+  /**
+   * Draw text at coordinates
+   * @param graphics current context
+   * @param text text to display
+   * @param x
+   * @param y
+   */
   public static void drawText(Graphics2D graphics, String text, int x, int y) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(text);
     graphics.drawString(text, x, y);
   }
   
+  /**
+   * Draw text at coordinates
+   * @param graphics current context
+   * @param text text to display
+   * @param x
+   * @param y
+   */
   public static void drawText(Graphics2D graphics, String text, double x, double y) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(text);
     graphics.drawString(text, (int)x, (int)y);
   }
   
+  /**
+   * Draw text centered at coordinates 
+   * @param graphics current context
+   * @param text text to display
+   * @param x
+   * @param y
+   */
   public static void drawCenteredText(Graphics2D graphics, String text, int x, int y) {
-    graphics.drawString(text, x - text.length()/2, y);
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(text);
+    graphics.drawString(text, x - graphics.getFontMetrics().stringWidth(text)/2, y);
   }
   
+  /**
+   * Draw text centered at coordinates 
+   * @param graphics current context
+   * @param text text to display
+   * @param x
+   * @param y
+   */
   public static void drawCenteredText(Graphics2D graphics, String text, double x, double y) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(text);
     drawCenteredText(graphics, text, (int)x, (int)y);
   }
   
+  /**
+   * Draw text centered at coordinates with a color
+   * @param graphics current context
+   * @param text text to display
+   * @param x
+   * @param y
+   * @param color
+   */
   public static void drawText(Graphics2D graphics, String text, int x, int y, Color color) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(text);
+    Objects.requireNonNull(color);
     graphics.setColor(color);
     graphics.drawString(text, x, y);
   }
-  
+
+  /**
+   * Draw text centered at coordinates with given color
+   * @param graphics current context
+   * @param text text to display
+   * @param x
+   * @param y
+   * @param color
+   */
   public static void drawCenteredText(Graphics2D graphics, String text, int x, int y, Color color) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(text);
     graphics.setColor(color);
     drawCenteredText(graphics, text, x, y);
   }
   
+  /**
+   * Draw text at coordinates with given color
+   * @param graphics current context
+   * @param text text to display
+   * @param x
+   * @param y
+   * @param color
+   */
   public static void drawText(Graphics2D graphics, String text, double x, double y, Color color) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(text);
+    Objects.requireNonNull(color);
     graphics.setColor(color);
     graphics.drawString(text, (int)x, (int)y);
   }
   
+  /**
+   * Draw centered text at coordiantes with given color
+   * @param graphics current context
+   * @param text text to display
+   * @param x
+   * @param y
+   * @param color
+   */
   public static void drawCenteredText(Graphics2D graphics, String text, double x, double y, Color color) {
+    Objects.requireNonNull(graphics);
+    Objects.requireNonNull(text);
+    Objects.requireNonNull(color);
     graphics.setColor(color);
     drawCenteredText(graphics, text, (int)x, (int)y);
   }
   
   // ------- Environment related -------
  
+  /**
+   * Draw the map composed by obstacles and scenery
+   * @param graphics
+   */
   private void drawMap(Graphics2D graphics) {
     for (var line: game.field()) {
       for (Environment env: line) {
@@ -299,12 +406,21 @@ public class Draw {
     }
   }
   
+  /**
+   * Draw environnemnt
+   * @param graphics
+   * @param env
+   */
   private void drawEnvironment(Graphics2D graphics, Environment env) {
     drawImage(graphics, env.skin(), env.pos());
   }
 
   //------- Item related -------
   
+  /**
+   * Draw a dropped item
+   * @param graphics
+   */
   private void drawDroppedItems(Graphics2D graphics) {
     game.items().forEach(item -> drawImage(graphics, item.skin(), item.pos()));
   }

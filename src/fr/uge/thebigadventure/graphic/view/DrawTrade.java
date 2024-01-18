@@ -9,18 +9,65 @@ import java.util.Objects;
 import fr.uge.thebigadventure.game.entity.item.Item;
 import fr.uge.thebigadventure.graphic.controller.TradeController;
 
+/**
+ * Display trade interfaces and the other used interfaces 
+ * such as Text and Inventory
+ */
 public class DrawTrade {
 
+  // ------- Fields -------
+  
+  /**
+   * Trade controller to get visual cursor position, intels on trades, ...
+   */
   private final TradeController controller;
+  
+  /**
+   * Class to draw associated inventory
+   */
   private final DrawInventory inventory;
+  
+  /**
+   * Class to draw associated text 
+   */
   private final DrawText text;
+  
+  /**
+   * Window X margin
+   */
   private final int tradeTopX;
-  private final int inventoryTopX;
-  private final int inventoryTopY;
-  private final int tradeWidth = Draw.IMAGESIZE*6;
+  
+  /**
+   * Window Y margin
+   */
   private final int tradeTopY;
+  
+  /**
+   * Inventory X margin
+   */
+  private final int inventoryTopX;
+  
+  /**
+   * Inventory Y margin
+   */
+  private final int inventoryTopY;
+  
+  /**
+   * Trade interface width
+   */
+  private final int tradeWidth = Draw.IMAGESIZE*6;
+  
+  /**
+   * Trade interface height
+   */
   private int tradeHeight;
+  
+  /**
+   * Number of trade to display at the same time
+   */
   private int minSize;
+  
+  // ------- Constructor -------
   
   public DrawTrade(TradeController controller, DrawInventory inventory, DrawText text, int windowWidth, int windowHeight) {
     Objects.requireNonNull(controller);
@@ -34,15 +81,16 @@ public class DrawTrade {
     tradeTopX = windowWidth/4;
     tradeTopY = windowHeight/4;
     
-    // tradeHeight = View.IMAGESIZE*consecutiveTradeLength;
-    // tradeHeight = View.IMAGESIZE*(controller.trade().size() % consecutiveTradeLength);
-    
     inventoryTopX = windowWidth * 3/4;
     inventoryTopY = windowHeight/4;
   }
   
-  
+  /**
+   * Draw trade interfaces and the other used one
+   * @param graphics current graphic context
+   */
   public void drawTrade(Graphics2D graphics) {
+    Objects.requireNonNull(graphics);
     inventory.drawInventoryWithoutCursor(graphics, inventoryTopX, inventoryTopY);
     
     this.minSize = Math.min(controller.totalLength(), 10);
@@ -60,6 +108,11 @@ public class DrawTrade {
     }
   }
   
+  /**
+   * Draw trade interface layout, which consist of a background and and 
+   * lines to create separation between trades
+   * @param graphics current graphic context
+   */
   private void drawTradeLayout(Graphics2D graphics) {
     graphics.setColor(Color.LIGHT_GRAY);
     Rectangle2D.Double inv = new Rectangle2D.Double(tradeTopX, tradeTopY, tradeWidth, tradeHeight);
@@ -71,6 +124,10 @@ public class DrawTrade {
     }
   }
   
+  /**
+   * Draw the visual cursor on the trade interface
+   * @param graphics current graphic context
+   */
   private void drawCursor(Graphics2D graphics) {
     int cursor = controller.visualCursor();
     
@@ -83,6 +140,10 @@ public class DrawTrade {
     graphics.fill(cur);
   }
   
+  /**
+   * Draw items used on the trade
+   * @param graphics current graphic context
+   */
   private void drawTradeItems(Graphics2D graphics) {
     int y = 0, index = 0;
     
@@ -103,6 +164,10 @@ public class DrawTrade {
     graphics.setTransform(save);
   }
   
+  /**
+   * Draw items names on the trade interface
+   * @param graphics current graphic context
+   */
   private void drawTradeItemNames(Graphics2D graphics) {
     int y = 0, index = 0;
     for (var entry: controller.trade().entrySet()) {
@@ -130,6 +195,13 @@ public class DrawTrade {
     }
   }
   
+  /**
+   * Draw trade row with the item required to trade and the selling one
+   * @param graphics current graphic context
+   * @param wanted wanted item to trade
+   * @param toSell item the player's getting if he trades
+   * @param y ordinate on the trade interface to draw the row
+   */
   private void drawTradeItem(Graphics2D graphics, String wanted, String toSell, int y) {
     y = tradeTopY/2 + y*Draw.IMAGESIZE;
     Draw.drawImage(graphics, wanted, tradeTopX/2,  y);

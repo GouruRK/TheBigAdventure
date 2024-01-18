@@ -2,11 +2,6 @@ package fr.uge.thebigadventure.parser;
 
 /**
  * Enumeration of tokens and their regular expression that represents them.
- * 
- * @author Forax Remy
- * @author De Oliveira Nelson
- * @author Kies Rémy
- * 
  */
 public enum Token {
   IDENTIFIER("[A-Za-z]+"),

@@ -10,13 +10,36 @@ import fr.uge.thebigadventure.game.Inventory;
 import fr.uge.thebigadventure.game.entity.item.Item;
 import fr.uge.thebigadventure.graphic.controller.InventoryController;
 
+/**
+ * Object to draw the inventory and its content
+ */
 public class DrawInventory {
+
+  //------- Contants -------
   
+  /**
+   * Compute inventory width based on the number of columns
+   */
+  private static final int inventoryWidth = Draw.IMAGESIZE*Inventory.NB_COLS*3;
+  
+  /**
+   * Compute inventory height based on the number of rows
+   */
+  private static final int inventoryHeight = Draw.IMAGESIZE*Inventory.NB_ROWS*2;
+  
+  //------- Fields -------
+  
+  /**
+   * Inventory to draw
+   */
   private final Inventory inventory;
+  
+  /**
+   * Inventory controler  
+   */
   private final InventoryController controller;
    
-  private static final int inventoryWidth = Draw.IMAGESIZE*Inventory.NB_COLS*3;
-  private static final int inventoryHeight = Draw.IMAGESIZE*Inventory.NB_ROWS*2;
+  //------- Constructor -------
   
   public DrawInventory(Inventory inventory, InventoryController controller) {
     Objects.requireNonNull(inventory);
@@ -25,7 +48,17 @@ public class DrawInventory {
     this.controller = controller;
   }
   
+  //------- Methods -------
+  
+  /**
+   * Draw inventory at a given margin from the top left corner of the window
+   * @param graphics current graphic context
+   * @param xMargin
+   * @param yMargin
+   */
   public void drawInventory(Graphics2D graphics, int xMargin, int yMargin) {
+    Objects.requireNonNull(graphics);
+    
     xMargin -= inventoryWidth/2;
     yMargin -= inventoryHeight/2;
     
@@ -35,7 +68,15 @@ public class DrawInventory {
     drawInventoryItemNames(graphics, xMargin, yMargin);
   }
   
+  /**
+   * Draw inventory without cursor at a given margin from the top left corner of the window 
+   * @param graphics current graphic context
+   * @param xMargin
+   * @param yMargin
+   */
   public void drawInventoryWithoutCursor(Graphics2D graphics, int xMargin, int yMargin) {
+    Objects.requireNonNull(graphics);
+    
     xMargin -= inventoryWidth/2;
     yMargin -= inventoryHeight/2;
     
@@ -44,6 +85,12 @@ public class DrawInventory {
     drawInventoryItemNames(graphics, xMargin, yMargin);
   }
   
+  /**
+   * Draw inventory layout, composed by its background and verticals and horizontals lines
+   * @param graphics current graphic context
+   * @param xMargin
+   * @param yMargin
+   */
   private void drawInventoryLayout(Graphics2D graphics, int xMargin, int yMargin) {
     // inventory shape
     graphics.setColor(Color.LIGHT_GRAY);
@@ -62,6 +109,12 @@ public class DrawInventory {
     }
   }
   
+  /**
+   * Draw the player's cursor on the inventory
+   * @param graphics current graphic context
+   * @param xMargin
+   * @param yMargin
+   */
   private void drawInventoryCursor(Graphics2D graphics, int xMargin, int yMargin) {
     int x = (int)controller.cursor().x();
     int y = (int)controller.cursor().y();
@@ -83,14 +136,30 @@ public class DrawInventory {
     
   }
   
+  /**
+   * Transform function for abscissa when drawing an item on the inventory
+   * @param x
+   * @return transformed abscissa
+   */
   private int xItemTransform(int x) {
     return (int)(x*Draw.IMAGESIZE*1.5 + Draw.IMAGESIZE/3);
   }
-  
+
+  /**
+   * Transform function for ordinates when drawing an item on the inventory
+   * @param y
+   * @return transformed ordinate
+   */
   private int yItemTransform(int y) {
     return (int)(y*Draw.IMAGESIZE);
   }
   
+  /**
+   * Draw items on the inventory
+   * @param graphics
+   * @param xMargin
+   * @param yMargin
+   */
   private final void drawInventoryItems(Graphics2D graphics, int xMargin, int yMargin) {
     Item item;
     
@@ -108,6 +177,12 @@ public class DrawInventory {
     graphics.setTransform(saveAT);
   }
   
+  /**
+   * Draw item names
+   * @param graphics
+   * @param xMargin
+   * @param yMargin
+   */
   private final void drawInventoryItemNames(Graphics2D graphics, int xMargin, int yMargin) {
     Item item;
     

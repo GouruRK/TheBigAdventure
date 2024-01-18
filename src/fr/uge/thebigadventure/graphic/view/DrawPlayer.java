@@ -8,17 +8,37 @@ import fr.uge.thebigadventure.game.entity.item.GameItems;
 import fr.uge.thebigadventure.game.entity.mob.Player;
 import fr.uge.thebigadventure.util.Direction;
 import fr.uge.thebigadventure.util.Position;
+import fr.uge.thebigadventure.util.Utils;
 
+/**
+ * Object to draw player and its held item
+ */
 public class DrawPlayer {
 
+  // ------- Fields -------
+  
+  /**
+   * Player to draw
+   */
   private final Player player;
+  
+  //------- Constructor -------
   
   public DrawPlayer(Player player) {
     Objects.requireNonNull(player);
     this.player = player;
   }
   
+  //------- Methods -------
+  
+  /**
+   * Main method to draw the player
+   * @param graphics
+   * @param hasItemBeenUsed
+   */
   public void drawPlayer(Graphics2D graphics, boolean hasItemBeenUsed) {
+    Objects.requireNonNull(graphics);
+    
     DrawMobs.drawMob(graphics, player);
     
     if (!hasItemBeenUsed) {
@@ -30,16 +50,26 @@ public class DrawPlayer {
       
       AffineTransform saveAT = graphics.getTransform();
 
-      graphics.rotate(degToRad(angle), (pos.x() + 0.5)*Draw.IMAGESIZE, (pos.y() + 0.5)*Draw.IMAGESIZE);
+      graphics.rotate(Utils.degToRad(angle), (pos.x() + 0.5)*Draw.IMAGESIZE, (pos.y() + 0.5)*Draw.IMAGESIZE);
       drawHeldItem(graphics, hasItemBeenUsed);
       graphics.setTransform(saveAT);
     }
   }
   
+  /**
+   * Draw held item that hasn't been used
+   * @param graphics
+   */
   private void drawHeldItem(Graphics2D graphics) {
     drawHeldItem(graphics, false);
   }
   
+  /**
+   * Draw held item. If hasItemBeenUsed is true, display it at a different angle that 
+   * the player is looking at 
+   * @param graphics graphic context
+   * @param hasItemBeenUsed tells if the held item has been used
+   */
   private void drawHeldItem(Graphics2D graphics, boolean hasItemBeenUsed) {
     if (player.hold() == null) {
       return;
@@ -54,14 +84,14 @@ public class DrawPlayer {
       Draw.drawImage(graphics, player.hold().skin(), pos.addX(1), 1.25);
       Draw.drawImage(graphics, player.hold().skin(), pos.addX(2), 1.25);
     }
-    
     graphics.setTransform(saveAT);
   }
   
-  private double degToRad(double angle) {
-    return angle * Math.PI / 180;
-  }
-  
+  /**
+   * Get angle its facing
+   * @param facing
+   * @return
+   */
   private double facingToAngle(Direction facing) {
     return switch (facing) {
     case Direction.WEST -> 180;

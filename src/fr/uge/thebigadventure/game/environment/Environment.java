@@ -57,15 +57,15 @@ public interface Environment {
    */
   public static Environment createEnvironment(ElementAttributes elem, Position pos) {
     return switch (elem.getID()) {
-    case GameObjectID.SCENERY -> new Block(elem.getSkin(), pos, true);
-    case GameObjectID.OBSTACLE -> new Block(elem.getSkin(), pos, false);
-    case GameObjectID.GATE -> new Gate(elem.getSkin(), pos, elem.getLocked(), elem.getTeleport(), false);
+    case GameObjectID.SCENERY -> new Block(elem.skin(), pos, true);
+    case GameObjectID.OBSTACLE -> new Block(elem.skin(), pos, false);
+    case GameObjectID.GATE -> new Gate(elem.skin(), pos, elem.locked(), elem.teleport(), false);
     default -> null;
     };
   }
   
   public static Environment createEnvironment(ElementAttributes elem) {
-    return Environment.createEnvironment(elem, elem.getPosition());
+    return Environment.createEnvironment(elem, elem.position());
   }
   
   //------- Other -------

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
@@ -17,8 +19,19 @@ import fr.uge.thebigadventure.game.entity.mob.Player;
 import fr.uge.thebigadventure.game.environment.Environment;
 import fr.uge.thebigadventure.util.PathCreator;
 
+/**
+ * Manage skins for the game
+ */
 public class Skins {
-  private static final HashMap<String, BufferedImage> SKINS = new HashMap<String, BufferedImage>();
+  
+  // ------- Fields -------
+  
+  /**
+   * Map that associate skins with images
+   */
+  private static final Map<String, BufferedImage> SKINS = new HashMap<String, BufferedImage>();
+  
+  //------- Methods -------
   
   /**
    * load all skin of Environment, DroppedItem, Mob to setup de map
@@ -36,6 +49,11 @@ public class Skins {
     loadSkin("sprout");
   }
   
+  /**
+   * Load all images for skin that comes from the field (obstacles, scenery, gates, ...)
+   * @param field
+   * @throws IOException
+   */
   private static void loadEnvironmentSkin(Environment[][] field) throws IOException {
     for (var line: field) {
       for (Environment env: line) {
@@ -46,10 +64,20 @@ public class Skins {
     }
   }
   
+  /**
+   * Load the player skin
+   * @param player
+   * @throws IOException
+   */
   private static void loadPlayerSkin(Player player) throws IOException {
     loadSkin(player.skin());
   }
   
+  /**
+   * Load skins from mobs
+   * @param mobs
+   * @throws IOException
+   */
   private static void loadMobsSkin(List<Mob> mobs) throws IOException {
     for (Mob mob: mobs) {
       loadSkin(mob.skin());
@@ -60,6 +88,11 @@ public class Skins {
     }
   }
   
+  /**
+   * Load skins used for trade
+   * @param friend
+   * @throws IOException
+   */
   private static void loadTrade(Friend friend) throws IOException {
     if (friend.trade() != null) {
       for (var entry: friend.trade().entrySet()) {
@@ -71,6 +104,11 @@ public class Skins {
     }
   }
   
+  /**
+   * Load skin used for dropped item
+   * @param items
+   * @throws IOException
+   */
   private static void loadDroppedItemSkin(List<DroppedItem> items) throws IOException {
     for (DroppedItem item: items) {
       loadSkin(item.skin());
@@ -78,7 +116,7 @@ public class Skins {
   }
   
   /**
-   * load skin on the screen
+   * Load an image based on a skin
    * 
    * @param skin
    * @throws IOException
@@ -99,7 +137,13 @@ public class Skins {
     SKINS.put(skin, image);
   }
   
+  /**
+   * Get image from skin
+   * @param skin
+   * @return
+   */
   public static BufferedImage getSkin(String skin) {
+    Objects.requireNonNull(skin);
     return SKINS.get(skin.toUpperCase(Locale.ROOT));
   }
   
