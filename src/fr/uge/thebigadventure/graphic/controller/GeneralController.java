@@ -441,8 +441,7 @@ public class GeneralController {
   }
   
   /**
-   * Update entities according to the number of frames 
-   * @param frames
+   * Update entities according to the number of frames
    * @return
    */
   public boolean entityUpdate() {

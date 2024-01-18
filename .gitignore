@@ -1,8 +1,8 @@
 /bin/
 
 *.classpath
+*.jar
 .project
 classes
 out
 bin
-build/

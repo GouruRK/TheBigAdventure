@@ -73,7 +73,7 @@ public class Game {
   /***
    * Creates a game
    * 
-   * @param size field size
+   * @param zone field zone
    * @param field field that contains obstacles and scenery
    * @param mobs arrays of mobs
    * @param items array of dropped item
@@ -250,7 +250,6 @@ public class Game {
    * Move the given mob one step on the given direction if the movement is possible
    * @param mob mob to move. If mob is the player, it can pick up item from the ground
    * @param dir direction to move
-   * @param step number (or proportion) of square to move
    */
   public boolean move(Mob mob, Direction dir) {
     Objects.requireNonNull(mob);

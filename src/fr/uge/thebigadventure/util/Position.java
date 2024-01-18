@@ -109,7 +109,6 @@ public class Position {
   /**
    * Add a floating abscissa to the current abscissa
    * @param x
-   * @return
    */
   public void addLocalX(double x) {
     this.x += x;
@@ -118,7 +117,6 @@ public class Position {
   /**
    * Add a floating abscissa to the current abscissa
    * @param x
-   * @return
    */
   public void addLocalX(int x) {
     this.x += x;
@@ -128,7 +126,6 @@ public class Position {
    * Add a floating ordinate to the current ordinate and return a new position
    * with the new coordinates
    * @param y
-   * @return
    */
   public Position addY(double y) {
   	return new Position(x,this.y + y);
@@ -147,7 +144,6 @@ public class Position {
   /**
    * Add a floating ordinate to the current ordinate
    * @param y
-   * @return
    */
   public void addLocalY(double y) {
     this.y += y;
@@ -156,7 +152,6 @@ public class Position {
   /**
    * Add a integer ordinate to the current ordinate
    * @param y
-   * @return
    */
   public void addLocalY(int y) {
     this.y += y;
@@ -190,7 +185,6 @@ public class Position {
   
   /**
    * Get a list of positions around one current position
-   * @param dir
    * @return
    */
   public List<Position> getAround() {

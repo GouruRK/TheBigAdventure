@@ -464,7 +464,7 @@ public class ElementAttributes {
   
   /**
    * Set position attribute
-   * @param position
+   * @param pos
    * @throws TokenException if position is already register
    */
   public void setPosition(Position pos) throws TokenException {
@@ -670,7 +670,7 @@ public class ElementAttributes {
   
   /**
    * Check phantomized's validity and set it the object instance
-   * @param name
+   * @param phantomize
    * @throws TokenException if name is already register
    */
   public void setPhantomize(String phantomize) throws TokenException {

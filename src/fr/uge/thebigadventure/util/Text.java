@@ -30,7 +30,7 @@ public class Text {
   /**
    * Text constructor
    * @param text text to be formated
-   * @param format tells if the text need to be formated
+   * @param data tells if the text need to be formated
    */
   public Text(String text, boolean data) {
     Objects.requireNonNull(text);

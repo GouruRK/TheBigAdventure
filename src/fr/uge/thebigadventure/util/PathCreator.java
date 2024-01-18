@@ -23,7 +23,7 @@ public class PathCreator {
    * @return
    */
   public static String mapPath(String mapName) {
-    return "map/" + mapName + ".map";
+    return "maps/" + mapName + ".map";
   }
   
 }

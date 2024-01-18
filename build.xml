@@ -1,30 +1,39 @@
-<project name="TheBigAdventure" basedir="." default="jar">
+<project name="thebigadventure" basedir="." default="jar">
     
-    <property name="src.dir"     value="src"/>
-
-    <property name="build.dir"   value="build"/>
-    <property name="classes.dir" value="${build.dir}/classes"/>
-    <property name="jar.dir"     value="${build.dir}/jar"/>
-	<property name="lib.dir"     value="lib"/>
-
-    <property name="main-class"  value="main"/>
+	<!-- Init Properties -->
 	
+    <property name="src.dir" value="src"/>
+    <property name="classes.dir" value="classes"/>
+	<property name="lib.dir" value="lib"/>
+	<property name="doc.dir" value="docs/api"/>
+	<property name="ressources.dir" value="ressources"/>
+    <property name="main-class" value="main"/>
+
 	<path id="classpath">
         <fileset dir="${lib.dir}" includes="**/*.jar"/>
     </path>
 	
+	<!-- Begin targets -->
+	
+	<!-- Clean -->
+	
 	<target name="clean">
-        <delete dir="${build.dir}"/>
+        <delete>
+        	<fileset dir="${classes.dir}" includes="**/*.class"/>
+        </delete>
     </target>
+	
+	<!-- Compile -->
 	
 	<target name="compile">
 		<mkdir dir="${classes.dir}"/>
 		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" includeantruntime="false"/>
 	</target>
-	
+
+	<!-- Jar -->
+
 	<target name="jar" depends="compile">
-        <mkdir dir="${jar.dir}"/>
-		<jar destfile="${jar.dir}/${ant.project.name}.jar">
+        <jar destfile="${ant.project.name}.jar">
 			<manifest>
 				<attribute name="Main-Class" value="fr.uge.thebigadventure.Main" />
 			</manifest>
@@ -35,13 +44,15 @@
         </jar>
 	</target>
 
-	<target name="run" depends="jar">
-        <java fork="true" classname="Main">
-            <classpath>
-                <path refid="classpath"/>
-                <path location="${jar.dir}/${ant.project.name}.jar"/>
-            </classpath>
-        </java>
-    </target>
+	<!-- Javadoc -->
+	
+	<target name="javadoc" depends="compile">
+		<mkdir dir="${classes.dir}"/>
+    	<javadoc sourcepath="${src.dir}" destdir="${doc.dir}" additionalparam="-Xdoclint:none">
+    		<classpath>
+		        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+		    </classpath>
+    	</javadoc>
+  	</target>
 	
 </project>
