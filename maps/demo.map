@@ -1,0 +1,205 @@
+[grid]
+  size: (81 x 47)
+  encodings: LAVA(L) PLANK(p) GRASS(g) TREE(T) TREES(E) FLOWER(f) WALL(W)
+    ROCK(R) LILY(l) FENCE(F) WATER(Z) HUSK(H) HUSKS(I) ROAD(r) HOUSE(h)
+    REED(D) SIGN(S) ALGAE(A) TILE(t) TOWER (G)
+    BRICK(K) RUBBLE(Q) CLIFF(c) BOG(o)
+  data: """
+EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEZZlZZWWWWWWWWWWWWWWWWWEEEEEEEEEEEEEEEEEEEE
+EZZZZA           S  EEEEEEEE  f    E EEZZlZWttttttttttttttttWE  g   f    g   g  E
+EZZZ      rrrr  rr     f   f EEEE EE EEZZZZWttttttttttttttttWE      g  f    f  gE
+E       r        FFFEEEEEEEEEEE E EE EEllZZWttttttttttttttttt  gf    f    g     E
+E h    rr  h        EZA    f   f      EZZZZWttttttttttttttttt f   f  g       g fE
+E                   EZZAE EEEEE EEEEEEEZZlZWttttttttttttttttt           g  f    E
+E    h              EZpZE E   E E     EZlZZWttttttttttttttttWE  f g   f      g  E
+E             h     EZZpErE   E EEEEE EZZlZWttttttttttttttttWE   f   g    g   f E
+E                   EZZEErE   E       EZZZZWttttttttttttttttWEEEEEEEEEEEEEEEEEEEE
+EEEEEEEEEEEEEEEEEEEEEEEEE EEEEEEEEEEEEEZZZWtttttttttttttttttW                   W
+E                                  AZZZZZWttttttttttttttttttW                   W
+EAA   T  AT   AA A T    ttt     AAZZZZZZZWttttttttttttttttttW                   W
+ZZZZZZZZZZZZZZZZZZZZZZZZtttZZZZZZZZZllZZZZWWWtttttttttttttttW                   W               
+ZZZZZZlZZZZZZZZlZZllZZZZtttttZZlZZZZZZZZZZZZZWttttttttttttttW                   W
+ZZlZZZZlZZZlZZZZZZZZZlZZtttttZZZZZZZ     ZlZZZWtttttttttttttW                   W
+ZZZZZZlZZZZZZZZllZZZZZZZZZtttZZ      FFF  EEEEWtttttttttttttW                   W
+ZZZZZllZZZZZZZZZZZZ      ttt       FF hF EEEEEWtttttttttttttW                   W
+ZZZZZZZZZllZZZ             r     FFFF  EEEEEEEWtttttttttttttW                   W
+EEEEEEEEEEEEEEEEEEEEEEEEEE   EEEEEEEEEEEEEEEEEWtttttttttttttW                   W
+WWWWWWWWWWWWWWWWWWWWWWWWWW   WWWWWWWWWWWWWWWWWWtttttttttttttW                   W
+WtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttW                   W
+WtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttW                   W
+WtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttW                   W
+WtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttW                   W
+WtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttW                   W
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW   WW                   W
+W                                                           W                   W
+W                                                           W                   W
+W                                                           W                   W
+W                                                           W                   W
+W                                                           W                   W
+W                                                           W                   W
+W                                                           W                   W
+W                                                           W                   W
+W                                                                               W
+W                                                           W                   W
+W                                                           W                   W
+W                                                           W                   W
+W                                                           W                   W
+W                L                                          W                   W
+W                LL                                         W         G         W
+W               LLL                                         W                   W
+W              LLLLL                                        W      G     G      W
+W              LLLLLL                LL                     W                   W
+W            LLLLLLLL       G       LLL                     W         G         W
+W           LLLLLLLLLLL            LLLLL                    W                   W
+WWWWWWWWWWWWWWWLLLLLLWWWWWWWWWWWWLLLLLLWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+"""
+
+[element]
+  skin: DOOR
+  position: (21, 2)
+  locked: KEY green
+
+[element]
+  name: fluffy
+  player: true
+  skin: BABA
+  position: (8,7)
+  health: 20
+
+[element]
+  name: durendale
+  skin: SWORD
+  position: (33,6)
+  kind: item
+  damage: 15
+
+[element]
+  name: green
+  skin: KEY
+  position: (5,1)
+  kind: item
+  
+[element]
+  name: blue
+  skin: KEY
+  position: (36,1)
+  kind: item
+
+[element]
+  skin: DOOR
+  position: (25,9)
+  locked: KEY blue
+
+[element]
+  name: statue
+  skin: STATUE
+  position: (25,20)
+  kind: obstacle
+[element]
+  name: statue
+  skin: STATUE
+  position: (29,20)
+  kind: obstacle
+[element]
+  name: statue
+  skin: STATUE
+  position: (60,2)
+  kind: obstacle
+[element]
+  name: statue
+  skin: STATUE
+  position: (60,5)
+  kind: obstacle
+[element]
+  name: statue
+  skin: STATUE
+  position: (55,24)
+  kind: obstacle
+[element]
+  name: statue
+  skin: STATUE
+  position: (59,24)
+  kind: obstacle
+[element]
+  name: statue
+  skin: STATUE
+  position: (55,26)
+  kind: obstacle
+[element]
+  name: statue
+  skin: STATUE
+  position: (59,26)
+  kind: obstacle
+
+[element]
+  name: Hades
+  skin: SKULL
+  position: (71, 4)
+  kind: enemy
+  health: 30
+  zone: (71, 2) (5 x 5)
+  behavior: agressive
+  damage: 10
+[element]
+  name: Aphelios
+  skin: ROBOT
+  position: (73, 4)
+  kind: enemy
+  health: 10
+  zone: (73, 2) (6 x 6)
+  behavior: agressive
+  damage: 5
+  
+[element]
+  name: Arthus
+  skin: CRAB
+  position: (6, 21)
+  kind: enemy
+  health: 10
+  zone: (6, 21) (5 x 5)
+  behavior: agressive
+  damage: 5
+  
+
+[element]
+  name: piano
+  skin: PIANO
+  position: (24,10)
+  kind: obstacle
+
+[element]
+  name: chair
+  skin: CHAIR
+  position: (23,10)
+  kind: obstacle
+
+[element]
+  name: table
+  skin: TABLE
+  position: (48,9)
+  kind: obstacle
+[element]
+  name: table
+  skin: TABLE
+  position: (47,9)
+  kind: obstacle
+[element]
+  name: table
+  skin: TABLE
+  position: (46,9)
+  kind: obstacle
+[element]
+  name: table
+  skin: TABLE
+  position: (45,9)
+  kind: obstacle
+
+[element]
+  name: bed
+  skin: BED
+  position: (38,45)
+  kind: obstacle
+  
+[element]
+  skin: BURGER
+  position: (2, 23)
