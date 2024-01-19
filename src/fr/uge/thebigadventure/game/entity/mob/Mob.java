@@ -1,6 +1,9 @@
 package fr.uge.thebigadventure.game.entity.mob;
 
 
+import java.util.Locale;
+import java.util.Objects;
+
 import fr.uge.thebigadventure.game.Kind;
 import fr.uge.thebigadventure.game.entity.Entity;
 import fr.uge.thebigadventure.parser.ElementAttributes;
@@ -90,6 +93,7 @@ public interface Mob extends Entity {
    * @return boolean
    */
   public default boolean isMoveInZonePossible(Position pos) {
+    Objects.requireNonNull(pos);
   	if (!zone().isInside(pos)) {
   		return false;
   	}
@@ -105,10 +109,13 @@ public interface Mob extends Entity {
    * @return Mob
    */
   public static Mob createMob(ElementAttributes element) {
+    Objects.requireNonNull(element);
+    
+    String skin = element.skin().toUpperCase(Locale.ROOT);
     return switch (element.kind()) {
-    case Kind.FRIEND -> new Friend(element.skin(), element.position(), element.zone(),element.name(), element.health(), element.trade(), element.text());
-    case Kind.ENEMY -> new Enemy(element.skin(), element.position(), element.zone(), element.health(), element.damage(), element.behaviour(), element.name());
-    default -> null;
+      case Kind.FRIEND -> new Friend(skin, element.position(), element.zone(),element.name(), element.health(), element.trade(), element.text());
+      case Kind.ENEMY -> new Enemy(skin, element.position(), element.zone(), element.health(), element.damage(), element.behaviour(), element.name());
+      default -> null;
     };
   }
   

@@ -6,6 +6,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Objects;
 
+import fr.uge.thebigadventure.game.GameObjectID;
 import fr.uge.thebigadventure.game.entity.mob.Mob;
 
 /**
@@ -47,6 +48,10 @@ public class DrawMobs {
    * @param mob
    */
   private static void drawHealthBar(Graphics2D graphics, Mob mob) {
+    if (mob.id() == GameObjectID.FRIEND) {
+      return;
+    }
+    
     int size = Draw.IMAGESIZE;
     
     graphics.setColor(Color.RED);

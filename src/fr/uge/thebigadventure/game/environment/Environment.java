@@ -1,5 +1,8 @@
 package fr.uge.thebigadventure.game.environment;
 
+import java.util.Locale;
+import java.util.Objects;
+
 import fr.uge.thebigadventure.game.GameObjectID;
 import fr.uge.thebigadventure.parser.ElementAttributes;
 import fr.uge.thebigadventure.parser.EncodingRow;
@@ -31,15 +34,21 @@ public interface Environment {
    * @return Environment
    */
   public static Environment createEnvironment(EncodingRow row, Position pos) {
+    Objects.requireNonNull(row);
+    Objects.requireNonNull(pos);
+    String skin = row.skin().toUpperCase(Locale.ROOT);
     return switch (row.id()) {
-      case GameObjectID.SCENERY -> new Block(row.skin(), pos, true);
-      case GameObjectID.OBSTACLE -> new Block(row.skin(), pos, false);
-      case GameObjectID.GATE -> new Gate(row.skin(), pos);
+      case GameObjectID.SCENERY -> new Block(skin, pos, true);
+      case GameObjectID.OBSTACLE -> new Block(skin, pos, false);
+      case GameObjectID.GATE -> new Gate(skin, pos);
       default -> null;
     };
   }
   
   public static Environment createEnvironment(String skin, Position pos) {
+    Objects.requireNonNull(skin);
+    Objects.requireNonNull(pos);
+    skin = skin.toUpperCase(Locale.ROOT);
     return switch (GameEnvironment.getId(skin)) {
       case GameObjectID.SCENERY -> new Block(skin, pos, true);
       case GameObjectID.OBSTACLE -> new Block(skin, pos, false);
@@ -56,15 +65,20 @@ public interface Environment {
    * @return Environment
    */
   public static Environment createEnvironment(ElementAttributes elem, Position pos) {
+    Objects.requireNonNull(elem);
+    Objects.requireNonNull(pos);
+    
+    String skin = elem.skin().toUpperCase(Locale.ROOT);
     return switch (elem.getID()) {
-    case GameObjectID.SCENERY -> new Block(elem.skin(), pos, true);
-    case GameObjectID.OBSTACLE -> new Block(elem.skin(), pos, false);
-    case GameObjectID.GATE -> new Gate(elem.skin(), pos, elem.locked(), elem.teleport(), false);
-    default -> null;
+      case GameObjectID.SCENERY -> new Block(skin, pos, true);
+      case GameObjectID.OBSTACLE -> new Block(skin, pos, false);
+      case GameObjectID.GATE -> new Gate(skin, pos, elem.locked(), elem.teleport(), false);
+      default -> null;
     };
   }
   
   public static Environment createEnvironment(ElementAttributes elem) {
+    Objects.requireNonNull(elem);
     return Environment.createEnvironment(elem, elem.position());
   }
   
@@ -75,6 +89,7 @@ public interface Environment {
   }
   
   public static GameEnvironment getEnvironment(String skin) {
+    Objects.requireNonNull(skin);
     return GameEnvironment.getEnvironment(skin);
   }
   

@@ -19,5 +19,6 @@ public enum GameObjectID {
   ELEMENT,
   GATE,
   WIND,
-  EFFECT
+  EFFECT;
+  
 }

@@ -1,18 +1,21 @@
 package fr.uge.thebigadventure.game;
 
+import java.util.Objects;
+
 import fr.uge.thebigadventure.game.entity.item.GameItems;
 import fr.uge.thebigadventure.game.entity.mob.GameMobs;
 import fr.uge.thebigadventure.game.environment.GameEnvironment;
 
 public interface GameObject {
- 
-	/**
-	 * Precise the type of the Name (item, mob, environment)
-	 * 
-	 * @param name
-	 * @return gameObjectID
-	 */
+  /**
+   * Precise the type of the Name (item, mob, environment)
+   * 
+   * @param name
+   * @return gameObjectID
+   */
   public static GameObjectID fromName(String name) {
+    Objects.requireNonNull(name);
+    
     GameObjectID id;
     if ((id = GameMobs.getId(name)) != GameObjectID.UNKNOWN) {
       return id;

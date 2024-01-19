@@ -400,16 +400,16 @@ public class GeneralController {
       if (env.getEnvironment() == GameEnvironment.TREE) {
         if (weapon.getItem() == GameItems.SWORD) {
           game.removeEnvironment(pos);
-          game.addDroppedItem(Item.createItem("box"), pos);           
+          game.addDroppedItem(Item.createItem("BOX"), pos);           
         } else if (weapon.getItem() == GameItems.BOLT) {
           game.removeEnvironment(pos);
-          game.setEnvironment("fire", pos);
+          game.setEnvironment("FIRE", pos);
         }
       } else if (env.getEnvironment() == GameEnvironment.GRASS) {
-        if (weapon.getItem() == GameItems.SHOVEL && game.inventory().contains(new Thing("seed"))) {
+        if (weapon.getItem() == GameItems.SHOVEL && game.inventory().contains(new Thing("SEED"))) {
           game.removeEnvironment(pos);
-          game.setEnvironment("sprout", pos);
-          game.inventory().remove(new Thing("seed"));
+          game.setEnvironment("SPROUT", pos);
+          game.inventory().remove(new Thing("SEED"));
         }
       }
     }

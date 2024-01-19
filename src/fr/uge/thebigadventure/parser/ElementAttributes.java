@@ -630,7 +630,13 @@ public class ElementAttributes {
   public void setLocked(Item item) throws TokenException {
     Objects.requireNonNull(item);
     checkNull(this.locked, "Item lock");
-    this.locked = item;
+    
+    if (item.skin().equalsIgnoreCase("LEVER") || item.skin().equalsIgnoreCase("KEY")) {
+      this.locked = item;      
+    } else {
+      throw new TokenException("Doors can only be locked by key and levers");
+    }
+    
   }
   
   /**

@@ -1,5 +1,6 @@
 package fr.uge.thebigadventure.game.entity.item;
 
+import java.util.Locale;
 import java.util.Objects;
 
 import fr.uge.thebigadventure.game.GameObjectID;
@@ -33,12 +34,15 @@ public interface Item extends Entity {
    * @return Item
    */
   public static Item createItem(EncodingRow row) {
+    Objects.requireNonNull(row);
+    
+    String skin = row.skin().toUpperCase(Locale.ROOT);
     return switch(row.id()) {
-    case GameObjectID.FOOD -> new Food(row.skin());
-    case GameObjectID.THING -> new Thing(row.skin());
-    case GameObjectID.WEAPON -> new Weapon(row.skin());
-    case GameObjectID.CONTAINER -> new Bucket(row.skin());
-    default -> null;
+      case GameObjectID.FOOD -> new Food(skin);
+      case GameObjectID.THING -> new Thing(skin);
+      case GameObjectID.WEAPON -> new Weapon(skin);
+      case GameObjectID.CONTAINER -> new Bucket(skin);
+      default -> null;
     };
   }
   
@@ -50,7 +54,7 @@ public interface Item extends Entity {
    */
   public static Item createItem(String skin) {
     Objects.requireNonNull(skin);
-    return Item.createItem(skin, null);
+    return Item.createItem(skin.toUpperCase(Locale.ROOT), null);
   }
   
   
@@ -65,13 +69,14 @@ public interface Item extends Entity {
     Objects.requireNonNull(skin);
     // no check on name because item can have no name
     GameObjectID id = GameItems.getId(skin);
+    skin = skin.toUpperCase(Locale.ROOT);
     return switch (id) {
-    case GameObjectID.FOOD -> new Food(skin, name);
-    case GameObjectID.THING -> new Thing(skin, name);
-    case GameObjectID.WEAPON -> new Weapon(skin, name);
-    case GameObjectID.CONTAINER -> new Bucket(skin, name);
-    case GameObjectID.READABLE -> new Readable(skin, name);
-    default -> null;
+      case GameObjectID.FOOD -> new Food(skin, name);
+      case GameObjectID.THING -> new Thing(skin, name);
+      case GameObjectID.WEAPON -> new Weapon(skin, name);
+      case GameObjectID.CONTAINER -> new Bucket(skin, name);
+      case GameObjectID.READABLE -> new Readable(skin, name);
+      default -> null;
     };
   }
   
@@ -102,13 +107,14 @@ public interface Item extends Entity {
    */
   public static DroppedItem createDroppedItem(ElementAttributes elem) {
     Objects.requireNonNull(elem);
+    String skin = elem.skin().toUpperCase(Locale.ROOT);
     return switch (elem.getID()) {
-    case GameObjectID.THING,
-         GameObjectID.FOOD,
-         GameObjectID.CONTAINER -> new DroppedItem(elem.position(), Item.createItem(elem.skin(), elem.name()));
-    case GameObjectID.WEAPON -> new DroppedItem(elem.position(), new Weapon(elem.skin(), elem.damage(), false, elem.name()));
-    case GameObjectID.READABLE -> new DroppedItem(elem.position(), new Readable(elem.skin(), elem.name(), elem.text()));
-    default -> null;
+      case GameObjectID.THING,
+           GameObjectID.FOOD,
+           GameObjectID.CONTAINER -> new DroppedItem(elem.position(), Item.createItem(skin, elem.name()));
+      case GameObjectID.WEAPON -> new DroppedItem(elem.position(), new Weapon(skin, elem.damage(), false, elem.name()));
+      case GameObjectID.READABLE -> new DroppedItem(elem.position(), new Readable(skin, elem.name(), elem.text()));
+      default -> null;
     };
   }
   

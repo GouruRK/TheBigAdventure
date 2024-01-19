@@ -30,6 +30,7 @@
 
 [element]
   	skin: BABA
+  	name: Waldo
   	position: (1, 5)
   	health: 10
 	kind: friend
