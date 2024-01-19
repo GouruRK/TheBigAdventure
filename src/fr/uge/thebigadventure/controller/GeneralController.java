@@ -1,4 +1,4 @@
-package fr.uge.thebigadventure.graphic.controller;
+package fr.uge.thebigadventure.controller;
 
 import java.awt.Color;
 import java.util.Objects;
@@ -18,11 +18,11 @@ import fr.uge.thebigadventure.game.entity.mob.Player;
 import fr.uge.thebigadventure.game.environment.Environment;
 import fr.uge.thebigadventure.game.environment.GameEnvironment;
 import fr.uge.thebigadventure.game.environment.Gate;
-import fr.uge.thebigadventure.graphic.view.Draw;
-import fr.uge.thebigadventure.graphic.view.View;
 import fr.uge.thebigadventure.parser.commandline.Arguments;
 import fr.uge.thebigadventure.util.Direction;
 import fr.uge.thebigadventure.util.Position;
+import fr.uge.thebigadventure.view.Draw;
+import fr.uge.thebigadventure.view.View;
 import fr.umlv.zen5.Application;
 
 /**
@@ -379,8 +379,10 @@ public class GeneralController {
    * @param item
    */
   private void read(Readable item) {
-    textController.toggleIsTextInterfaceShow();
-    textController.setText(item.text());
+    if (item.hasText()) {
+      textController.toggleIsTextInterfaceShow();
+      textController.setText(item.text());      
+    }
   }
   
   /**

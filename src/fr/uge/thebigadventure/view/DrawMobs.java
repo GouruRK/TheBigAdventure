@@ -1,4 +1,4 @@
-package fr.uge.thebigadventure.graphic.view;
+package fr.uge.thebigadventure.view;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

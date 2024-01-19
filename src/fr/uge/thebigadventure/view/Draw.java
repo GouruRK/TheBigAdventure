@@ -1,4 +1,4 @@
-package fr.uge.thebigadventure.graphic.view;
+package fr.uge.thebigadventure.view;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -6,10 +6,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
+import fr.uge.thebigadventure.controller.GeneralController;
 import fr.uge.thebigadventure.game.Game;
 import fr.uge.thebigadventure.game.entity.item.Item;
 import fr.uge.thebigadventure.game.environment.Environment;
-import fr.uge.thebigadventure.graphic.controller.GeneralController;
 import fr.uge.thebigadventure.util.Position;
 import fr.umlv.zen5.ApplicationContext;
 import fr.umlv.zen5.ScreenInfo;

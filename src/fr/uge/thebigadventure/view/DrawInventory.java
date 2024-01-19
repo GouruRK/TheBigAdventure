@@ -1,4 +1,4 @@
-package fr.uge.thebigadventure.graphic.view;
+package fr.uge.thebigadventure.view;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -6,9 +6,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
+import fr.uge.thebigadventure.controller.InventoryController;
 import fr.uge.thebigadventure.game.Inventory;
 import fr.uge.thebigadventure.game.entity.item.Item;
-import fr.uge.thebigadventure.graphic.controller.InventoryController;
 
 /**
  * Object to draw the inventory and its content

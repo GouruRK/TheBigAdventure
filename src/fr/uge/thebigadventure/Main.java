@@ -2,13 +2,13 @@ package fr.uge.thebigadventure;
 
 import java.io.IOException;
 
+import fr.uge.thebigadventure.controller.GeneralController;
 import fr.uge.thebigadventure.game.Game;
-import fr.uge.thebigadventure.graphic.controller.GeneralController;
-import fr.uge.thebigadventure.graphic.view.Skins;
 import fr.uge.thebigadventure.parser.Parser;
 import fr.uge.thebigadventure.parser.TokenException;
 import fr.uge.thebigadventure.parser.commandline.Arguments;
 import fr.uge.thebigadventure.parser.commandline.CommandLineException;
+import fr.uge.thebigadventure.view.Skins;
 
 public class Main {
   public static void main(String[] args) {

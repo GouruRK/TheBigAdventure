@@ -259,6 +259,7 @@ public class Game {
     if (nextPos == null) {
       return false;
     }
+    mob.setFacing(dir);
     if (mob.isMoveInZonePossible(nextPos) && isMoveInGamePossible(mob, nextPos)) {
       mob.setPos(nextPos);
       
@@ -268,7 +269,6 @@ public class Game {
       }
       return true;
     }
-    mob.setFacing(dir);
     return false;
   }
   

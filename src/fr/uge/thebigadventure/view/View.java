@@ -1,8 +1,8 @@
-package fr.uge.thebigadventure.graphic.view;
+package fr.uge.thebigadventure.view;
 
 import java.util.Objects;
 
-import fr.uge.thebigadventure.graphic.controller.KeyOperation;
+import fr.uge.thebigadventure.controller.KeyOperation;
 import fr.uge.thebigadventure.util.Direction;
 import fr.umlv.zen5.ApplicationContext;
 import fr.umlv.zen5.Event;

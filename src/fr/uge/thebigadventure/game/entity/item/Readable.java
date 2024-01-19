@@ -16,8 +16,16 @@ public record Readable(String skin, String name, Text text) implements Item {
   public Readable(String skin, String name) {
     this(skin, name, null);
   }
-  
+    
   // ------- Getter -------
+  
+  /**
+   * Check if item has text
+   * @return
+   */
+  public boolean hasText() {
+    return text != null;
+  }
   
   @Override
   public GameObjectID id() {

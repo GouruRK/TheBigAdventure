@@ -1,4 +1,4 @@
-package fr.uge.thebigadventure.graphic.view;
+package fr.uge.thebigadventure.view;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -6,7 +6,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
-import fr.uge.thebigadventure.graphic.controller.TextController;
+import fr.uge.thebigadventure.controller.TextController;
 
 /**
  * Object to display text interface

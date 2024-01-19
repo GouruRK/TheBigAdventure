@@ -1,4 +1,4 @@
-package fr.uge.thebigadventure.graphic.controller;
+package fr.uge.thebigadventure.controller;
 
 import java.util.Objects;
 
