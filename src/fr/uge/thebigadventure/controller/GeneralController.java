@@ -505,7 +505,7 @@ public class GeneralController {
       boolean needUpdate;
       
       draw.drawGame();
-      while ((key = View.getOperation(context)) != KeyOperation.EXIT) {
+      while (((key = View.getOperation(context)) != KeyOperation.EXIT) && game.isPlayerAlive()) {
         needUpdate = false;
         startTime = System.nanoTime();
         
@@ -522,8 +522,12 @@ public class GeneralController {
         computeTimeDelay(startTime, System.nanoTime());
         totalFrames++;
       }
+      if (!game.isPlayerAlive()) {
+        System.out.println("You'r dead !");
+      }
       context.exit(0);
     });
+    
   }
   
 }

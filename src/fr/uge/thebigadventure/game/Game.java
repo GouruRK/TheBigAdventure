@@ -160,8 +160,20 @@ public class Game {
     return backPos;
   }
   
+  /**
+   * Get game zone
+   * @return
+   */
   public Zone zone() {
     return zone;
+  }
+  
+  /**
+   * Give intels if the player is alive
+   * @return
+   */
+  public boolean isPlayerAlive() {
+    return !player.isDead();
   }
   
   /**
