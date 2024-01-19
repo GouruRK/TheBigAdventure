@@ -37,10 +37,10 @@
 			<manifest>
 				<attribute name="Main-Class" value="fr.uge.thebigadventure.Main" />
 			</manifest>
-        	<fileset dir="ressources"/>
+        	<fileset dir="${ressources.dir}"/>
         	<fileset dir="${lib.dir}" includes="**/*.jar"/>
         	<fileset dir="${classes.dir}" />
-        	<zipfileset src="lib/zen5.jar" includes="**/*.class"/>
+        	<zipfileset src="${lib.dir}/zen5.jar" includes="**/*.class"/>
         </jar>
 	</target>
 
