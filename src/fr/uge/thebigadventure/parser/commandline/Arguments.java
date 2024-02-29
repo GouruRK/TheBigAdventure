@@ -29,6 +29,11 @@ public class Arguments {
    */
   private static boolean validate = false;
   
+  /**
+   * Store if help has been ask by the user
+   */
+  private static boolean help = false;
+
   //------- Getter -------
   
   /**
@@ -56,13 +61,20 @@ public class Arguments {
   }
   
   /**
+   * Get intel if help has been ask
+   */
+  public static boolean help() {
+    return help;
+  }
+
+   /**
    * Get path of the map to play
    * @return
    */
   public static Path level() {
     return level;
   }
-  
+
   //------- Methods -------
   
   /**
@@ -73,7 +85,7 @@ public class Arguments {
   public static void parseArguments(String[] args) throws CommandLineException {
     Objects.requireNonNull(args);
     parseArguments(Arrays.stream(args).iterator());
-    if (level == null) {
+    if (level == null && !help) {
       throw new CommandLineException("No map specified");
     }
   }
@@ -87,6 +99,7 @@ public class Arguments {
     String argument;
     while (args.hasNext()) {
       switch ((argument = args.next())) {
+        case "--help", "-h" -> help = true;
         case "--level", "-lvl" -> parseLevel(args);
         case "--validate" -> validate = true;
         case "--dry-run" -> dryRun = true;
@@ -95,6 +108,18 @@ public class Arguments {
     }
   }
   
+  /**
+   * Get help message
+   */
+  public static String getHelp() {
+    return "thebigadventure.jar --level FILE [OPTIONS ...]\n\n"
+           + "Options : \n"
+           + "\t -lvl, --level\tmap to play. This argument is mandatory\n"
+           + "\t --validate\tcheck if a map syntax is correct without playing it\n"
+           + "\t --dry-run\tplay easy-mode with still mobs\n"
+           + "\t -h, --help\tprint this message and exit\n";
+  }
+
   /**
    * Parse level
    * @param args

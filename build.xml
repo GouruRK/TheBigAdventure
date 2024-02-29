@@ -18,6 +18,7 @@
 	<!-- Clean -->
 	
 	<target name="clean">
+		<mkdir dir="${classes.dir}" />
         <delete>
         	<fileset dir="${classes.dir}" includes="**/*.class"/>
         </delete>

@@ -15,6 +15,11 @@ public class Main {
     try {
       Arguments.parseArguments(args);
     
+      if (Arguments.help()) {
+        System.out.println(Arguments.getHelp());
+        return;
+      }
+
       Parser parser;
       Game game;
       parser = new Parser(Arguments.level());
